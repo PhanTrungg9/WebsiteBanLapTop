@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="WebBanLapTop" Class="DatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.tb_product_image" Member="tb_product_images">
+    <Type Name="tb_product_image">
+      <Column Name="product_image_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="product_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="image" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="tb_product_tb_product_image" Member="tb_product" ThisKey="product_id" OtherKey="product_id" Type="tb_product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_order_detail" Member="tb_order_details">
+    <Type Name="tb_order_detail">
+      <Column Name="orderdetail_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="order_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="product_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="quantity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Association Name="tb_product_tb_order_detail" Member="tb_product" ThisKey="product_id" OtherKey="product_id" Type="tb_product" IsForeignKey="true" />
+      <Association Name="tb_order_tb_order_detail" Member="tb_order" ThisKey="order_id" OtherKey="order_id" Type="tb_order" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_payment" Member="tb_payments">
+    <Type Name="tb_payment">
+      <Column Name="payment_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="method" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="status" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="payment_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="tb_payment_tb_order" Member="tb_orders" ThisKey="payment_id" OtherKey="payment_id" Type="tb_order" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_product" Member="tb_products">
+    <Type Name="tb_product">
+      <Column Name="product_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="category_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="brand_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="quantity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="image" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="is_featured" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_new" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="create_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="tb_product_tb_product_image" Member="tb_product_images" ThisKey="product_id" OtherKey="product_id" Type="tb_product_image" />
+      <Association Name="tb_product_tb_order_detail" Member="tb_order_details" ThisKey="product_id" OtherKey="product_id" Type="tb_order_detail" />
+      <Association Name="tb_product_tb_product_discount" Member="tb_product_discounts" ThisKey="product_id" OtherKey="product_id" Type="tb_product_discount" />
+      <Association Name="tb_product_tb_cart_item" Member="tb_cart_items" ThisKey="product_id" OtherKey="product_id" Type="tb_cart_item" />
+      <Association Name="tb_product_tb_review" Member="tb_reviews" ThisKey="product_id" OtherKey="product_id" Type="tb_review" />
+      <Association Name="tb_brand_tb_product" Member="tb_brand" ThisKey="brand_id" OtherKey="brand_id" Type="tb_brand" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_product_discount" Member="tb_product_discounts">
+    <Type Name="tb_product_discount">
+      <Column Name="product_discount_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="is_fixed" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="end_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="product_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="tb_product_tb_product_discount" Member="tb_product" ThisKey="product_id" OtherKey="product_id" Type="tb_product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_order" Member="tb_orders">
+    <Type Name="tb_order">
+      <Column Name="order_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="total_mount" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="order_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="status" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="payment_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="shipping_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="tb_order_tb_order_detail" Member="tb_order_details" ThisKey="order_id" OtherKey="order_id" Type="tb_order_detail" />
+      <Association Name="tb_payment_tb_order" Member="tb_payment" ThisKey="payment_id" OtherKey="payment_id" Type="tb_payment" IsForeignKey="true" />
+      <Association Name="tb_user_tb_order" Member="tb_user" ThisKey="user_id" OtherKey="user_id" Type="tb_user" IsForeignKey="true" />
+      <Association Name="tb_shipping_tb_order" Member="tb_shipping" ThisKey="shipping_id" OtherKey="shipping_id" Type="tb_shipping" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_cart_item" Member="tb_cart_items">
+    <Type Name="tb_cart_item">
+      <Column Name="cartitem_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="cart_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="product_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="quantity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="tb_product_tb_cart_item" Member="tb_product" ThisKey="product_id" OtherKey="product_id" Type="tb_product" IsForeignKey="true" />
+      <Association Name="tb_cart_tb_cart_item" Member="tb_cart" ThisKey="cart_id" OtherKey="cart_id" Type="tb_cart" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_cart" Member="tb_carts">
+    <Type Name="tb_cart">
+      <Column Name="cart_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="tb_cart_tb_cart_item" Member="tb_cart_items" ThisKey="cart_id" OtherKey="cart_id" Type="tb_cart_item" />
+      <Association Name="tb_user_tb_cart" Member="tb_user" ThisKey="user_id" OtherKey="user_id" Type="tb_user" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_brand" Member="tb_brands">
+    <Type Name="tb_brand">
+      <Column Name="brand_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="tb_brand_tb_product" Member="tb_products" ThisKey="brand_id" OtherKey="brand_id" Type="tb_product" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_user" Member="tb_users">
+    <Type Name="tb_user">
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="user_name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="full_name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="usertype" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="address" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="tb_user_tb_order" Member="tb_orders" ThisKey="user_id" OtherKey="user_id" Type="tb_order" />
+      <Association Name="tb_user_tb_cart" Member="tb_carts" ThisKey="user_id" OtherKey="user_id" Type="tb_cart" />
+      <Association Name="tb_user_tb_review" Member="tb_reviews" ThisKey="user_id" OtherKey="user_id" Type="tb_review" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_shipping" Member="tb_shippings">
+    <Type Name="tb_shipping">
+      <Column Name="shipping_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="address" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="postal_code" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="shipping_method" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="tracking_number" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="tb_shipping_tb_order" Member="tb_orders" ThisKey="shipping_id" OtherKey="shipping_id" Type="tb_order" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tb_review" Member="tb_reviews">
+    <Type Name="tb_review">
+      <Column Name="review_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="product_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="comment" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="tb_product_tb_review" Member="tb_product" ThisKey="product_id" OtherKey="product_id" Type="tb_product" IsForeignKey="true" />
+      <Association Name="tb_user_tb_review" Member="tb_user" ThisKey="user_id" OtherKey="user_id" Type="tb_user" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
