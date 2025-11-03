@@ -1,4 +1,6 @@
-﻿
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<WebBanLapTop.Models.vw_ProductWithDiscountCount>
 @{
     ViewBag.Title = "Danh Sách  Sản Phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -36,18 +38,611 @@
 <!-- Main content -->
 <section class="content">
 
-    <!-- Default box -->
+    <!-- card product -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Danh Sách Sản Phẩm</h3>
-
+            <h3 class="card-title text-bold">Danh Sách Sản Phẩm</h3>
             <div class="card-tools">
-                <a href="#" class="btn btn-info">Thêm mới</a>
+                <a href="~/Admin/Products/Add" class="btn btn-info ">
+                    <i class="fas fa-plus"></i> Thêm mới
+                </a>
+                <a href="#" id="btndelete" class="btn btn-danger ">
+                    <i class="fas fa-trash"></i> Xóa
+                </a>
             </div>
         </div>
-      
-        <!-- /.card-footer-->
-    </div>
-    <!-- /.card -->
+        <div class="card-body p-0">
+            <div class="product-list-header d-flex align-items-center p-3 border-bottom">
+                <input type="checkbox" id="SelectAll" class="me-2 mr-2" />
+                <label for="checkAll" class="mb-0">Chọn tất cả</label>
+            </div>
+            <div class="product-list-container">
+                @if (Model != null && Model.Any())
+                {
+                    var index = (ViewBag.Page - 1) * ViewBag.PageSize + 1;
 
+                    foreach (var item in Model)
+                    {
+                        <div class="product-item" data-product-id="@item.product_id" id="trow_@item.product_id" onclick="selectProduct(@item.product_id, '@item.name')">
+                            <div class="product-checkbox">
+                                <input type="checkbox" class="checkitem" value="@item.product_id" />
+                            </div>
+                            <div class="product-image">
+                                @if (!string.IsNullOrEmpty(item.image))
+                                {
+                                    <img src="@item.image" alt="@item.name" />
+                                }
+                                else
+                                {
+                                    <div class="no-image">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">@item.name</div>
+                                <div class="product-meta">
+                                    <span class="product-price">@(item.final_price.HasValue ? item.final_price.Value.ToString("N0") :"0") ₫</span>
+                                    <span class="product-quantity">SL: @item.quantity</span>
+                                </div>
+                                <div class="product-discount-info">
+                                    @if (item.discount_count > 0)
+                                    {
+                                        <span class="discount-badge">
+                                            <i class="fas fa-tag"></i> @item.discount_count đợt giảm giá
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="no-discount-text">
+                                            <i class="fas fa-minus-circle"></i> Chưa có giảm giá
+                                        </span>
+                                    }
+                                </div>
+
+                            </div>
+                            <div class="product-actions">
+                                <a href="/admin/news/edit/@item.product_id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i>Sửa
+                                </a>
+                                <a href="#" data-id="@item.product_id" class="btn btn-danger btn-sm btnDelete">
+                                    <i class="fas fa-trash"></i>Xóa
+                                </a>
+                            </div>
+                        </div>
+                        index++;
+                    }
+                }
+                else
+                {
+                    <div>
+                        <i class="fas fa-box-open"></i>
+                        <p>Không có sản phẩm nào</p>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <small class="text-muted">
+                            Hiển thị @((ViewBag.Page - 1) * ViewBag.PageSize + 1)
+                            đến @(Math.Min(ViewBag.Page * ViewBag.PageSize, Model.TotalItemCount))
+                            / @Model.TotalItemCount
+                        </small>
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+                      {
+                          UlElementClasses = new[] { "pagination", "pagination-sm", "m-0", "float-right" },
+                          LiElementClasses = new[] { "page-item" }
+                     })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title text-bold">
+                <i class="fas fa-percent text-success"></i>
+                Đợt Giảm Giá
+            </h3>
+            <div class="card-tools">
+                <button onclick="toggleShowAddDiscount()" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Thêm giảm giá
+                </button>
+            </div>
+        </div>
+        <div class="card-body ">
+            <div id="addDiscount" class="discount-form d-none mb-4">
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Tên Sản Phẩm</label>
+                        <select id="product_name" class="form-control select2">
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Hình thức giảm giá</label>
+                                <select id="discountType" class="form-control">
+                                    <option value="" disabled selected hidden>-- Chọn một hình thức --</option>
+                                    <option value="0">Phần trăm (%)</option>
+                                    <option value="1">Số tiền cố định (₫)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Giá trị giảm</label>
+                                <input type="number" id="discountValue" class="form-control" placeholder="Nhập giá trị" min="0" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Ngày bắt đầu</label>
+                                <input type="date" id="startdate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Ngày kết thúc</label>
+                                <input type="date" id="enddate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <textarea id=" discription" class="form-control" placeholder="Nhập mô tả đợt giảm giá"></textarea>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-secondary" onclick="toggleShowAddDiscount()">Hủy</button>
+                        <button class="btn btn-success" onclick="saveDiscount()">
+                            <i class="fas fa-save"></i> Lưu
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="selectedProductInfo" class="selected-product-info d-none">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Đang xem giảm giá của: <strong id="selectedProductName"></strong>
+                </div>
+            </div>
+            <div id="discountListContainer">
+                <div class="discount-empty-state">
+                    <i class="fas fa-hand-pointer"></i>
+                    <p>Chọn một sản phẩm để xem đợt giảm giá</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </section>
+
+<style>
+    .product-list-container {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .product-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .product-item.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+
+    .product-checkbox {
+        flex-shrink: 0;
+    }
+
+    .product-image {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+    }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+    .no-image {
+        width: 60px;
+        height: 60px;
+        background: #f8f9fa;
+        border: 1px dashed #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+        .no-image i {
+            color: #adb5bd;
+            font-size: 24px;
+        }
+
+    .product-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #2c3e50;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .product-price {
+        color: #e74c3c;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .product-quantity {
+        color: #6c757d;
+        font-size: 13px;
+    }
+
+    .product-discount-info {
+        margin-top: 5px;
+    }
+
+    .discount-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        background: linear-gradient(135deg,#28a745 0%, #20c997 100%);
+        color: #f8f9fa;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .no-discount-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #6c757d;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 5px;
+        flex-shrink: 0;
+    }
+
+        .product-actions i {
+            margin-right: 5px;
+        }
+
+    .discount-form {
+        animation: slideDown 0.3s ease;
+    }
+
+    .form-container {
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #bee3f8;
+    }
+
+    .selected-product-info {
+        margin-bottom: 20px;
+    }
+
+    .discount-empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .discount-empty-state i {
+            font-size: 48px;
+            color: #dee2e6;
+            margin-bottom: 15px;
+        }
+
+        .discount-empty-state p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+    .discount-item {
+        background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+        border: 1px solid #86efac;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .discount-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+        }
+
+        .discount-item.inactive {
+            opacity: 0.6;
+            background: linear-gradient(135deg, #f3f4f6 0%, #f9fafb 100%);
+            border-color: #d1d5db;
+        }
+
+    .discount-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 10px;
+    }
+    .discount-percent {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: white;
+        padding:8px 16px;
+        border-radius:16px;
+        font-weight:bold;
+        font-size:16px;
+    }
+    .discount-item.inactive .discount-percent {
+        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    }
+    .discount-actions {
+        display: flex;
+        gap: 5px;
+    }
+    .discount-dates {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #333333;
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .discount-status {
+        display: inline-block;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    [class^="card-body-"] {
+        transition: opacity 0.3s ease, height 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card-body-status-upcoming,
+    .card-body-status-expired {
+        opacity: 0;
+        height: 0;
+        pointer-events: none;
+    }
+
+    .card-body-status-active {
+        opacity: 1;
+        height: auto;
+    }
+
+
+/*    .status-active {
+        background: #22c55e;
+        color: white;
+    }*/
+
+    .status-upcoming {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .status-expired {
+        background: #ef4444;
+        color: white;
+        padding:4px 12px;
+    }
+    .title-bold {
+        font-weight: 700 !important;
+    }
+
+    .custom-bg {
+        background-color: #CCFFFF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #dee2e6;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+            margin: 0;
+        }
+</style>
+
+
+@section scripts{
+    <script>
+        var selectedProductId = null;
+        $(document).ready(function () {
+            $('#product_name').select2({
+                placeholder: "Chọn sản phẩm",
+                ajax: {
+                    url: '/Admin/Products/getProductName',
+                    dataType: 'json',
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return { id: item.product_id, text: item.name };
+                            })
+                        };
+                    }
+                }
+            });
+            $('body').on('change', '#SelectAll', function () {
+                var checkStatus = this.checked;
+                $('.checkitem').prop('checked', checkStatus);
+            });
+            $('body').on('change', '.checkitem', function () {
+                var totalcheck = $('.checkitem').length;
+                var checkedcheck = $('.checkitem:checked').length;
+                $('#SelectAll').prop('checked', totalcheck === checkedcheck);
+            });
+        });
+        function selectProduct(productId, productName) {
+            selectedProductId = productId;
+            $('.product-item').removeClass('selected');
+            $('[data-product-id="' + productId + '"]').addClass('selected');
+
+            $('#selectedProductInfo').removeClass('d-none');
+            $('#selectedProductName').text(productName);
+
+            loadDiscount(productId);
+        }
+        function loadDiscount(productId) {
+            $.ajax({
+                url: '/Admin/Products/GetDiscountsByProduct',
+                type: 'GET',
+                data: { productId: productId },
+                success: function (result) {
+                    if (result.success) {
+                        displayDiscounts(result.data);
+                    } else {
+                        $('#discountListContainer').html('<div class="alert alert-warning">Không thể tải dữ liệu giảm giá</div>');
+                    }
+                },
+                error: function () {
+                    $('#discountListContainer').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải dữ liệu</div>');
+                }
+            });
+        }
+        function displayDiscounts(discounts) {
+            if (discounts.length === 0) {
+                $('#discountListContainer').html('<div class="discount-empty-state"><i class="fas fa-inbox"></i>Chưa có đợt giảm giá nào</div>');
+                return;
+            }
+            var html = '';
+            discounts.forEach(function (discount) {
+                function parseJsonDate(jsonDate) {
+                    if (!jsonDate) return null;
+                    var match = jsonDate.match(/\/Date\((\d+)([-+]\d{4})?\)\//);
+                    if (match) {
+                        return new Date(parseInt(match[1]));
+                    }
+                    return new Date(jsonDate);
+                }
+                var startDate = parseJsonDate(discount.start_date);
+                var endDate = parseJsonDate(discount.end_date);
+                var isValidStart = startDate && !isNaN(startDate.getTime());
+                var isValidEnd = endDate && !isNaN(endDate.getTime());
+
+                var now = new Date();
+                var isActive = startDate <= now && endDate >= now;
+                var isUpcoming = startDate > now;
+                var isExpired = endDate < now;
+
+                var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                var startDateStr = isValidStart ? startDate.toLocaleDateString('en-US', options) : 'N/A';
+                var endDateStr = isValidEnd ? endDate.toLocaleDateString('en-US', options) : 'N/A';
+
+                var statusClass = isActive ? 'status-active' : (isUpcoming ? 'status-upcoming' : 'status-expired');
+                var statusText = isActive ? 'Đang áp dụng' : (isUpcoming ? 'Sắp diễn ra' : 'Đã hết hạn');
+                var itemClass = isActive ? '' : 'inactive';
+
+                var originalPrice = discount.original_price;
+                var discountedPrice = 0;
+                if (discount.is_fixed) {
+                    var discountedPrice = originalPrice - discount.amount;
+                } else {
+                    var discountedPrice = originalPrice * (1 - discount.amount / 100);
+                }
+                html += `
+                                        <div class="discount-item ${itemClass}">
+                                            <div class="discount-header">
+                                                <span class="discount-percent">
+                                                    ${discount.is_fixed ? '-' + discount.amount.toLocaleString() + '₫' : '-' + discount.amount + '%'}
+                                                </span>
+                                                <div class="discount-actions">
+                                                    <button class="btn btn-warning" onclick="editdiscount(${discount.discount_id})">
+                                                        <i class="fas fa-edit"></i> Sửa
+                                                    </button>
+                                                    <button class="btn btn-danger" onclick="deleteDiscount(${discount.discount_id})">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="discount-dates">
+                                                <i class="fas fa-calendar"></i>
+                                                ${startDateStr} - ${endDateStr}
+                                            </div>
+                                            <span class="discount-status ${statusClass}">${statusText}</span>
+                                            <div class="card-body-${statusClass} discount-price-info">
+                                            <div class="price-row">
+                                                <span class="price-label">Giá gốc:</span>
+                                                <span class="original-price">${originalPrice.toLocaleString()}₫</span>
+                                            </div>
+                                            <div class="price-row">
+                                                <span class="price-label">Giá sau giảm:</span>
+                                                <span class="discounted-price">${discountedPrice.toLocaleString()}₫</span>
+                                            </div>
+                                            <div class="price-row">
+                                                <span class="price-label">Tiết kiệm:</span>
+                                                <span class="saved-price">${(originalPrice - discountedPrice).toLocaleString()}₫</span>
+                                            </div>
+                                        </div>
+                                        </div>
+                                 `;
+            });
+            $('#discountListContainer').html(html);
+        }
+
+
+
+        // Toggle Add Discount Form
+        function toggleShowAddDiscount() {
+            $('#addDiscount').toggleClass('d-none');
+            if (!$('#addDiscount').hasClass('d-none') && selectedProductId) {
+                $('#product_name').val(selectedProductId).trigger('change');
+            }
+        }
+
+    </script>
+}
+
