@@ -656,7 +656,7 @@ namespace WebBanLapTop.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_brand_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_brand_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
 		public int brand_id
 		{
 			get
@@ -1393,7 +1393,7 @@ namespace WebBanLapTop.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_category_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_category_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
 		public int category_id
 		{
 			get
@@ -2280,8 +2280,6 @@ namespace WebBanLapTop.Models
 		
 		private string _image;
 		
-		private System.Nullable<bool> _is_hot;
-		
 		private System.Nullable<System.DateTime> _create_at;
 		
 		private System.Nullable<bool> _is_delete;
@@ -2320,8 +2318,6 @@ namespace WebBanLapTop.Models
     partial void OnpriceChanged();
     partial void OnimageChanging(string value);
     partial void OnimageChanged();
-    partial void Onis_hotChanging(System.Nullable<bool> value);
-    partial void Onis_hotChanged();
     partial void Oncreate_atChanging(System.Nullable<System.DateTime> value);
     partial void Oncreate_atChanged();
     partial void Onis_deleteChanging(System.Nullable<bool> value);
@@ -2504,26 +2500,6 @@ namespace WebBanLapTop.Models
 					this._image = value;
 					this.SendPropertyChanged("image");
 					this.OnimageChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_hot", DbType="Bit")]
-		public System.Nullable<bool> is_hot
-		{
-			get
-			{
-				return this._is_hot;
-			}
-			set
-			{
-				if ((this._is_hot != value))
-				{
-					this.Onis_hotChanging(value);
-					this.SendPropertyChanging();
-					this._is_hot = value;
-					this.SendPropertyChanged("is_hot");
-					this.Onis_hotChanged();
 				}
 			}
 		}

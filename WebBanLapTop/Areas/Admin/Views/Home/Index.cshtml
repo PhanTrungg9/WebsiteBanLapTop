@@ -89,7 +89,13 @@
                     <div class="card-body">
                         <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
                         <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 550px;" width="687" height="312" class="chartjs-render-monitor"></canvas>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div id="tongDoanhThu" class="mt-2 text-gray">Tổng doanh thu bán ra : </div>
+                            </div>
+                        </div>
                     </div>
+                    
                     <!-- /.card-body -->
                 </div>
             </div>
@@ -113,6 +119,11 @@
                         <div class="chart">
                             <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
                             <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 550px;" width="687" height="312" class="chartjs-render-monitor"></canvas>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div id="tongSpBanRa" class="mt-2 text-gray"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- /.card-body -->
@@ -187,7 +198,7 @@
                                 ticks: {
                                     color: '#ffffff',
                                     callback: function (value) {
-                                        return value.toLocaleString('vi-VN') + ' đ';
+                                        return value.toLocaleString('vi-VN') + ' VNĐ';
                                     }
                                 },
                                 grid: { color: 'rgba(255,255,255,0.2)' }
@@ -203,6 +214,7 @@
                 alert('Không tải được dữ liệu thống kê. Lỗi: ' + error);
             }
         });
+
         // === Biểu đồ 2: Doughnut Chart (Doanh thu theo hãng) ===
         $.ajax({
             url: '/Admin/Thongke/GetDoanhThuTheoHang',
@@ -222,6 +234,9 @@
 
                 // Lấy màu sắc tự động
                 var colors = generateColors(labels.length);
+                var tong = values.reduce((sum, val) => sum + val, 0);
+                document.getElementById("tongDoanhThu").innerText =
+                    "Tổng doanh thu: " + tong.toLocaleString('vi-VN') + " VNĐ";
 
                 const donutCtx = document.getElementById('donutChart').getContext('2d');
                 new Chart(donutCtx, {
@@ -239,14 +254,18 @@
                         plugins: {
                             legend: {
                                 position: 'bottom',
-                                labels: { color: '#fff' }
+                                labels: { color: '#666' },
+                                font: {
+                                    weight: 'bold',   
+                                    size: 14          
+                                }
                             },
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
                                         var label = context.label || '';
                                         var value = context.parsed || 0;
-                                        return label + ': ' + value.toLocaleString('vi-VN') + ' đ';
+                                        return label + ': ' + value.toLocaleString('vi-VN') + ' VNĐ';
                                     }
                                 }
                             }
@@ -281,6 +300,9 @@
 
                 // Lấy màu sắc tự động
                 var colors = generateColors(labels.length);
+                var tong = values.reduce((sum, val) => sum + val, 0);
+                document.getElementById("tongSpBanRa").innerText =
+                    "Tổng Số Sản Phẩm Bán Ra: " + tong.toLocaleString('vi-VN');
 
                 const barCtx = document.getElementById('stackedBarChart').getContext('2d');
                 new Chart(barCtx, {
@@ -300,13 +322,13 @@
                         },
                         scales: {
                             x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255,255,255,0.1)' }
+                                ticks: { color: '#666' },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
                             },
                             y: {
                                 beginAtZero: true,
                                 ticks: {
-                                    color: '#fff',
+                                    color: '#666',
                                     stepSize: 1,  // Bước nhảy là 1
                                     callback: function (value) {
                                         if (Number.isInteger(value)) {  // Chỉ hiển thị số nguyên
@@ -314,7 +336,7 @@
                                         }
                                     }
                                 },
-                                grid: { color: 'rgba(255,255,255,0.1)' }
+                                grid: { color: 'rgba(0,0,0,0.1)' }
                             }
                         }
                     }
