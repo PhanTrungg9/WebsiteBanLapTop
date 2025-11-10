@@ -1,0 +1,184 @@
+﻿@model IEnumerable<WebBanLapTop.Models.tb_product_image>
+@{
+    ViewBag.Title = "Ảnh sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+<style>
+    .glImage {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+        .glImage li {
+            flex: 0 0 calc(33.333% - 20px); 
+            box-sizing: border-box;
+            position: relative;
+            margin-bottom:5px;
+        }
+        .glImage img {
+            width: 100%; 
+            height: auto;
+            margin-bottom:5px;
+            border-radius: 5px;
+        }
+
+    .box-btn {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+</style>
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                Ảnh sản phẩm
+            </h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-danger btnDeleteAll">
+                    Xóa hết
+                </button>
+                <input type="button" class="btn btn-success" onclick="BrowseServer()" value="Tải Ảnh" />
+            </div>
+        </div>
+        <div class="card-body">
+            <ul class="glImage">
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        bool is_default = (item.image == ViewBag.DefaultImage);
+                        <li id="trow_@item.product_image_id">
+                            <img src="@item.image" width="200" />
+                            <div class="box-btn">
+                                <a href="#" data-id="@item.product_image_id" class="btn btn-sm btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                @if (!is_default)
+                                {
+                                    <a href="" data-id="@item.product_image_id" class="btn btn-sm btn-success btndefault">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                <span href="#" data-id="@item.product_image_id" class="btn btn-sm btn-warning btnDefault">
+                                    <i class="bi bi-x-lg" style="-webkit-text-stroke: 1px; color: black;"></i>
+                                </span>
+                                }
+
+                            </div>
+
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+
+    </div>
+</section>
+<script>
+    function BrowseServer(field) {
+        var finder = new CKFinder();
+        finder.selectActionFunction = function (fileUrl) {
+            AddImages(@ViewBag.product_id, fileUrl);
+        };
+        finder.popup();
+    }
+    function AddImages(id, url) {
+        $.ajax({
+            url: '/Admin/ProductImages/AddImages',
+            type: 'POST',
+            data: { product_id: id, url: url },
+            success: function (result) {
+                if (result.success) {
+                       window.location.reload();
+                        alert(result.message);
+                    }
+                else{
+                    alert(result.message);
+                }
+            },
+        });
+    }
+    $(document).ready(function () {
+        $('body').on('click', '.btnDelete', function (e) {
+            e.preventDefault();
+
+            var productId = $(this).data('id');
+            var productRow = $('#trow_' + productId);
+
+            var conf = confirm('Bạn có muốn xóa ảnh này không?');
+            if (conf === true) {
+                $.ajax({
+                    url: '/Admin/ProductImages/Delete',
+                    type: 'POST',
+                    data: { product_id: productId },
+                    success: function (result) {
+                        if (result.success) {
+                            productRow.fadeOut(400, function () {
+                                $(this).remove();
+                                alert(result.message);
+                            });
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                });
+            }
+        });
+        $('body').on('click', '.btnDeleteAll', function (e) {
+            e.preventDefault();
+            var conf = confirm('Bạn có chắc muốn xóa TẤT CẢ ảnh của sản phẩm này không ?');
+            if (conf === true) {
+                $.ajax({
+                    url: '/Admin/ProductImages/DeleteAll',
+                    type: 'POST',
+                    data: { product_id: @ViewBag.product_id},
+                    success: function (result) {
+                        if (result.success) {
+                            $('.glImage').fadeOut(400, function () {
+                                $(this).empty();
+                                alert(result.message);
+                            });
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                });
+            }
+        });
+        $('body').on('click', '.btndefault', function (e) {
+            e.preventDefault();
+            var productImageId = $(this).attr('data-id');
+            var conf = confirm('Bạn có muốn đặt ảnh này làm ảnh mặc định không?');
+            if (conf === true) {
+                $.ajax({
+                    url: '/Admin/ProductImages/SetDefault',
+                    type: 'POST',
+                    data: {
+                        product_id: @ViewBag.product_id,
+                        product_image_id: productImageId
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message);
+                            window.location.reload();
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Đã xảy ra lỗi trong quá trình xử lý!');
+                    }
+                });
+            }
+        });
+
+    });
+</script>
