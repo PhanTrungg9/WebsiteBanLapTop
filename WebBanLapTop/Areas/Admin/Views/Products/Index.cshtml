@@ -1,0 +1,823 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<WebBanLapTop.Models.vw_ProductWithDiscountCount>
+@{
+    ViewBag.Title = "Danh Sách  Sản Phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section naviheader{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Content/Admin/index3.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Sản Phẩm</a>
+        </li>
+    </ul>
+}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Quản lý Sản Phẩm</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Sản Phẩm</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- card product -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title text-bold">Danh Sách Sản Phẩm</h3>
+            <div class="card-tools">
+                <a href="~/Admin/Products/Add" class="btn btn-info ">
+                    <i class="fas fa-plus"></i> Thêm mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="product-list-header d-flex align-items-center border-bottom">
+                @*timkiem*@
+                <div class="container-fluid">
+                    <div class="row g-2 align-items-center py-2 justify-content-start">
+                        <div class="col-md-6 col-sm-6 ">
+                            <input name="search" class="form-control" style="height: 42px;" placeholder="🔍 Nhập tên sản phẩm..." />
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <button type="button" id="btn_timkiem" class="btn btn-info w-75" style="height: 42px;" onclick="timkiem_SP()">
+                                Tìm kiếm
+                            </button>
+                        </div>
+                        <div class="col-md-4 d-none d-md-block"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container để AJAX load vào -->
+            <div class="product-list-container">
+                @Html.Partial("_ProductListPartial")
+            </div>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="card-footer">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <small class="text-muted">
+                        Hiển thị @((Model.PageNumber - 1) * Model.PageSize + 1)
+                        đến @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalItemCount))
+                        / @Model.TotalItemCount
+                    </small>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, search = ViewBag.Search }), new PagedListRenderOptions
+                    {
+                        UlElementClasses = new[] { "pagination", "pagination-sm", "m-0", "float-right" },
+                        LiElementClasses = new[] { "page-item" },
+                    })
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            @Html.Partial("Discount")
+        </div>
+        </div>
+</section>
+<div id="dialog">
+    <iframe id="myIframe" style="border:0; width:100%; height:100%"></iframe>
+</div>
+
+<style>
+    .product-list-container {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .product-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .product-item.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+
+    .product-checkbox {
+        flex-shrink: 0;
+    }
+
+    .product-image {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+    }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+    .no-image {
+        width: 60px;
+        height: 60px;
+        background: #f8f9fa;
+        border: 1px dashed #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+        .no-image i {
+            color: #adb5bd;
+            font-size: 24px;
+        }
+
+    .product-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #2c3e50;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .product-price {
+        color: #e74c3c;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .product-quantity {
+        color: #6c757d;
+        font-size: 13px;
+    }
+
+    .product-discount-info {
+        margin-top: 5px;
+    }
+
+    .discount-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        background: linear-gradient(135deg,#28a745 0%, #20c997 100%);
+        color: #f8f9fa;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .no-discount-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #6c757d;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 5px;
+        flex-shrink: 0;
+    }
+
+        .product-actions i {
+            margin-right: 5px;
+        }
+
+    .discount-form {
+        animation: slideDown 0.3s ease;
+    }
+
+    .form-container {
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #bee3f8;
+    }
+
+    .selected-product-info {
+        margin-bottom: 20px;
+    }
+
+    .discount-empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .discount-empty-state i {
+            font-size: 48px;
+            color: #dee2e6;
+            margin-bottom: 15px;
+        }
+
+        .discount-empty-state p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+    .discount-item {
+        background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+        border: 1px solid #86efac;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .discount-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+        }
+
+        .discount-item.inactive {
+            opacity: 0.6;
+            background: linear-gradient(135deg, #f3f4f6 0%, #f9fafb 100%);
+            border-color: #d1d5db;
+        }
+
+    .discount-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 10px;
+    }
+
+    .discount-percent {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 16px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .discount-item.inactive .discount-percent {
+        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    }
+
+    .discount-actions {
+        display: flex;
+        gap: 5px;
+    }
+
+    .discount-dates {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #333333;
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .discount-status {
+        display: inline-block;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    [class^="card-body-"] {
+        transition: opacity 0.3s ease, height 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card-body-status-upcoming,
+    .card-body-status-expired {
+        opacity: 0;
+        height: 0;
+        pointer-events: none;
+    }
+
+    .card-body-status-active {
+        opacity: 1;
+        height: auto;
+    }
+
+
+    /*    .status-active {
+        background: #22c55e;
+        color: white;
+    }*/
+
+    .status-upcoming {
+        background: #FF3300;
+        padding:5px 10px;
+        color: white;
+    }
+
+    .status-expired {
+        background: #ef4444;
+        color: white;
+        padding: 4px 12px;
+    }
+
+    .title-bold {
+        font-weight: 700 !important;
+    }
+
+    .custom-bg {
+        background-color: #CCFFFF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #dee2e6;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+            margin: 0;
+        }
+</style>
+
+
+@section scripts{
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script>
+        var selectedProductId = null;
+
+        $(document).ready(function () {
+            $('#dialog').dialog({
+                autoOpen: false,
+                show: "fade",
+                hide: "fade",
+                modal: true,
+                height: '600',
+                width: '700',
+                resizable: true,
+                title: 'Quản lý ảnh sản phẩm',
+                close: function () {
+                    window.location.reload();
+                }
+            });
+            $('body').on('click', '.product-image', function () {
+                var proid = $(this).attr("data-id");
+                $("#dialog #myIframe").attr("src", "/Admin/ProductImages/Index?product_id=" + proid);
+                $('#dialog').dialog('open');
+                return false;
+            });
+            $('#product_name').select2({
+                placeholder: "Chọn sản phẩm",
+                ajax: {
+                    url: '/Admin/Products/getProductName',
+                    dataType: 'json',
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return { id: item.product_id, text: item.name };
+                            })
+                        };
+                    }
+                }
+            });
+
+
+            $('body').on('click', '.btnDelete', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var productId = $(this).data('id');
+                var productRow = $('#trow_' + productId);
+
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
+                    $.ajax({
+                        url: '/Admin/Products/Delete',
+                        type: 'POST',
+                        data: { id: productId },
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result.success) {
+                                productRow.fadeOut(400, function () {
+                                    $(this).remove();
+
+                                    if ($('.product-item').length === 0) {
+                                        loadPage(getCurrentPage());
+                                    }
+                                });
+
+                                alert(result.message);
+                            } else {
+                                alert('Lỗi: ' + result.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Có lỗi xảy ra khi xóa sản phẩm!');
+                        }
+                    });
+                }
+
+            });
+
+            $(document).on('click', '.pagination a', function (e) {
+                e.preventDefault();
+
+                var url = $(this).attr('href');
+                if (!url || url === '#') return;
+
+                var pageMatch = url.match(/page=(\d+)/);
+                var page = pageMatch ? pageMatch[1] : 1;
+
+                loadPage(page);
+            });
+
+            $(document).on('click', '.product-actions a', function (e) {
+                e.stopPropagation();
+            });
+
+            $(document).on('keypress', 'input[name="search"]', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    timkiem_SP();
+                }
+            });
+        });
+
+        function loadPage(page) {
+            var searchText = $('input[name="search"]').val() || '';
+
+            $('.product-list-container').html(
+                '<div class="text-center p-5">' +
+                '<i class="fas fa-spinner fa-spin fa-3x text-info"></i>' +
+                '<p class="mt-3">Đang tải dữ liệu...</p>' +
+                '</div>'
+            );
+
+            $.ajax({
+                url: '/Admin/Products/Index',
+                type: 'GET',
+                data: {
+                    page: page,
+                    search: searchText
+                },
+                success: function (data) {
+                    var $response = $('<div>').html(data);
+                    var productListHtml = $response.find('.product-list-container').html();
+                    $('.product-list-container').html(productListHtml);
+                    var footerHtml = $response.find('.card-footer').html();
+                    $('.card-footer').html(footerHtml);
+                },
+            });
+        }
+
+        function getCurrentPage() {
+            var activePage = $('.pagination .page-item.active a').text();
+            return parseInt(activePage) || 1;
+        }
+
+        function timkiem_SP() {
+            loadPage(1);
+        }
+
+        function selectProduct(productId, productName) {
+            selectedProductId = productId;
+
+
+            $('.product-item').removeClass('selected');
+            $('[data-product-id="' + productId + '"]').addClass('selected');
+
+            $('#selectedProductInfo').removeClass('d-none');
+            $('#selectedProductName').text(productName);
+
+            loadDiscount(productId);
+        }
+
+
+        function loadDiscount(productId) {
+            $.ajax({
+                url: '/Admin/Products/GetDiscountsByProduct',
+                type: 'GET',
+                data: { productId: productId },
+                success: function (result) {
+                    if (result.success) {
+                        displayDiscounts(result.data);
+                    } else {
+                        $('#discountListContainer').html(
+                            '<div class="alert alert-warning">Không thể tải dữ liệu giảm giá</div>'
+                        );
+                    }
+                },
+                error: function () {
+                    $('#discountListContainer').html(
+                        '<div class="alert alert-danger">Có lỗi xảy ra khi tải dữ liệu</div>'
+                    );
+                }
+            });
+        }
+
+
+
+        function displayDiscounts(discounts) {
+            if (discounts.length === 0) {
+                $('#discountListContainer').html(
+                    '<div class="discount-empty-state">' +
+                    '<i class="fas fa-inbox"></i>' +
+                    '<p>Chưa có đợt giảm giá nào</p>' +
+                    '</div>'
+                );
+                return;
+            }
+
+            var html = '';
+            discounts.forEach(function (discount) {
+                function parseJsonDate(jsonDate) {
+                    if (!jsonDate) return null;
+                    var match = jsonDate.match(/\/Date\((\d+)([-+]\d{4})?\)\//);
+                    if (match) {
+                        return new Date(parseInt(match[1]));
+                    }
+                    return new Date(jsonDate);
+                }
+
+                var startDate = parseJsonDate(discount.start_date);
+                var endDate = parseJsonDate(discount.end_date);
+                var isValidStart = startDate && !isNaN(startDate.getTime());
+                var isValidEnd = endDate && !isNaN(endDate.getTime());
+
+                var now = new Date();
+                var isActive = startDate <= now && endDate >= now;
+                var isUpcoming = startDate > now;
+                var isExpired = endDate < now;
+
+                var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                var startDateStr = isValidStart ? startDate.toLocaleDateString('vi-VN', options) : 'N/A';
+                var endDateStr = isValidEnd ? endDate.toLocaleDateString('vi-VN', options) : 'N/A';
+
+                var statusClass = isActive ? 'status-active' : (isUpcoming ? 'status-upcoming' : 'status-expired');
+                var statusText = isActive ? 'Đang áp dụng' : (isUpcoming ? 'Sắp diễn ra' : 'Đã hết hạn');
+                var itemClass = isActive ? '' : 'inactive';
+
+                var originalPrice = discount.original_price;
+                var discountedPrice = 0;
+                if (discount.is_fixed) {
+                    discountedPrice = originalPrice - discount.amount;
+                } else {
+                    discountedPrice = originalPrice * (1 - discount.amount / 100);
+                }
+
+                html += `
+                                                            <div class="discount-item ${itemClass}">
+                                                                <div class="discount-header">
+                                                                    <span class="discount-percent">
+                                                                        ${discount.is_fixed ? '-' + discount.amount.toLocaleString() + '₫' : '-' + discount.amount + '%'}
+                                                                    </span>
+                                                                    <div class="discount-actions">
+                                                                        <button class="btn btn-warning btnedit" onclick="editdiscount(${discount.product_discount_id})">
+                                                                            <i class="fas fa-edit"></i> Sửa
+                                                                        </button>
+                                                                        <button class="btn btn-danger btndelete" onclick="deleteDiscount(${discount.product_discount_id})">
+                                                                            <i class="fas fa-trash"></i> Xóa
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="discount-dates">
+                                                                    <i class="fas fa-calendar"></i>
+                                                                    ${startDateStr} - ${endDateStr}
+                                                                </div>
+                                                                <span class="discount-status ${statusClass}">${statusText}</span>
+                                                                <div class="card-body-${statusClass} discount-price-info">
+                                                                    <div class="price-row">
+                                                                        <span class="price-label">Giá gốc:</span>
+                                                                        <span class="original-price">${originalPrice.toLocaleString()}₫</span>
+                                                                    </div>
+                                                                    <div class="price-row">
+                                                                        <span class="price-label">Giá sau giảm:</span>
+                                                                        <span class="discounted-price">${discountedPrice.toLocaleString()}₫</span>
+                                                                    </div>
+                                                                    <div class="price-row">
+                                                                        <span class="price-label">Tiết kiệm:</span>
+                                                                        <span class="saved-price">${(originalPrice - discountedPrice).toLocaleString()}₫</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        `;
+            });
+
+            $('#discountListContainer').html(html);
+        }
+
+
+        function toggleShowAddDiscount() {
+            $('#addDiscount').toggleClass('d-none');
+            if (!$('#addDiscount').hasClass('d-none') && selectedProductId) {
+                $('#product_name').val(selectedProductId).trigger('change');
+            }
+        }
+        function saveDiscount() {
+            const productId = $('#product_name').val() || selectedProductId;
+            const discountType = $('#discountType').val();
+            const discountValue = $('#discountValue').val();
+            const startDate = $('#startdate').val();
+            const endDate = $('#enddate').val();
+            const description = $('#description').val();
+
+            // Validation
+            if (!productId) {
+                alert('Vui lòng chọn sản phẩm!');
+                return;
+            }
+            if (!discountType) {
+                alert('Vui lòng chọn hình thức giảm giá!');
+                return;
+            }
+            if (!discountValue || discountValue <= 0) {
+                alert('Vui lòng nhập giá trị giảm hợp lệ!');
+                return;
+            }
+            if (discountType == '0' && discountValue > 100) {
+                alert('Giá trị giảm giá theo phần trăm không được vượt quá 100%!');
+                return;
+            }
+            if (!startDate) {
+                alert('Vui lòng chọn ngày bắt đầu!');
+                return;
+            }
+            if (!endDate) {
+                alert('Vui lòng chọn ngày kết thúc!');
+                return;
+            }
+            if (new Date(endDate) <= new Date(startDate)) {
+                alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                return;
+            }
+
+            const data = {
+                product_id: productId,
+                is_fixed: discountType == '1',
+                amount: discountValue,
+                start_date: startDate,
+                end_date: endDate,
+                name: description
+            };
+
+            const saveBtn = event.target;
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+
+            $.ajax({
+                url: '/Admin/ProductDiscount/SaveDiscount',
+                type: 'POST',
+                data: data,
+                success: function (result) {
+                    if (result.success) {
+                        alert('Thêm giảm giá thành công!');
+
+                        // Hide form
+                        toggleShowAddDiscount();
+
+                        // Reset form
+                        $('#discountType').val('');
+                        $('#discountValue').val('');
+                        $('#startdate').val('');
+                        $('#enddate').val('');
+                        $('#description').val('');
+                        $('#product_name').val(null).trigger('change');
+
+                        //  CHỈ load lại discount, KHÔNG reload page
+                        if (selectedProductId == productId) {
+                            // Nếu đang xem sản phẩm này
+                            loadDiscount(productId);
+                        } else {
+                            // Nếu thêm cho sản phẩm khác
+                            selectProduct(productId, $('#product_name option:selected').text());
+                        }
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                    } else {
+                        alert('Thêm giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'));
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                    }
+                },
+
+            });
+        }
+        function loadProductDiscountInfo(discountId) {
+            $.ajax({
+                type: "POST",
+                url: '/Admin/ProductDiscount/LayTTDiscount',
+                data: { id: discountId },
+                dataType:'json',
+                success: function (response) {
+                    if (response.success) {
+                        var $productSelect = $('select[name="product_name"]');
+                        if (response.data.product_id) {
+                            // Nếu select chưa có option này (trường hợp select rỗng)
+                            if ($productSelect.find('option[value="' + response.data.product_id + '"]').length === 0 && response.data.product_name) {
+                                $productSelect.append(new Option(response.data.product_name, response.data.product_id, true, true));
+                            }
+
+                            // Set value và trigger change (Select2 nếu có)
+                            $productSelect.val(response.data.product_id).trigger('change');
+                            if ($productSelect.hasClass('select2-hidden-accessible')) {
+                                $productSelect.trigger('change.select2');
+                            }
+                        }
+                        $('select[name="discountType"]').val(response.data.is_fixed ? '1' : '0');
+                        $('input[name="discountValue"]').val(response.data.amount);
+                        if (response.start_date) {
+                            $('input[name="startdate"]').val(formatDateForInput(response.data.start_date));
+                        }
+                        if (response.data.start_date) {
+                            $('input[name="startdate"]').val(formatDateForInput(response.data.start_date));
+                        } else {
+                            $('input[name="startdate"]').val('');
+                        }
+
+                        if (response.data.end_date) {
+                            $('input[name="enddate"]').val(formatDateForInput(response.data.end_date));
+                        } else {
+                            $('input[name="enddate"]').val('');
+                        }
+                    }
+                },
+            })
+        }
+        function formatDateForInput(jsonDate) {
+            if (!jsonDate) return '';
+
+            var date;
+
+            
+            var match = jsonDate.match(/\/Date\((\d+)([-+]\d{4})?\)\//);
+            if (match) {
+                date = new Date(parseInt(match[1]));
+            } else {
+                date = new Date(jsonDate);
+            }
+
+            if (isNaN(date.getTime())) {
+                console.error('Không thể parse ngày:', jsonDate);
+                return '';
+            }
+
+            var year = date.getFullYear();
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+        function editdiscount(discountId) {
+            // Hiện form add discount
+            if ($('#addDiscount').hasClass('d-none')) {
+                toggleShowAddDiscount();
+            }
+
+            // Load thông tin discount
+            loadProductDiscountInfo(discountId);
+        }
+    </script>
+}

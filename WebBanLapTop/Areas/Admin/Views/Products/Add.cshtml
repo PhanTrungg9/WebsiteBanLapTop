@@ -1,0 +1,243 @@
+﻿@model IEnumerable<WebBanLapTop.Models.tb_product>
+@{
+    ViewBag.Title = "Thêm Mới Sản Phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section naviheader {
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                <i class="fas fa-bars"></i>
+            </a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Content/client/index3.html" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Sản Phẩm</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Thêm Mới</a>
+        </li>
+    </ul>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Thêm Mới Sản Phẩm</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Thêm Mới</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Thông Tin Thêm Mới Sản Phẩm</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="card">
+                <div class="card-header p-2">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#tab-info" data-toggle="tab">Thông tin sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tab-image" data-toggle="tab">Hình ảnh</a>
+                        </li>
+                    </ul>
+                </div>
+                <form id="form-act">
+                    <div class="card-body">
+                        <div class="tab-content">
+
+                            <div class="active tab-pane" id="tab-info">
+                                <div class="form-group">
+                                    <label for="name">Tên sản phẩm</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Nhập tên sản phẩm" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Tên danh mục</label>
+                                    <select name="category_id" id="category_id" class="form-control select2"></select>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand">Tên nhãn hiệu</label>
+                                    <select name="brand_id" id="brand_id" class="form-control select2"></select>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Mô tả</label>
+                                    <textarea id="txtarea" name="description" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity">Số lượng</label>
+                                    <input type="number" name="quantity" class="form-control" placeholder="Nhập số lượng" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Giá bán</label>
+                                    <input type="text" name="price" id="price" class="form-control" placeholder="Nhập giá bán" />
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: Hình ảnh -->
+                            <div class="tab-pane" id="tab-image">
+                                <div class="row">
+                                    <div class="col-md-12 pt-2 pb-2 text-right">
+                                        <input type="button" class="btn btn-info" onclick="BrowseServer()" value="Tải Ảnh" />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-hover" id="tbAnhsanpham">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">STT</th>
+                                                    <th class="text-center">Ảnh</th>
+                                                    <th class="text-center">Chọn Ảnh Đại Diện</th>
+                                                    <th class="text-center">Thao Tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbhtml">
+                                                @*<tr>
+                                                        <td class="text-center"></td>
+                                                        <td class="text-center"></td>
+                                                        <td class="text-center"><input  type="radio" name="rdefault"/></td>
+                                                        <td class="text-center"><a href="#" class="btn btn-danger">Xóa</a></td>
+                                                    </tr>*@
+                                            </tbody>
+                                        </table>
+                                        <input type="hidden" id="icurrent" value="0" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        <button type="button" id="btn_them" class="btn btn-success">Lưu sản phẩm</button>
+                        <a href="/admin/products" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#category_id').select2({
+                placeholder: "Chọn danh mục",
+                ajax: {
+                    url: '/Admin/Products/GetCategories',
+                    dataType: 'json',
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return { id: item.category_id, text: item.name };
+                            })
+                        };
+                    }
+                }
+            });
+            $('#brand_id').select2({
+                placeholder: "Chọn nhãn hiệu",
+                ajax: {
+                    url: '/Admin/Products/GetBrands',
+                    dataType: 'json',
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return { id: item.brand_id, text: item.name };
+                            })
+                        };
+                    }
+                }
+            });
+            $("#btn_them").click(function () {
+                var form = $('#form-act')[0];
+                var formData = new FormData(form);
+                var selectedRadio = $('input[name="rdefault"]:checked').val();
+                if (selectedRadio) {
+                    formData.append('rdefault', selectedRadio);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: window.location.origin + '/Admin/Products/Insert',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('#form-act')[0].reset();
+                            window.location.href = '/Admin/Products/Index';
+                        } else {
+                            alert("Lỗi: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Đã xảy ra lỗi trong quá trình thêm sản phẩm.");
+                    }
+                });
+            });
+            //$('#price').on('input', function () {
+            //    let value = $(this).val().replace(/,/g, '');
+            //    if (!isNaN(value) && value !== '') {
+            //        $(this).val(Number(value).toLocaleString('en-US'));
+            //    }
+            //});
+
+            //$('form').on('submit', function () {
+            //    let rawValue = $('#price').val().replace(/,/g, '');
+            //    $('#price').val(rawValue);
+            //});
+        });
+        function BrowseServer(field) {
+            var finder = new CKFinder();
+            finder.selectActionFunction = function (fileUrl) {
+                addImageproudct(fileUrl);
+            };
+            finder.popup();
+        }
+        function addImageproudct(url) {
+            var currentid = parseInt($('#icurrent').val()) + 1;
+            var checked = (currentid === 1) ? "checked" : "";
+            var str = "";
+            str += `
+                      <tr id="tb_row_${currentid}">
+                          <td class="text-center">${currentid}</td >
+                          <td class="text-center"><img width="80px" src="${url}"><input type='hidden' value="${url}" name="images"/></td>
+                          <td class="text-center"><input type="radio" value="${currentid}" name="rdefault" ${checked}/></td>
+                         <td class="text-center"><a href="#" data-id="${currentid}"  class="btn btn-danger xoabtn w-50">Xóa</a></td>
+                     </tr>`;
+            $('#tbhtml').append(str);
+            $('#icurrent').val(currentid);
+        }
+        $(document).on('change', 'input[name="rdefault"]', function () {
+            var selectedValue = $(this).val();
+            $('input[name="rdefault"]').not(this).prop('checked', false);
+        });
+        $('#tbhtml').on('click', '.xoabtn', function () {
+            var con = confirm("Bạn có chắc chắn muốn xóa ảnh này không?");
+            if (con) {
+                var data = $(this).data('id');
+                $('#tb_row_' + data).remove();
+                var currentid = parseInt($('#icurrent').val()) - 1;
+                $('#icurrent').val(currentid);
+            }
+        });
+
+    </script>
+}
