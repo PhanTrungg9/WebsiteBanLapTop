@@ -3151,13 +3151,17 @@
     <Content Include="Content\ckeditor\README.md" />
     <Content Include="Content\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="Content\ckeditor\skins\moono\readme.md" />
-    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
-    <Content Include="Areas\Admin\Views\Products\test.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\Discount.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductListPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductImages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutEmpty.cshtml" />
     <Content Include="Models\Database.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>Database.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>
@@ -3191,7 +3195,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\ProductDiscount\" />
-    <Folder Include="Areas\Admin\Views\ProductImages\" />
     <Folder Include="Content\ckfinder\userfiles\" />
   </ItemGroup>
   <ItemGroup>
