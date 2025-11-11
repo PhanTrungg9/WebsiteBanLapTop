@@ -7,17 +7,347 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Advanced Form</h1>
+                <h1>Thống kê</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Advanced Form</li>
+                    <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Thống kê</li>
                 </ol>
             </div>
         </div>
     </div><!-- /.container-fluid -->
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- begin : biểu đồ 1 -->
+<div class="card bg-gradient-info" style="position: relative; left: 0px; top: 0px;">
+    <div class="card-header border-0 ui-sortable-handle" style="cursor: move;">
+        <h3 class="card-title">
+            <i class="fas fa-th mr-1"></i>
+            Thông kê doanh thu
+        </h3>
 
-<!-- Main content -->
+        <div class="card-tools">
+            <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+        <canvas class="chart chartjs-render-monitor" id="line-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 650px;" width="812" height="312"></canvas>
+    </div>
+    <!-- /.card-body -->
+    <!--<div class="card-footer bg-transparent">
+        <div class="row">
+            <div class="col-4 text-center">
+                <div style="display:inline;width:60px;height:60px;"><canvas width="75" height="75" style="width: 60px; height: 60px;"></canvas><input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60" data-fgcolor="#39CCCC" readonly="readonly" style="width: 34px; height: 20px; position: absolute; vertical-align: middle; margin-top: 20px; margin-left: -47px; border: 0px; background: none; font: bold 12px Arial; text-align: center; color: rgb(57, 204, 204); padding: 0px; appearance: none;"></div>
 
+                <div class="text-white">Mail-Orders</div>
+            </div>-->
+    <!-- ./col -->
+    <!--<div class="col-4 text-center">
+        <div style="display:inline;width:60px;height:60px;"><canvas width="75" height="75" style="width: 60px; height: 60px;"></canvas><input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60" data-fgcolor="#39CCCC" readonly="readonly" style="width: 34px; height: 20px; position: absolute; vertical-align: middle; margin-top: 20px; margin-left: -47px; border: 0px; background: none; font: bold 12px Arial; text-align: center; color: rgb(57, 204, 204); padding: 0px; appearance: none;"></div>
+
+        <div class="text-white">Online</div>
+    </div>-->
+    <!-- ./col -->
+    <!--<div class="col-4 text-center">
+        <div style="display:inline;width:60px;height:60px;"><canvas width="75" height="75" style="width: 60px; height: 60px;"></canvas><input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60" data-fgcolor="#39CCCC" readonly="readonly" style="width: 34px; height: 20px; position: absolute; vertical-align: middle; margin-top: 20px; margin-left: -47px; border: 0px; background: none; font: bold 12px Arial; text-align: center; color: rgb(57, 204, 204); padding: 0px; appearance: none;"></div>
+
+        <div class="text-white">In-Store</div>
+    </div>-->
+    <!-- ./col -->
+    <!--</div>-->
+    <!-- /.row -->
+    <!--</div>-->
+    <!-- /.card-footer -->
+</div>
+<!-- end : biểu đồ 1 -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="row">
+            <!-- begin : biểu đồ 2 -->
+            <div class="col-lg-6 mb-2">
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3 class="card-title">Doanh thu</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                        <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 550px;" width="687" height="312" class="chartjs-render-monitor"></canvas>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div id="tongDoanhThu" class="mt-2 text-gray">Tổng doanh thu bán ra : </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <!-- end : biểu đồ 2 -->
+            <!-- begin : biểu đồ 3 -->
+            <div class="col-lg-6 mb-2">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Số lượng bán ra</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                            <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 550px;" width="687" height="312" class="chartjs-render-monitor"></canvas>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div id="tongSpBanRa" class="mt-2 text-gray"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <!-- end : biểu đồ 3 -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Hàm tạo màu tự động dựa trên HSL
+        function generateColors(count) {
+            var colors = [];
+            for (var i = 0; i < count; i++) {
+                var hue = (i * 360 / count) % 360; // Phân bổ đều các màu trên vòng tròn màu
+                colors.push('hsl(' + hue + ', 70%, 60%)');
+            }
+            return colors;
+        }
+        // === Biểu đồ 1: Line Chart (Thống kê doanh thu theo tháng) ===
+        $.ajax({
+            url: '/Admin/Thongke/Getdoanhthu',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                console.log("Dữ liệu nhận được:", response);
+
+                if (!response || response.length === 0) {
+                    alert('Không có dữ liệu thống kê.');
+                    return;
+                }
+
+                var labels = response.map(item => "Tháng " + item.Thang);
+                var values = response.map(item => item.SoTien);
+
+                const ctx = document.getElementById('line-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Doanh thu (VNĐ)',
+                            data: values,
+                            borderColor: '#ffffff',
+                            backgroundColor: 'rgba(255,255,255,0.1)',
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#ffffff',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#ffffff'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#ffffff' },
+                                grid: { color: 'rgba(255,255,255,0.2)' }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#ffffff',
+                                    callback: function (value) {
+                                        return value.toLocaleString('vi-VN') + ' VNĐ';
+                                    }
+                                },
+                                grid: { color: 'rgba(255,255,255,0.2)' }
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi AJAX:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Không tải được dữ liệu thống kê. Lỗi: ' + error);
+            }
+        });
+
+        // === Biểu đồ 2: Doughnut Chart (Doanh thu theo hãng) ===
+        $.ajax({
+            url: '/Admin/Thongke/GetDoanhThuTheoHang',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                console.log("Dữ liệu doanh thu theo hãng:", response);
+
+                if (!response || response.length === 0) {
+                    alert('Không có dữ liệu doanh thu theo hãng.');
+                    return;
+                }
+
+                // Lấy tên hãng và doanh thu từ response
+                var labels = response.map(item => item.TenHang);
+                var values = response.map(item => item.DoanhThu);
+
+                // Lấy màu sắc tự động
+                var colors = generateColors(labels.length);
+                var tong = values.reduce((sum, val) => sum + val, 0);
+                document.getElementById("tongDoanhThu").innerText =
+                    "Tổng doanh thu: " + tong.toLocaleString('vi-VN') + " VNĐ";
+
+                const donutCtx = document.getElementById('donutChart').getContext('2d');
+                new Chart(donutCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: colors.slice(0, labels.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: '#666' },
+                                font: {
+                                    weight: 'bold',   
+                                    size: 14          
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        var label = context.label || '';
+                                        var value = context.parsed || 0;
+                                        return label + ': ' + value.toLocaleString('vi-VN') + ' VNĐ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi AJAX biểu đồ 2:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Không tải được dữ liệu doanh thu theo hãng. Lỗi: ' + error);
+            }
+        });
+
+        // === Biểu đồ 3: Bar Chart (Số lượng bán ra) ===
+        $.ajax({
+            url: '/Admin/Thongke/GetSoLuongBanRa',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                console.log("Dữ liệu số máy bán ra theo hãng:", response);
+
+                if (!response || response.length === 0) {
+                    alert('Không có Dữ liệu số máy bán ra theo hãng.');
+                    return;
+                }
+
+                // Lấy tên hãng và số lượt bán từ response
+                var labels = response.map(item => item.TenHang);
+                var values = response.map(item => item.SoLuong);
+
+                // Lấy màu sắc tự động
+                var colors = generateColors(labels.length);
+                var tong = values.reduce((sum, val) => sum + val, 0);
+                document.getElementById("tongSpBanRa").innerText =
+                    "Tổng Số Sản Phẩm Bán Ra: " + tong.toLocaleString('vi-VN');
+
+                const barCtx = document.getElementById('stackedBarChart').getContext('2d');
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Số lượng bán ra',
+                            data: values,
+                            backgroundColor: colors.slice(0, labels.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#666' },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#666',
+                                    stepSize: 1,  // Bước nhảy là 1
+                                    callback: function (value) {
+                                        if (Number.isInteger(value)) {  // Chỉ hiển thị số nguyên
+                                            return value;
+                                        }
+                                    }
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi AJAX biểu đồ 3:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Không tải được dữ liệu doanh thu theo hãng. Lỗi: ' + error);
+            }
+        });
+    });
+</script>
