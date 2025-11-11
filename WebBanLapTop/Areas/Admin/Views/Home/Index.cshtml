@@ -2,7 +2,19 @@
     ViewBag.Title = "Trang chủ admin";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
+@section naviheader{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Content/Admin/index3.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Thống kê</a>
+        </li>
+    </ul>
+}
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -95,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- /.card-body -->
                 </div>
             </div>
@@ -256,8 +268,8 @@
                                 position: 'bottom',
                                 labels: { color: '#666' },
                                 font: {
-                                    weight: 'bold',   
-                                    size: 14          
+                                    weight: 'bold',
+                                    size: 14
                                 }
                             },
                             tooltip: {

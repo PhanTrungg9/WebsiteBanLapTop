@@ -83,12 +83,6 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Tài khoản hoặc mật khẩu không đúng!" });
             }
         }
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
+        
     }
 }

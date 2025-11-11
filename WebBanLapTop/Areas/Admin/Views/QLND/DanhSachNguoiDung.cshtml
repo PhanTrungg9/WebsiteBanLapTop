@@ -1,0 +1,355 @@
+﻿@model IEnumerable<WebBanLapTop.Models.tb_user>
+@{
+    ViewBag.Title = "DanhSachNguoiDung";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section naviheader{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Content/Admin/index3.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Người Dùng</a>
+        </li>
+    </ul>
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Quản lý người dùng</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Quản lý người dùng</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách người dùng</h3>
+
+            <div class="card-tools">
+                @*<a href="#" class="btn btn-info">Thêm mới</a>*@
+                <div class="d-flex align-items-center">
+                    <input type="text" id="txtSearch" class="form-control mr-2" placeholder="Tìm kiếm tên hoặc email..." style="width: 250px;" />
+                    <button id="btnSearch" class="btn btn-primary mr-2">Tìm kiếm</button>
+                    <button id="btnDeleteSelected" class="btn btn-danger">Xóa </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="col-sm-12">
+                <table id="tb_show" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="SelectAll" /></th>
+                            <th>STT</th>
+                            <th>Họ tên</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Mật khẩu</th>
+                            <th>Email</th>
+                            <th>SĐT</th>
+                            <th>Địa chỉ</th>
+                            <th>Trạng thái</th> <!-- Toggle tròn -->
+                            <th>Phân quyền</th> <!-- Toggle vuông -->
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        @if (Model != null && Model.Any())
+                        {
+                            var index = 1;
+                            foreach (var user in Model)
+                            {
+                                <tr id="trow_@user.user_id">
+                                    <td><input type="checkbox" class="checkuser" value="@user.user_id" /></td>
+                                    <td>@index</td>
+                                    <td>@user.full_name</td>
+                                    <td>@user.user_name</td>
+                                    <td>@user.password</td>
+                                    <td>@user.email</td>
+                                    <td>@user.phone</td>
+                                    <td>@user.address</td>
+
+                                    <!-- Cột toggle tròn: khóa / mở khóa -->
+                                    <td class="text-center">
+                                        <label class="toggle-round">
+                                            <input type="checkbox"
+                                                   class="toggle-active"
+                                                   data-id="@user.user_id"
+                                                   @( (user.is_active ?? false) ? "checked" : "" ) />
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+
+                                    <!-- Cột toggle vuông: phân quyền -->
+                                    <td class="text-center">
+                                        <label class="toggle-square">
+                                            <input type="checkbox"
+                                                   class="toggle-role"
+                                                   data-id="@user.user_id"
+                                                   @( (user.usertype ?? false) ? "checked" : "" ) />
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center">Không có bản ghi nào</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.card-footer-->
+        </div>
+        <!-- /.card -->
+    </div>
+</section>
+
+<style>
+    /* ========== Toggle Tròn (Khóa / Mở khóa) ========== */
+    .toggle-round {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+        .toggle-round input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-round .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+            .toggle-round .slider:before {
+                position: absolute;
+                content: "";
+                height: 20px;
+                width: 20px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+        .toggle-round input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+            .toggle-round input:checked + .slider:before {
+                transform: translateX(24px);
+            }
+
+    /* ========== Toggle Vuông (Phân quyền) ========== */
+    .toggle-square {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+        .toggle-square input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-square .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 4px;
+        }
+
+            .toggle-square .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 2px;
+            }
+
+        .toggle-square input:checked + .slider {
+            background-color: #007bff;
+        }
+
+            .toggle-square input:checked + .slider:before {
+                transform: translateX(22px);
+            }
+</style>
+
+@section scripts{
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+        $("#SelectAll").click(function () {
+            $(".checkuser").prop("checked", this.checked);
+        });
+
+
+        $(document).on("click", ".btnDelete", function (e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            if (confirm("Bạn có chắc chắn muốn xóa người dùng này không?")) {
+                $.ajax({
+                    url: '/Admin/QLND/Delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        if (res.success) {
+                            $("#trow_" + id).remove();
+                            alert("Đã xóa thành công!");
+                        } else {
+                            alert(res.message || "Xóa thất bại!");
+                        }
+                    },
+                    error: function () {
+                        alert("Không thể gửi yêu cầu xóa đến server!");
+                    }
+                });
+            }
+        });
+
+
+        $("#btnDeleteSelected").click(function () {
+            var selectedIds = $(".checkuser:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (selectedIds.length === 0) {
+                alert("Vui lòng chọn ít nhất 1 người dùng để xóa!");
+                return;
+            }
+
+            if (confirm("Bạn có chắc muốn xóa " + selectedIds.length + " người dùng đã chọn không?")) {
+                $.ajax({
+                    url: '/Admin/QLND/DeleteMulti',
+                    type: 'POST',
+                    traditional: true, // cho phép gửi mảng
+                    data: { ids: selectedIds },
+                    success: function (res) {
+                        if (res.success) {
+                            selectedIds.forEach(id => $("#trow_" + id).remove());
+                            alert("Đã xóa thành công!");
+                        } else {
+                            alert(res.message || "Có lỗi xảy ra khi xóa!");
+                        }
+                    },
+                    error: function () {
+                        alert("Không thể gửi yêu cầu xóa nhiều!");
+                    }
+                });
+            }
+        });
+
+        $('#btnSearch').click(function () {
+            var keyword = $('#txtSearch').val();
+            $.ajax({
+                url: '/Admin/QLND/SearchUser',
+                type: 'GET',
+                data: { keyword: keyword },
+                success: function (data) {
+                    $('#userTableBody').html(data);
+                },
+                error: function () {
+                    alert('Lỗi khi tìm kiếm người dùng!');
+                }
+            });
+        });
+
+
+        $('#txtSearch').keypress(function (e) {
+            if (e.which === 13) {
+                $('#btnSearch').click();
+            }
+        });
+
+
+        // Toggle mở khóa / khóa tài khoản
+        $(document).on('change', '.toggle-active', function () {
+            var id = $(this).data('id');
+            var isActive = $(this).is(':checked');
+
+            $.ajax({
+                url: '/Admin/QLND/ToggleActive',
+                type: 'POST',
+                data: { id: id, isActive: isActive },
+                success: function (res) {
+                    if (res.success) {
+                        alert(isActive ? " Tài khoản đã được mở khóa!" : " Tài khoản đã bị khóa!");
+                    } else {
+                        alert(res.message || " Cập nhật trạng thái thất bại!");
+                    }
+                },
+                error: function () {
+                    alert(" Không thể gửi yêu cầu đến server!");
+                }
+            });
+        });
+
+        // Toggle phân quyền Admin / User
+        $(document).on('change', '.toggle-role', function () {
+            var id = $(this).data('id');
+            var isAdmin = $(this).is(':checked');
+
+            $.ajax({
+                url: '/Admin/QLND/ToggleRole',
+                type: 'POST',
+                data: { id: id, isAdmin: isAdmin },
+                success: function (res) {
+                    if (res.success) {
+                        alert(isAdmin ? " Tài khoản đã được cấp quyền Admin!" : " Đã chuyển về quyền User!");
+                    } else {
+                        alert(res.message || " Cập nhật quyền thất bại!");
+                    }
+                },
+                error: function () {
+                    alert(" Không thể gửi yêu cầu đến server!");
+                }
+            });
+        });
+
+    </script>
+}
