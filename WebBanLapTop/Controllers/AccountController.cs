@@ -58,12 +58,24 @@ namespace WebBanLapTop.Controllers
                     // Tạo cookie xác thực
                     FormsAuthentication.SetAuthCookie(acc.user_name, false);
                     // Redirect theo role
+                    if (acc.usertype == true)
+                    {
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Đăng nhập thành công! Xin chào Admin ...",
+                            redirectUrl = Url.Action("Index", "Home", new { area = "Admin" })
+                        });
+                    }
+                    else
+                    {
                         return Json(new
                         {
                             success = true,
                             message = "Đăng nhập thành công!",
                             redirectUrl = Url.Content("~/Home/Index")
                         });
+                    }
                 }
                 else
                 {
