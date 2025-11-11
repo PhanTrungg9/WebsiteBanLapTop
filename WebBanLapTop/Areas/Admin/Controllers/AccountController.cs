@@ -1,12 +1,18 @@
 ﻿using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
 using WebBanLapTop.Models;
+using Microsoft.Owin;
 
 namespace WebBanLapTop.Areas.Admin.Controllers
 {
@@ -16,6 +22,15 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         public ActionResult Login()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            FormsAuthentication.SignOut();
+            //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return RedirectToAction("Login", "Account");
         }
         [HttpPost]
         public JsonResult Sign_In()
@@ -43,13 +58,15 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 Session["UserName"] = acc.user_name;
                 Session["UserType"] = acc.usertype;
 
+                // Tạo cookie xác thực
+                //FormsAuthentication.SetAuthCookie(acc.user_name, false);
                 // Redirect theo role
                 if (acc.usertype == true)
                 {
                     return Json(new
                     {
                         success = true,
-                        message = "Đăng nhập thành công!",
+                        message = "Đăng nhập thành công! Xin chào Admin ...",
                         redirectUrl = Url.Action("Index", "Home")
                     });
                 }
@@ -57,15 +74,21 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 {
                     return Json(new
                     {
-                        success = true,
-                        message = "Đăng nhập thành công!",
-                        redirectUrl = Url.Content("~/Home/Index")
-                });
+                        success = false,
+                        message = "Tài khoản của bạn không hợp lệ!"
+                     });
                 }
             }
             else
             {
                 return Json(new { success = false, message = "Tài khoản hoặc mật khẩu không đúng!" });
+            }
+        }
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
             }
         }
     }

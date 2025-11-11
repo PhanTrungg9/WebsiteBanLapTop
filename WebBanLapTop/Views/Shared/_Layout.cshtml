@@ -62,28 +62,35 @@
                                     <li class="account">
                                         @if (!Request.IsAuthenticated)
                                         {
-                                            <a href="#">
+                                            <a href="#" style="min-width: 110px;">
                                                 My Account
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="account_selection">
-                                                <li><a href="/Admin/Account/Login"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                                                <li><a href="/Account/Register"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+                                                <li><a href="/Account/Login"><i class="fa fa-sign-in" aria-hidden="true"></i>Đăng nhập</a></li>
+                                                <li><a href="/Account/Register"><i class="fa fa-user-plus" aria-hidden="true"></i>Đăng kí</a></li>
                                             </ul>
                                         }
                                         else
                                         {
                                             <a href="#">
-                                                Hello, @User.Identity.Name
+                                                Xin chào, @User.Identity.Name
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="account_selection">
-                                                <li><a href="#"><i class="fa fa-sign-out" aria-hidden="true"></i>Trang người dùng</a></li>
-                                                <li><a href="/"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
+                                                <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Đăng xuât</a></li>
                                             </ul>
                                         }
                                     </li>
                                 </ul>
+                                @if (Request.IsAuthenticated)
+                                {
+                                    <div style="display:none">
+                                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
+                                        {
+                                            @Html.AntiForgeryToken()}
+                                    </div>}
                             </div>
                         </div>
                     </div>
@@ -101,7 +108,7 @@
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
-                                    <li><a href="#">home</a></li>
+                                    <li><a href="/Home/Index">home</a></li>
                                     <li><a href="#">shop</a></li>
                                     <li><a href="#">promotion</a></li>
                                     <li><a href="#">pages</a></li>
