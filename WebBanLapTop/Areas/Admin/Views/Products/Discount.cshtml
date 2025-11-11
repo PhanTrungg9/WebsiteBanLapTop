@@ -1,0 +1,80 @@
+﻿<div class="card-header">
+    <h3 class="card-title text-bold">
+        <i class="fas fa-percent text-success"></i>
+        Đợt Giảm Giá
+    </h3>
+    <div class="card-tools">
+        <button onclick="toggleShowAddDiscount()" class="btn btn-success">
+            <i class="fas fa-plus"></i> Thêm giảm giá
+        </button>
+    </div>
+</div>
+<div class="card-body">
+    <div id="addDiscount" class="discount-form d-none mb-4">
+        <div class="form-container">
+            <form id="form-act">
+                <input type="hidden" id="product_discount_id" value=""/>
+                <div class="form-group">
+                    <label>Tên Sản Phẩm</label>
+                    <select id="product_name" name="product_name" class="form-control select2">
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Hình thức giảm giá</label>
+                            <select id="discountType" name="discountType" class="form-control">
+                                <option value="" disabled selected hidden>-- Chọn một hình thức --</option>
+                                <option value="0">Phần trăm (%)</option>
+                                <option value="1">Số tiền cố định (₫)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Giá trị giảm</label>
+                            <input type="number" id="discountValue" name="discountValue" class="form-control" placeholder="Nhập giá trị" min="0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ngày bắt đầu</label>
+                            <input type="date" id="startdate" name="startdate" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ngày kết thúc</label>
+                            <input type="date" id="enddate" name="enddate" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-none">
+                    <label>Mô tả</label>
+                    <textarea id="discription" class="form-control"></textarea>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-secondary" onclick="toggleShowAddDiscount()">Hủy</button>
+                    <button class="btn btn-success" onclick="saveDiscount()">
+                        <i class="fas fa-save"></i> Lưu
+                    </button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+    <div id="selectedProductInfo" class="selected-product-info d-none">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Đang xem giảm giá của: <strong id="selectedProductName"></strong>
+        </div>
+    </div>
+    <div id="discountListContainer">
+        <div class="discount-empty-state">
+            <i class="fas fa-hand-pointer"></i>
+            <p>Chọn một sản phẩm để xem đợt giảm giá</p>
+        </div>
+    </div>
+</div>

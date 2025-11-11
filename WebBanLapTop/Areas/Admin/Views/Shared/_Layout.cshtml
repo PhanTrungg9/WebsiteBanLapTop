@@ -23,8 +23,10 @@
     <link rel="stylesheet" href="~/Content/Admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <!-- Bootstrap4 Duallistbox -->
     <link rel="stylesheet" href="~/Content/Admin/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <!-- BS Stepper -->
     <link rel="stylesheet" href="~/Content/Admin/plugins/bs-stepper/css/bs-stepper.min.css">
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
     <!-- dropzonejs -->
     <link rel="stylesheet" href="~/Content/Admin/plugins/dropzone/min/dropzone.min.css">
     <!-- Theme style -->
@@ -35,17 +37,7 @@
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="~/Content/Admin/index3.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
-                </li>
-            </ul>
+            @RenderSection("naviheader", required: false)
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
@@ -229,7 +221,7 @@
     <!-- AdminLTE App -->
     <script src="~/Content/Admin/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="~/Content/Admin/dist/js/demo.js"></script>
+    @*<script src="~/Content/Admin/dist/js/demo.js"></script>*@
     <!-- Page specific script -->
     <script>
     $(function () {
@@ -363,7 +355,10 @@
         document.querySelector("#actions .cancel").onclick = function () {
             myDropzone.removeAllFiles(true)
         }
+
         // DropzoneJS Demo Code End</script>
+    <script src="~/Content/ckeditor/ckeditor.js"></script>
+    <script src="~/Content/ckfinder/ckfinder.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
