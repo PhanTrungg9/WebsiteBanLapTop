@@ -10,7 +10,6 @@
     </div>
 
     <!-- SidebarSearch Form -->
-    
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -68,7 +67,7 @@
             </li>
 
             <li class="nav-item">
-                <a href="~/Home/Index" class="nav-link">
+                <a href="javascript:document.getElementById('logOffForm').submit()" class="nav-link">
                     <i class="nav-icon fas fa-sign-out-alt"></i>
                     <p>
                         Đăng xuất
@@ -79,3 +78,10 @@
     </nav>
     <!-- /.sidebar-menu -->
 </div>
+@if (Request.IsAuthenticated)
+{
+    <div style="display:none">
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
+        {
+            @Html.AntiForgeryToken()}
+    </div>}
