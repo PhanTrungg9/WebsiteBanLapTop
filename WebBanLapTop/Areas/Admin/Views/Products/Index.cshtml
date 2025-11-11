@@ -538,7 +538,7 @@
 
         function loadDiscount(productId) {
             $.ajax({
-                url: '/Admin/Products/GetDiscountsByProduct',
+                url: '/Admin/ProductDiscount/GetDiscountsByProduct',
                 type: 'GET',
                 data: { productId: productId },
                 success: function (result) {
@@ -609,41 +609,41 @@
                 }
 
                 html += `
-                                                            <div class="discount-item ${itemClass}">
-                                                                <div class="discount-header">
+                                                                <div class="discount-item ${itemClass}">
+                                                                   <div class="discount-header">
                                                                     <span class="discount-percent">
-                                                                        ${discount.is_fixed ? '-' + discount.amount.toLocaleString() + '₫' : '-' + discount.amount + '%'}
-                                                                    </span>
-                                                                    <div class="discount-actions">
-                                                                        <button class="btn btn-warning btnedit" onclick="editdiscount(${discount.product_discount_id})">
-                                                                            <i class="fas fa-edit"></i> Sửa
-                                                                        </button>
-                                                                        <button class="btn btn-danger btndelete" onclick="deleteDiscount(${discount.product_discount_id})">
-                                                                            <i class="fas fa-trash"></i> Xóa
-                                                                        </button>
+                                                                          ${discount.is_fixed ? '-' + discount.amount.toLocaleString() + '₫' : '-' + discount.amount + '%'}
+                                                                       </span>
+                                                                     <div class="discount-actions">
+                                                                       <button class="btn btn-warning btnedit" id="btncapnhat" onclick="editdiscount(${discount.product_discount_id})">
+                                                                          <i class="fas fa-edit"></i> Sửa
+                                                                       </button>
+                                                                       <button class="btn btn-danger btndelete" onclick="deleteDiscount(${discount.product_discount_id})">
+                                                                         <i class="fas fa-trash"></i> Xóa
+                                                                       </button>
                                                                     </div>
                                                                 </div>
-                                                                <div class="discount-dates">
-                                                                    <i class="fas fa-calendar"></i>
-                                                                    ${startDateStr} - ${endDateStr}
-                                                                </div>
-                                                                <span class="discount-status ${statusClass}">${statusText}</span>
-                                                                <div class="card-body-${statusClass} discount-price-info">
-                                                                    <div class="price-row">
-                                                                        <span class="price-label">Giá gốc:</span>
-                                                                        <span class="original-price">${originalPrice.toLocaleString()}₫</span>
-                                                                    </div>
-                                                                    <div class="price-row">
-                                                                        <span class="price-label">Giá sau giảm:</span>
-                                                                        <span class="discounted-price">${discountedPrice.toLocaleString()}₫</span>
-                                                                    </div>
-                                                                    <div class="price-row">
-                                                                        <span class="price-label">Tiết kiệm:</span>
-                                                                        <span class="saved-price">${(originalPrice - discountedPrice).toLocaleString()}₫</span>
-                                                                    </div>
+                                                               <div class="discount-dates">
+                                                                 <i class="fas fa-calendar"></i>
+                                                                 ${startDateStr} - ${endDateStr}
+                                                              </div>
+                                                              <span class="discount-status ${statusClass}">${statusText}</span>
+                                                              <div class="card-body-${statusClass} discount-price-info">
+                                                              <div class="price-row">
+                                                                  <span class="price-label">Giá gốc:</span>
+                                                                  <span class="original-price">${originalPrice.toLocaleString()}₫</span>
+                                                              </div>
+                                                              <div class="price-row">
+                                                                 <span class="price-label">Giá sau giảm:</span>
+                                                                 <span class="discounted-price">${discountedPrice.toLocaleString()}₫</span>
+                                                              </div>
+                                                                 <div class="price-row">
+                                                                   <span class="price-label">Tiết kiệm:</span>
+                                                                   <span class="saved-price">${(originalPrice - discountedPrice).toLocaleString()}₫</span>
                                                                 </div>
                                                             </div>
-                                                        `;
+                                                         </div>
+                                                      `;
             });
 
             $('#discountListContainer').html(html);
@@ -663,6 +663,7 @@
             const startDate = $('#startdate').val();
             const endDate = $('#enddate').val();
             const description = $('#description').val();
+            const discountId = parseInt($('#product_discount_id').val() || 0); // ⭐ QUAN TRỌNG: Lấy ID để biết Insert hay Update
 
             // Validation
             if (!productId) {
@@ -694,63 +695,88 @@
                 return;
             }
 
+            // ⭐ Check xem là Insert hay Update
+            const isUpdate = discountId > 0
+
+            // Chuẩn bị data
             const data = {
-                product_id: productId,
-                is_fixed: discountType == '1',
-                amount: discountValue,
+                product_id: parseInt(productId),
+                is_fixed: (discountType == '1'),
+                amount: parseFloat(discountValue),
                 start_date: startDate,
                 end_date: endDate,
-                name: description
+                name: description || ''
             };
+
+            // ⭐ Nếu Update thì thêm product_discount_id
+            if (isUpdate) {
+                data.product_discount_id = parseInt(discountId);
+            }
 
             const saveBtn = event.target;
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
 
+            // ⭐ Chọn URL tùy theo Insert hay Update
+            const url = isUpdate ? '/Admin/ProductDiscount/UpdateDiscount' : '/Admin/ProductDiscount/SaveDiscount';
+            const successMessage = isUpdate ? 'Cập nhật giảm giá thành công!' : 'Thêm giảm giá thành công!';
+
+            console.log(isUpdate ? 'Updating discount...' : 'Saving new discount...', data);
+
             $.ajax({
-                url: '/Admin/ProductDiscount/SaveDiscount',
+                url: url,
                 type: 'POST',
                 data: data,
+                dataType: 'json',
                 success: function (result) {
                     if (result.success) {
-                        alert('Thêm giảm giá thành công!');
-
-                        // Hide form
+                        resetDiscountForm();
                         toggleShowAddDiscount();
-
-                        // Reset form
-                        $('#discountType').val('');
-                        $('#discountValue').val('');
-                        $('#startdate').val('');
-                        $('#enddate').val('');
-                        $('#description').val('');
-                        $('#product_name').val(null).trigger('change');
-
-                        //  CHỈ load lại discount, KHÔNG reload page
+                        window.location.reload();
                         if (selectedProductId == productId) {
-                            // Nếu đang xem sản phẩm này
                             loadDiscount(productId);
                         } else {
-                            // Nếu thêm cho sản phẩm khác
                             selectProduct(productId, $('#product_name option:selected').text());
                         }
-                        saveBtn.disabled = false;
-                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Lưu';
                     } else {
-                        alert('Thêm giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'));
-                        saveBtn.disabled = false;
-                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                        alert((isUpdate ? 'Cập nhật' : 'Thêm') + ' giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'));
                     }
-                },
 
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isUpdate ? 'Cập nhật' : 'Lưu');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', {
+                        status: status,
+                        error: error,
+                        responseText: xhr.responseText
+                    });
+                    alert('Có lỗi xảy ra khi lưu giảm giá!');
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isUpdate ? 'Cập nhật' : 'Lưu');
+                }
             });
+        }
+        function resetDiscountForm() {
+
+            $('#discountType').val('');
+            $('#discountValue').val('');
+            $('#startdate').val('');
+            $('#enddate').val('');
+            $('#description').val('');
+            $('#product_name').val(null).trigger('change');
+            $('#product_discount_id').val('');
+
+
+            var saveBtn = $('#addDiscount button[onclick="saveDiscount()"]');
+            saveBtn.html('<i class="fas fa-save"></i> Lưu');
         }
         function loadProductDiscountInfo(discountId) {
             $.ajax({
                 type: "POST",
                 url: '/Admin/ProductDiscount/LayTTDiscount',
                 data: { id: discountId },
-                dataType:'json',
+                dataType: 'json',
                 success: function (response) {
                     if (response.success) {
                         var $productSelect = $('select[name="product_name"]');
@@ -760,7 +786,7 @@
                                 $productSelect.append(new Option(response.data.product_name, response.data.product_id, true, true));
                             }
 
-                            // Set value và trigger change (Select2 nếu có)
+                           
                             $productSelect.val(response.data.product_id).trigger('change');
                             if ($productSelect.hasClass('select2-hidden-accessible')) {
                                 $productSelect.trigger('change.select2');
@@ -768,6 +794,7 @@
                         }
                         $('select[name="discountType"]').val(response.data.is_fixed ? '1' : '0');
                         $('input[name="discountValue"]').val(response.data.amount);
+                        $('#product_discount_id').val(response.data.product_discount_id);
                         if (response.start_date) {
                             $('input[name="startdate"]').val(formatDateForInput(response.data.start_date));
                         }
@@ -788,10 +815,7 @@
         }
         function formatDateForInput(jsonDate) {
             if (!jsonDate) return '';
-
             var date;
-
-            
             var match = jsonDate.match(/\/Date\((\d+)([-+]\d{4})?\)\//);
             if (match) {
                 date = new Date(parseInt(match[1]));
@@ -811,13 +835,34 @@
             return `${year}-${month}-${day}`;
         }
         function editdiscount(discountId) {
-            // Hiện form add discount
             if ($('#addDiscount').hasClass('d-none')) {
                 toggleShowAddDiscount();
             }
-
-            // Load thông tin discount
             loadProductDiscountInfo(discountId);
         }
+        function deleteDiscount(discountId) {
+            if (confirm('Bạn có chắc chắn muốn xóa đợt giảm giá này không?')) {
+                $.ajax({
+                    url: '/Admin/ProductDiscount/DeleteDiscount',
+                    type: 'POST',
+                    data: { id: discountId },
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.success) {
+                            alert('Xóa đợt giảm giá thành công!');
+                            if (selectedProductId) {
+                                loadDiscount(selectedProductId);
+                            }
+                        } else {
+                            alert('Xóa đợt giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'));
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi xóa đợt giảm giá!');
+                    }
+                });
+            }
+        }
+
     </script>
 }

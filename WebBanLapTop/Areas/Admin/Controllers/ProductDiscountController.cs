@@ -15,12 +15,34 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         {
             return View();
         }
+        public JsonResult GetDiscountsByProduct(int productId)
+        {
+            var discounts = db.tb_product_discounts
+             .Where(d => d.product_id == productId)
+             .Join(db.tb_products,
+                 pd => pd.product_id,
+                 p => p.product_id,
+                 (pd, p) => new
+                 {
+                     pd.product_discount_id,
+                     pd.name,
+                     pd.amount,
+                     pd.is_fixed,
+                     pd.start_date,
+                     pd.end_date,
+                     original_price = p.price,
+                     product_id = p.product_id
+                 })
+             .OrderByDescending(d => d.start_date)
+             .ToList();
+            return Json(new { success = true, data = discounts }, JsonRequestBehavior.AllowGet);
+        }
         [HttpPost]
         public JsonResult SaveDiscount(int product_id, bool is_fixed, decimal amount, DateTime start_date, DateTime end_date, string name)
         {
             try
             {
-               
+
                 if (end_date.Date < DateTime.Now.Date)
                 {
                     return Json(new { success = false, message = "Ngày kết thúc không được trong quá khứ" });
@@ -70,9 +92,10 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         {
             try
             {
-               
+
                 var discount = db.tb_product_discounts.Where(d => d.product_discount_id == id)
-                    .Select(d => new {
+                    .Select(d => new
+                    {
                         product_discount_id = d.product_discount_id,
                         product_id = d.product_id,
                         product_name = d.tb_product != null ? d.tb_product.name : "",
@@ -113,7 +136,6 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         {
             try
             {
-                // Tìm discount cần update
                 var discount = db.tb_product_discounts
                     .Where(d => d.product_discount_id == product_discount_id)
                     .FirstOrDefault();
@@ -122,37 +144,24 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 {
                     return Json(new { success = false, message = "Không tìm thấy giảm giá cần cập nhật" });
                 }
-
-                // Kiểm tra ngày kết thúc
                 if (end_date.Date < DateTime.Now.Date)
                 {
                     return Json(new { success = false, message = "Ngày kết thúc không được trong quá khứ" });
                 }
-
-                // Kiểm tra sản phẩm tồn tại
                 var product = db.tb_products.FirstOrDefault(p => p.product_id == product_id);
                 if (product == null)
                 {
                     return Json(new { success = false, message = "Sản phẩm không tồn tại" });
                 }
-
-                // Kiểm tra trùng lặp thời gian (trừ chính nó)
                 var existingDiscount = db.tb_product_discounts
-                    .Where(d => d.product_id == product_id)
-                    .Where(d => d.product_discount_id != product_discount_id) // Loại trừ chính nó
-                    .Where(d =>
-                        (start_date >= d.start_date && start_date <= d.end_date) ||
-                        (end_date >= d.start_date && end_date <= d.end_date) ||
-                        (start_date <= d.start_date && end_date >= d.end_date)
-                    )
+                    .Where(d => d.product_id == product_id && d.product_discount_id != product_discount_id)
+                    .Where(d => !(end_date < d.start_date || start_date > d.end_date))
                     .FirstOrDefault();
 
                 if (existingDiscount != null)
                 {
                     return Json(new { success = false, message = "Đã có đợt giảm giá khác trong khoảng thời gian này" });
                 }
-
-                // Update thông tin
                 discount.product_id = product_id;
                 discount.is_fixed = is_fixed;
                 discount.amount = amount;
@@ -171,7 +180,25 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
             }
         }
-
+        [HttpPost]
+        public JsonResult DeleteDiscount(int id)
+        {
+            try
+            {
+                var discount = db.tb_product_discounts.Where(d => d.product_discount_id == id).FirstOrDefault();
+                if ( discount == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy giảm giá" });
+                }
+                db.tb_product_discounts.DeleteOnSubmit(discount);
+                db.SubmitChanges();
+                return Json(new { success = true, message = "Xóa giảm giá thành công" });
+            }
+            catch(Exception e)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + e.Message });
+            }
+        }
     }
 
 }

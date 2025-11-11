@@ -134,14 +134,14 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductDiscountController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductImagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ThongkeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Database.cs">
-      <DependentUpon>Database.dbml</DependentUpon>
     </Compile>
     <Compile Include="Models\Database.designer.cs">
       <AutoGen>True</AutoGen>
@@ -3402,69 +3402,29 @@
     <Content Include="Content\User\plugins\themify-icons\fonts\themify.eot" />
     <Content Include="Content\User\plugins\themify-icons\fonts\themify.ttf" />
     <Content Include="Content\User\plugins\themify-icons\fonts\themify.woff" />
+    <Content Include="Areas\Admin\Views\Products\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\Add.cshtml" />
+    <Content Include="Content\ckeditor\CHANGES.md" />
+    <Content Include="Content\ckeditor\LICENSE.md" />
+    <Content Include="Content\ckeditor\plugins\scayt\LICENSE.md" />
+    <Content Include="Content\ckeditor\plugins\scayt\README.md" />
+    <Content Include="Content\ckeditor\plugins\wsc\LICENSE.md" />
+    <Content Include="Content\ckeditor\plugins\wsc\README.md" />
+    <Content Include="Content\ckeditor\README.md" />
+    <Content Include="Content\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
+    <Content Include="Content\ckeditor\skins\moono\readme.md" />
+    <Content Include="Areas\Admin\Views\Products\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\Discount.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductListPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductImages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutEmpty.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
     <Content Include="Models\Database.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>Database.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Admin\Views\Shared\_LayoutLogin.cshtml" />
-    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
-    <Content Include="Content\assets\dist\css\adminlte.css.map" />
-    <Content Include="Content\assets\dist\css\adminlte.min.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.components.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.components.min.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.core.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.core.min.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.extra-components.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.extra-components.min.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.light.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.light.min.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.pages.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.pages.min.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.plugins.css.map" />
-    <Content Include="Content\assets\dist\css\alt\adminlte.plugins.min.css.map" />
-    <Content Include="Content\assets\dist\js\.eslintrc.json" />
-    <Content Include="Content\assets\dist\js\adminlte.js.map" />
-    <Content Include="Content\assets\dist\js\adminlte.min.js.map" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\fonts\FontAwesome.otf" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\animated.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\bordered-pulled.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\core.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\fixed-width.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\font-awesome.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\icons.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\larger.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\list.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\mixins.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\path.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\rotated-flipped.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\screen-reader.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\stacked.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\less\variables.less" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\font-awesome.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_animated.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_bordered-pulled.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_core.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_fixed-width.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_icons.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_larger.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_list.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_mixins.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_path.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_rotated-flipped.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_screen-reader.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_stacked.scss" />
-    <Content Include="Content\assets\plugins\font-awesome-4.7.0\scss\_variables.scss" />
-    <Content Include="Content\assets\plugins\moment\locales.min.js.map" />
-    <Content Include="Content\assets\plugins\moment\moment-with-locales.min.js.map" />
-    <Content Include="Content\assets\plugins\moment\moment.min.js.map" />
-    <Content Include="Content\assets\plugins\themify-icons\fonts\themify.eot" />
-    <Content Include="Content\assets\plugins\themify-icons\fonts\themify.ttf" />
-    <Content Include="Content\assets\plugins\themify-icons\fonts\themify.woff" />
+    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>
@@ -3501,7 +3461,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Thongke\" />
+    <Folder Include="Areas\Admin\Views\ProductDiscount\" />
+    <Folder Include="Content\ckfinder\userfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
