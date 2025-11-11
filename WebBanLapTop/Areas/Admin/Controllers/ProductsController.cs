@@ -67,28 +67,7 @@ namespace WebBanLapTop.Areas.Admin.Controllers
             }).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetDiscountsByProduct(int productId)
-        {
-            var discounts = db.tb_product_discounts
-             .Where(d => d.product_id == productId)
-             .Join(db.tb_products,
-                 pd => pd.product_id,
-                 p => p.product_id,
-                 (pd, p) => new
-                 {
-                     pd.product_discount_id,
-                     pd.name,
-                     pd.amount,
-                     pd.is_fixed,
-                     pd.start_date,
-                     pd.end_date,
-                     original_price = p.price,
-                     product_id = p.product_id
-                 })
-             .OrderByDescending(d => d.start_date)
-             .ToList();
-            return Json(new { success = true, data = discounts }, JsonRequestBehavior.AllowGet);
-        }
+        
         public ActionResult Add()
         {
             return View();
