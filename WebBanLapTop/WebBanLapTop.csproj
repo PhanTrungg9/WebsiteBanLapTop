@@ -137,6 +137,9 @@
     <Compile Include="Areas\Admin\Controllers\ProductDiscountController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\QLDMSPController.cs" />
+    <Compile Include="Areas\Admin\Controllers\QLNDController.cs" />
+    <Compile Include="Areas\Admin\Controllers\QLTHController.cs" />
     <Compile Include="Areas\Admin\Controllers\ThongkeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -3419,12 +3422,19 @@
     <Content Include="Areas\Admin\Views\ProductImages\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutEmpty.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
+    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
     <Content Include="Models\Database.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>Database.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
+    <Content Include="Areas\Admin\Views\QLDMSP\DanhMucSanPham.cshtml" />
+    <Content Include="Areas\Admin\Views\QLDMSP\Sua.cshtml" />
+    <Content Include="Areas\Admin\Views\QLDMSP\Them.cshtml" />
+    <Content Include="Areas\Admin\Views\QLND\DanhSachNguoiDung.cshtml" />
+    <Content Include="Areas\Admin\Views\QLTH\DanhSachThuongHieu.cshtml" />
+    <Content Include="Areas\Admin\Views\QLTH\Sua.cshtml" />
+    <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

@@ -1,0 +1,129 @@
+﻿@model WebBanLapTop.Models.tb_category
+@{
+    ViewBag.Title = "Sua";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section naviheader{
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin/category" class="nav-link">Danh mục</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Thêm mới</a>
+        </li>
+    </ul>
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Chỉnh sửa danh mục</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Mã danh mục </label>
+                <input type="text" class="form-control" id="txt_categoryid" name="txt_categoryid" />
+            </div>
+
+            <div class="form-group">
+                <label>Tên danh mục</label>
+                <input type="text" class="form-control" id="txt_name" name="txt_name" />
+            </div>
+
+            <div class="form-group">
+                <label>Mô tả</label>
+                <input type="text" class="form-control" id="txt_description" name="txt_description" />
+            </div>
+
+            <div class="form-group">
+                <a href="/Admin/QLDMSP/DanhMucSanPham" class="btn btn-danger">Quay lại</a>
+                <button type="button" id="btn_capnhat" class="btn btn-primary">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Lấy id thật cuối cùng trong URL (bỏ qua các phần thừa)
+            var urlParts = window.location.pathname.split('/');
+            var categoryId = urlParts[urlParts.length - 1]; // lấy phần tử cuối
+            if (isNaN(categoryId) || categoryId === "") {
+                console.error("Mã danh mục không hợp lệ:", categoryId);
+                return;
+            }
+
+            $.ajax({
+                url: '/Admin/QLDMSP/LayTTDM',
+                type: 'GET',
+                data: { id: categoryId },
+                success: function (response) {
+                    try {
+                        var data = JSON.parse(response);
+                        $("#txt_categoryid").val(data.category_id).prop("readonly", true);
+                        $("#txt_name").val(data.name);
+                        $("#txt_description").val(data.description);
+                    } catch (e) {
+                        alert(response);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Không thể tải dữ liệu (mã lỗi " + xhr.status + ")");
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // Khi bấm nút cập nhật
+        $("#btn_capnhat").click(function () {
+            var id = $("#txt_categoryid").val();
+            var name = $("#txt_name").val();
+            var description = $("#txt_description").val();
+
+            $.ajax({
+                url: '/Admin/QLDMSP/CapNhat',
+                type: 'POST',
+                data: {
+                    category_id: id,
+                    name: name,
+                    description: description
+                },
+                success: function (res) {
+                    if (res.success) {
+                        alert(res.message);
+                        window.location.href = '/Admin/QLDMSP/DanhMucSanPham';
+                    } else {
+                        alert(res.message);
+                    }
+                },
+                error: function () {
+                    alert("Không thể gửi yêu cầu đến server!");
+                }
+            });
+        });
+    </script>
+}

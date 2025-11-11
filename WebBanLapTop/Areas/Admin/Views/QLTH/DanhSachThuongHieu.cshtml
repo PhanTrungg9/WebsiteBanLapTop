@@ -1,0 +1,122 @@
+﻿@model IEnumerable<WebBanLapTop.Models.tb_brand>
+@{
+    ViewBag.Title = "QuanLyThuongHieu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section naviheader{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Content/Admin/index3.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Thương hiệu</a>
+        </li>
+    </ul>
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Quản lý thương hiệu</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Quản lý thương hiệu</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách thương hiệu</h3>
+
+            <div class="card-tools">
+                @*<a href="#" class="btn btn-info">Thêm mới</a>*@
+                <a href="@Url.Action("Them", "QLTH", new { area = "Admin" })" class="btn btn-info">Thêm mới</a>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="col-sm-12">
+                <table id="tb_show" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã thương hiệu</th>
+                            <th>Tên thương hiệu</th>
+                            <th>Mô tả</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var i = 1;
+                            foreach (var item in Model)
+                            {
+                                <tr id="trow_@item.brand_id">
+                                    <td>@i</td>
+                                    <td>@item.brand_id</td>
+                                    <td>@item.name</td>
+                                    <td>@item.description</td>
+                                    <td>
+                                        <a href="/Admin/QLTH/Sua/@item.brand_id" class="btn btn-primary">Sửa</a>
+                                        <a href="#" data-id="@item.brand_id" class="btn  btn-danger btnDelete">Xóa</a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4">Không có bản ghi nào!!!</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.card-footer-->
+        </div>
+        <!-- /.card -->
+    </div>
+</section>
+@section scripts{
+
+    <script>
+        $(".btnDelete").click(function () {
+            if (confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
+                var id = $(this).data("id");
+
+                $.ajax({
+                    url: window.location.origin + '/Admin/QLTH/Delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        alert(response);
+                        location.reload(); // reload lại danh sách sau khi xoá
+                    },
+                    error: function () {
+                        alert("Đã xảy ra lỗi khi gửi yêu cầu!");
+                    }
+                });
+            }
+        });
+
+    </script>
+
+}
+
