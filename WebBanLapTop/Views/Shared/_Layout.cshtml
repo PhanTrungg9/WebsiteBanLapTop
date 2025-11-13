@@ -27,7 +27,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="top_nav_left">free shipping on all u.s orders over $50</div>
+                            <div class="top_nav_left">Miễn phí vận chuyển trên toàn quốc</div>
                         </div>
                         <div class="col-md-6 text-right">
                             <div class="top_nav_right">
@@ -37,11 +37,11 @@
 
                                     <li class="currency">
                                         <a href="#">
-                                            usd
+                                            VNĐ
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                         <ul class="currency_selection">
-                                            <li><a href="#">cad</a></li>
+                                            <li><a href="#">usd</a></li>
                                             <li><a href="#">aud</a></li>
                                             <li><a href="#">eur</a></li>
                                             <li><a href="#">gbp</a></li>
@@ -49,11 +49,11 @@
                                     </li>
                                     <li class="language">
                                         <a href="#">
-                                            English
+                                            Tiếng Việt
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                         <ul class="language_selection">
-                                            <li><a href="#">French</a></li>
+                                            <li><a href="#">English</a></li>
                                             <li><a href="#">Italian</a></li>
                                             <li><a href="#">German</a></li>
                                             <li><a href="#">Spanish</a></li>
@@ -63,7 +63,7 @@
                                         @if (!Request.IsAuthenticated)
                                         {
                                             <a href="#" style="min-width: 110px;">
-                                                My Account
+                                                Tài Khoản
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="account_selection">
@@ -108,12 +108,11 @@
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
-                                    <li><a href="/Home/Index">home</a></li>
-                                    <li><a href="#">shop</a></li>
-                                    <li><a href="#">promotion</a></li>
-                                    <li><a href="#">pages</a></li>
-                                    <li><a href="#">blog</a></li>
-                                    <li><a href="contact.html">contact</a></li>
+                                    <li><a href="/Home/Index">Trang chủ</a></li>
+                                    <li><a href="#">Giới Thiệu</a></li>
+                                    <li><a href="#">Tin Tức</a></li>
+                                    <li><a href="#">Khuyến mại</a></li>
+                                    <li><a href="contact.html">Liên Hệ</a></li>
                                 </ul>
                                 <ul class="navbar_user">
                                     <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
@@ -143,11 +142,11 @@
                 <ul class="menu_top_nav">
                     <li class="menu_item has-children">
                         <a href="#">
-                            usd
+                            VNĐ
                             <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="menu_selection">
-                            <li><a href="#">cad</a></li>
+                            <li><a href="#">usd</a></li>
                             <li><a href="#">aud</a></li>
                             <li><a href="#">eur</a></li>
                             <li><a href="#">gbp</a></li>
@@ -155,32 +154,46 @@
                     </li>
                     <li class="menu_item has-children">
                         <a href="#">
-                            English
+                            Tiếng Việt
                             <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="menu_selection">
-                            <li><a href="#">French</a></li>
+                            <li><a href="#">English</a></li>
                             <li><a href="#">Italian</a></li>
                             <li><a href="#">German</a></li>
                             <li><a href="#">Spanish</a></li>
                         </ul>
                     </li>
                     <li class="menu_item has-children">
-                        <a href="#">
-                            My Account
-                            <i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="menu_selection">
-                            <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                            <li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-                        </ul>
+                        @if (!Request.IsAuthenticated)
+                        {
+                            <a href="#">
+                                Tài Khoản
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="menu_selection">
+                                <li><a href="/Account/Login"><i class="fa fa-sign-in" aria-hidden="true"></i>Đăng nhập</a></li>
+                                <li><a href="/Account/Register"><i class="fa fa-user-plus" aria-hidden="true"></i>Đăng kí</a></li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <a href="#">
+                                Xin chào, @User.Identity.Name
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="menu_selection">
+                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
+                                <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Đăng xuât</a></li>
+                            </ul>
+                        }
                     </li>
-                    <li class="menu_item"><a href="#">home</a></li>
-                    <li class="menu_item"><a href="#">shop</a></li>
+                    <li class="menu_item"><a href="/Home/Index">Trang chủ</a></li>
+                    <li class="menu_item"><a href="#">Giới Thiệu</a></li>
                     <li class="menu_item"><a href="#">promotion</a></li>
-                    <li class="menu_item"><a href="#">pages</a></li>
-                    <li class="menu_item"><a href="#">blog</a></li>
-                    <li class="menu_item"><a href="#">contact</a></li>
+                    <li class="menu_item"><a href="#">Tin Tức</a></li>
+                    <li class="menu_item"><a href="#">Khuyến mại</a></li>
+                    <li class="menu_item"><a href="contact.html">Liên Hệ</a></li>
                 </ul>
             </div>
         </div>
