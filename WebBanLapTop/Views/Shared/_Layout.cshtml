@@ -197,9 +197,10 @@
                 </ul>
             </div>
         </div>
-
-        @RenderBody()
-
+        <link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+        <div style="margin-top:160px">
+            @RenderBody()
+        </div>
         <!-- Newsletter -->
 
         <div class="newsletter">
@@ -261,19 +262,19 @@
 
     </div>
 
-    @*@Scripts.Render("~/bundles/jquery")
+        @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
-    <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
-    <script src="~/Content/User/styles/bootstrap4/popper.js"></script>
-    <script src="~/Content/User/styles/bootstrap4/bootstrap.min.js"></script>
-    <script src="~/Content/User/plugins/Isotope/isotope.pkgd.min.js"></script>
-    <script src="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
-    <script src="~/Content/User/plugins/easing/easing.js"></script>
-    <script src="~/Content/User/js/custom.js"></script>
+        <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
+        <script src="~/Content/User/styles/bootstrap4/popper.js"></script>
+        <script src="~/Content/User/styles/bootstrap4/bootstrap.min.js"></script>
+        <script src="~/Content/User/plugins/Isotope/isotope.pkgd.min.js"></script>
+        <script src="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+        <script src="~/Content/User/plugins/easing/easing.js"></script>
+        <script src="~/Content/User/js/custom.js"></script>
 
 
-    <!-- Template Javascript -->
-    @*<script src="~/Content/User/js/main.js"></script>*@
-    @RenderSection("scripts", required: false)
+        <!-- Template Javascript -->
+        @*<script src="~/Content/User/js/main.js"></script>*@
+        @RenderSection("scripts", required: false)
 </body>
 </html>
