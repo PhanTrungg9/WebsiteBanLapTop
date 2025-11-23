@@ -55,7 +55,7 @@
                 <div class="container-fluid">
                     <div class="row g-2 align-items-center py-2 justify-content-start">
                         <div class="col-md-6 col-sm-6 ">
-                            <input name="search" class="form-control" style="height: 42px;" placeholder="🔍 Nhập tên sản phẩm..." />
+                            <input name="search" id="searchInput" value="@ViewBag.Search" class="form-control" style="height: 42px;" placeholder="🔍 Nhập tên sản phẩm..." />
                         </div>
                         <div class="col-md-2 col-sm-4">
                             <button type="button" id="btn_timkiem" class="btn btn-info w-75" style="height: 42px;" onclick="timkiem_SP()">
@@ -67,13 +67,13 @@
                 </div>
             </div>
 
-            <!-- Container để AJAX load vào -->
+        
             <div class="product-list-container">
                 @Html.Partial("_ProductListPartial")
             </div>
         </div>
 
-        <!-- Pagination Footer -->
+  
         <div class="card-footer">
             <div class="row align-items-center">
                 <div class="col-6">
@@ -443,10 +443,7 @@
                             if (result.success) {
                                 productRow.fadeOut(400, function () {
                                     $(this).remove();
-
-                                    if ($('.product-item').length === 0) {
-                                        loadPage(getCurrentPage());
-                                    }
+                                    window.location.reload();
                                 });
 
                                 alert(result.message);
@@ -462,65 +459,34 @@
 
             });
 
-            $(document).on('click', '.pagination a', function (e) {
-                e.preventDefault();
+            function timkiem_SP() {
+                var searchValue = $('#searchInput').val().trim();
+                var currentUrl = '@Url.Action("Index", "Products", new { Area= "Admin" })';
+                window.location.href = currentUrl + '?search=' + encodeURIComponent(searchValue);
+            }
 
-                var url = $(this).attr('href');
-                if (!url || url === '#') return;
-
-                var pageMatch = url.match(/page=(\d+)/);
-                var page = pageMatch ? pageMatch[1] : 1;
-
-                loadPage(page);
+            $('#btn_timkiem').on('click', function () { 
+                timkiem_SP();
             });
 
-            $(document).on('click', '.product-actions a', function (e) {
-                e.stopPropagation();
-            });
-
-            $(document).on('keypress', 'input[name="search"]', function (e) {
+            $('#searchInput').on('keypress', function (e) {
                 if (e.which === 13) {
                     e.preventDefault();
                     timkiem_SP();
                 }
+});
+            $(document).on('click', '.product-actions a', function (e) {
+                e.stopPropagation();
             });
         });
 
-        function loadPage(page) {
-            var searchText = $('input[name="search"]').val() || '';
-
-            $('.product-list-container').html(
-                '<div class="text-center p-5">' +
-                '<i class="fas fa-spinner fa-spin fa-3x text-info"></i>' +
-                '<p class="mt-3">Đang tải dữ liệu...</p>' +
-                '</div>'
-            );
-
-            $.ajax({
-                url: '/Admin/Products/Index',
-                type: 'GET',
-                data: {
-                    page: page,
-                    search: searchText
-                },
-                success: function (data) {
-                    var $response = $('<div>').html(data);
-                    var productListHtml = $response.find('.product-list-container').html();
-                    $('.product-list-container').html(productListHtml);
-                    var footerHtml = $response.find('.card-footer').html();
-                    $('.card-footer').html(footerHtml);
-                },
-            });
-        }
 
         function getCurrentPage() {
             var activePage = $('.pagination .page-item.active a').text();
             return parseInt(activePage) || 1;
         }
 
-        function timkiem_SP() {
-            loadPage(1);
-        }
+
 
         function selectProduct(productId, productName) {
             selectedProductId = productId;
@@ -609,41 +575,41 @@
                 }
 
                 html += `
-                                                                <div class="discount-item ${itemClass}">
-                                                                   <div class="discount-header">
-                                                                    <span class="discount-percent">
-                                                                          ${discount.is_fixed ? '-' + discount.amount.toLocaleString() + '₫' : '-' + discount.amount + '%'}
-                                                                       </span>
-                                                                     <div class="discount-actions">
-                                                                       <button class="btn btn-warning btnedit" id="btncapnhat" onclick="editdiscount(${discount.product_discount_id})">
-                                                                          <i class="fas fa-edit"></i> Sửa
-                                                                       </button>
-                                                                       <button class="btn btn-danger btndelete" onclick="deleteDiscount(${discount.product_discount_id})">
-                                                                         <i class="fas fa-trash"></i> Xóa
-                                                                       </button>
+                                                                    <div class="discount-item ${itemClass}">
+                                                                       <div class="discount-header">
+                                                                        <span class="discount-percent">
+                                                                              ${discount.is_fixed ? '-' + discount.amount.toLocaleString() + '₫' : '-' + discount.amount + '%'}
+                                                                           </span>
+                                                                         <div class="discount-actions">
+                                                                           <button class="btn btn-warning btnedit" id="btncapnhat" onclick="editdiscount(${discount.product_discount_id})">
+                                                                              <i class="fas fa-edit"></i> Sửa
+                                                                           </button>
+                                                                           <button class="btn btn-danger btndelete" onclick="deleteDiscount(${discount.product_discount_id})">
+                                                                             <i class="fas fa-trash"></i> Xóa
+                                                                           </button>
+                                                                        </div>
+                                                                    </div>
+                                                                   <div class="discount-dates">
+                                                                     <i class="fas fa-calendar"></i>
+                                                                     ${startDateStr} - ${endDateStr}
+                                                                  </div>
+                                                                  <span class="discount-status ${statusClass}">${statusText}</span>
+                                                                  <div class="card-body-${statusClass} discount-price-info">
+                                                                  <div class="price-row">
+                                                                      <span class="price-label">Giá gốc:</span>
+                                                                      <span class="original-price">${originalPrice.toLocaleString()}₫</span>
+                                                                  </div>
+                                                                  <div class="price-row">
+                                                                     <span class="price-label">Giá sau giảm:</span>
+                                                                     <span class="discounted-price">${discountedPrice.toLocaleString()}₫</span>
+                                                                  </div>
+                                                                     <div class="price-row">
+                                                                       <span class="price-label">Tiết kiệm:</span>
+                                                                       <span class="saved-price">${(originalPrice - discountedPrice).toLocaleString()}₫</span>
                                                                     </div>
                                                                 </div>
-                                                               <div class="discount-dates">
-                                                                 <i class="fas fa-calendar"></i>
-                                                                 ${startDateStr} - ${endDateStr}
-                                                              </div>
-                                                              <span class="discount-status ${statusClass}">${statusText}</span>
-                                                              <div class="card-body-${statusClass} discount-price-info">
-                                                              <div class="price-row">
-                                                                  <span class="price-label">Giá gốc:</span>
-                                                                  <span class="original-price">${originalPrice.toLocaleString()}₫</span>
-                                                              </div>
-                                                              <div class="price-row">
-                                                                 <span class="price-label">Giá sau giảm:</span>
-                                                                 <span class="discounted-price">${discountedPrice.toLocaleString()}₫</span>
-                                                              </div>
-                                                                 <div class="price-row">
-                                                                   <span class="price-label">Tiết kiệm:</span>
-                                                                   <span class="saved-price">${(originalPrice - discountedPrice).toLocaleString()}₫</span>
-                                                                </div>
-                                                            </div>
-                                                         </div>
-                                                      `;
+                                                             </div>
+                                                          `;
             });
 
             $('#discountListContainer').html(html);
@@ -665,7 +631,6 @@
             const description = $('#description').val();
             const discountId = parseInt($('#product_discount_id').val() || 0); // ⭐ QUAN TRỌNG: Lấy ID để biết Insert hay Update
 
-            // Validation
             if (!productId) {
                 alert('Vui lòng chọn sản phẩm!');
                 return;
@@ -695,10 +660,8 @@
                 return;
             }
 
-            // ⭐ Check xem là Insert hay Update
             const isUpdate = discountId > 0
 
-            // Chuẩn bị data
             const data = {
                 product_id: parseInt(productId),
                 is_fixed: (discountType == '1'),
@@ -708,7 +671,6 @@
                 name: description || ''
             };
 
-            // ⭐ Nếu Update thì thêm product_discount_id
             if (isUpdate) {
                 data.product_discount_id = parseInt(discountId);
             }
@@ -717,7 +679,7 @@
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
 
-            // ⭐ Chọn URL tùy theo Insert hay Update
+           
             const url = isUpdate ? '/Admin/ProductDiscount/UpdateDiscount' : '/Admin/ProductDiscount/SaveDiscount';
             const successMessage = isUpdate ? 'Cập nhật giảm giá thành công!' : 'Thêm giảm giá thành công!';
 
@@ -781,12 +743,11 @@
                     if (response.success) {
                         var $productSelect = $('select[name="product_name"]');
                         if (response.data.product_id) {
-                            // Nếu select chưa có option này (trường hợp select rỗng)
                             if ($productSelect.find('option[value="' + response.data.product_id + '"]').length === 0 && response.data.product_name) {
                                 $productSelect.append(new Option(response.data.product_name, response.data.product_id, true, true));
                             }
 
-                           
+
                             $productSelect.val(response.data.product_id).trigger('change');
                             if ($productSelect.hasClass('select2-hidden-accessible')) {
                                 $productSelect.trigger('change.select2');
@@ -841,27 +802,38 @@
             loadProductDiscountInfo(discountId);
         }
         function deleteDiscount(discountId) {
-            if (confirm('Bạn có chắc chắn muốn xóa đợt giảm giá này không?')) {
-                $.ajax({
-                    url: '/Admin/ProductDiscount/DeleteDiscount',
-                    type: 'POST',
-                    data: { id: discountId },
-                    dataType: 'json',
-                    success: function (result) {
-                        if (result.success) {
-                            alert('Xóa đợt giảm giá thành công!');
-                            if (selectedProductId) {
-                                loadDiscount(selectedProductId);
+            Swal.fire({
+                title: "Xác nhận xóa",
+                text: "Bạn có chắc chắn muốn xóa đợt giảm giá này không?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#c3c3c3",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/ProductDiscount/DeleteDiscount',
+                        type: 'POST',
+                        data: { id: discountId },
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result.success) {
+                                Swal.fire("Thành công!", "Xóa đợt giảm giá thành công!", "success");
+                                if (selectedProductId) {
+                                    loadDiscount(selectedProductId);
+                                }
+                            } else {
+                                Swal.fire("Thất bại!", result.message || 'Lỗi không xác định', "error");
                             }
-                        } else {
-                            alert('Xóa đợt giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'));
+                        },
+                        error: function () {
+                            Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa đợt giảm giá!", "error");
                         }
-                    },
-                    error: function () {
-                        alert('Có lỗi xảy ra khi xóa đợt giảm giá!');
-                    }
-                });
-            }
+                    });
+                }
+            });
         }
 
     </script>

@@ -1,0 +1,312 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="contact-page">
+    <div class="contact-header">
+        <h1 class="contact-title">Liên Hệ Với Chúng Tôi</h1>
+        <p class="contact-subtitle">COLOSHOP Store - Nơi Phong Cách Bắt Đầu Từ Đôi Giày</p>
+    </div>
+
+    <div class="contact-container">
+        <div class="row g-4">
+            <div class="col-12 col-lg-6">
+                <div class="card contact-info-card">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <i class="bi bi-headset"></i>
+                            Thông Tin Liên Hệ
+                        </h3>
+
+                        <div class="contact-items">
+                            <div class="contact-item contact-item-phone">
+                                <i class="bi bi-telephone contact-icon"></i>
+                                <div>
+                                    <strong class="contact-label">Hotline</strong>
+                                    <p class="contact-value contact-phone">0123 456 789</p>
+                                    <small class="contact-note">(Miễn phí - 24/7)</small>
+                                </div>
+                            </div>
+
+                            <div class="contact-item contact-item-email">
+                                <i class="bi bi-envelope contact-icon"></i>
+                                <div>
+                                    <strong class="contact-label">Email</strong>
+                                    <p class="contact-value contact-email">info@coloshopstore.vn</p>
+                                    <small class="contact-note">Phản hồi trong 24h</small>
+                                </div>
+                            </div>
+
+                            <div class="contact-item contact-item-facebook">
+                                <i class="bi bi-facebook contact-icon"></i>
+                                <div>
+                                    <strong class="contact-label">Facebook</strong>
+                                    <p class="mb-0">Cửa hàng giày <span class="text-black">COLO<span class="text-danger">SHOP</span></span></p>
+                                    <small class="contact-note">Chat trực tiếp với chúng tôi</small>
+                                </div>
+                            </div>
+
+                            <div class="contact-item contact-item-address">
+                                <i class="bi bi-geo-alt contact-icon"></i>
+                                <div>
+                                    <strong class="contact-label">Địa Chỉ Cửa Hàng</strong>
+                                    <p class="contact-value">55 Giải Phóng, Hai Bà Trưng, Hà Nội</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item contact-item-time">
+                                <i class="bi bi-clock contact-icon"></i>
+                                <div>
+                                    <strong class="contact-label">Giờ Làm Việc</strong>
+                                    <p class="contact-value mb-1">Thứ 2 - Thứ 6: 8:00 - 21:00</p>
+                                    <p class="contact-value">Thứ 7 - Chủ nhật: 9:00 - 22:00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card map-card">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <i class="bi bi-geo-alt title-icon-map"></i>
+                            Vị Trí Cửa Hàng
+                        </h3>
+
+                        <div class="map-container">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.0647861332823!2d105.83865971050503!3d20.99003998902729!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ad00573c87e3%3A0x34f21b383e2e0ea0!2zxJDhuqFpIGjhu41jIHjDonkgZOG7sW5nIGjDoCBu4buZaQ!5e0!3m2!1svi!2s!4v1763147984379!5m2!1svi!2s"
+                                    width="100%"
+                                    height="100%"
+                                    style="border:0;"
+                                    allowfullscreen=""
+                                    loading="lazy"
+                                    title="Bản đồ cửa hàng COLOSHOP Store">
+                            </iframe>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="important-notes">
+                            <h4 class="notes-title">💬 Lưu Ý Quan Trọng</h4>
+                            <p class="note-item">
+                                • Mọi thắc mắc hay đóng góp ý kiến, xin quý khách hãy liên hệ với cửa hàng chúng tôi!
+                            </p>
+                            <p class="note-item">
+                                • Chúng tôi cam kết phản hồi trong vòng 24 giờ làm việc.
+                            </p>
+                            <p class="note-item note-item-last">
+                                • Hỗ trợ tư vấn miễn phí qua hotline và Facebook.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card footer-card mt-4">
+            <div class="card-body text-center">
+                <h3 class="footer-title">❤️ Cảm Ơn Quý Khách Đã Tin Tưởng COLOSHOP Store!</h3>
+                <p class="footer-text mb-0">Chúng tôi luôn sẵn sàng đồng hành cùng phong cách của bạn</p>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .contact-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 40px 20px;
+    }
+
+
+    .contact-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .contact-title {
+        color: #1a1a2e;
+        font-size: 42px !important;
+        font-weight: 700 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .contact-subtitle {
+        font-size: 18px;
+        color: #666;
+        font-weight: 400;
+    }
+
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .contact-info-card,
+    .map-card {
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        background: #fff;
+    }
+
+    .card-title {
+        color: #1a1a2e !important;
+        margin-bottom: 30px !important;
+        font-size: 24px !important;
+        font-weight: 600 !important;
+    }
+
+    .title-icon {
+        margin-right: 10px;
+        color: #4CAF50;
+    }
+
+    .title-icon-map {
+        color: #E91E63;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .contact-item .contact-icon {
+            font-size: 24px;
+            margin-right: 16px;
+            margin-top: 4px;
+        }
+
+    .contact-item-phone .contact-icon {
+        color: #4CAF50;
+    }
+
+    .contact-item-email .contact-icon {
+        color: #FF9800;
+    }
+
+    .contact-item-facebook .contact-icon {
+        color: #1877F2;
+    }
+
+    .contact-item-address .contact-icon {
+        color: #E91E63;
+    }
+
+    .contact-item-time .contact-icon {
+        color: #9C27B0;
+    }
+
+    .contact-item:hover {
+        background: #e3f2fd;
+        transform: translateX(5px);
+    }
+
+    
+    .contact-label {
+        display: block;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 4px;
+    }
+
+    .contact-value {
+        display: block;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .contact-phone {
+        font-size: 16px !important;
+        color: #1976D2 !important;
+        font-weight: 500;
+    }
+
+    .contact-email {
+        color: #1976D2 !important;
+    }
+
+    .contact-note {
+        display: block;
+        font-size: 13px;
+        color: #666;
+        margin-top: 4px;
+    }
+
+    .contact-link {
+        font-size: 16px;
+        color: #1976D2;
+        text-decoration: none;
+    }
+
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+
+    .map-container {
+        width: 100%;
+        height: 350px;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+
+    .important-notes {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 24px;
+        border-radius: 12px;
+        color: #fff;
+    }
+
+    .notes-title {
+        color: #fff !important;
+        margin-bottom: 12px !important;
+        font-size: 18px !important;
+    }
+
+    .note-item {
+        color: #fff !important;
+        margin-bottom: 8px !important;
+        font-size: 15px !important;
+        line-height: 1.8 !important;
+    }
+
+    .note-item-last {
+        margin-bottom: 0 !important;
+    }
+
+
+    .footer-card {
+        margin-top: 24px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    }
+
+    .footer-title {
+        color: #fff !important;
+        margin-bottom: 12px !important;
+        font-size: 26px !important;
+        font-weight: 600 !important;
+    }
+
+    .footer-text {
+        color: #fff;
+        font-size: 16px;
+        display: block;
+    }
+
+</style>
+

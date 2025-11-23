@@ -134,8 +134,14 @@
     </div>
 </section>
 @section scripts{
+
     <script>
         $(document).ready(function () {
+            //CKEDITOR.replace('txtarea', {
+            //    customConfig: '/Content/ckeditor/config.js',  
+            //    extraAllowedContent: 'span',
+            //    height: 300
+            //});
             $('#category_id').select2({
                 placeholder: "Chọn danh mục",
                 ajax: {
@@ -165,12 +171,18 @@
                 }
             });
             $("#btn_them").click(function () {
+                let priceInput = $('#price');
+                let rawPrice = priceInput.val().replace(/,/g, '');
+                priceInput.val(rawPrice);
+
                 var form = $('#form-act')[0];
                 var formData = new FormData(form);
+
                 var selectedRadio = $('input[name="rdefault"]:checked').val();
                 if (selectedRadio) {
                     formData.append('rdefault', selectedRadio);
                 }
+
                 $.ajax({
                     type: "POST",
                     url: window.location.origin + '/Admin/Products/Insert',
@@ -192,17 +204,13 @@
                     }
                 });
             });
-            //$('#price').on('input', function () {
-            //    let value = $(this).val().replace(/,/g, '');
-            //    if (!isNaN(value) && value !== '') {
-            //        $(this).val(Number(value).toLocaleString('en-US'));
-            //    }
-            //});
-
-            //$('form').on('submit', function () {
-            //    let rawValue = $('#price').val().replace(/,/g, '');
-            //    $('#price').val(rawValue);
-            //});
+            $('#price').on('input', function () {
+                let value = $(this).val().replace(/,/g, ''); 
+                value = value.replace(/[^0-9]/g, '');
+                if (value !== '') {
+                    $(this).val(Number(value).toLocaleString('en-US'));
+                }
+            });
         });
         function BrowseServer(field) {
             var finder = new CKFinder();
@@ -229,14 +237,29 @@
             var selectedValue = $(this).val();
             $('input[name="rdefault"]').not(this).prop('checked', false);
         });
-        $('#tbhtml').on('click', '.xoabtn', function () {
-            var con = confirm("Bạn có chắc chắn muốn xóa ảnh này không?");
-            if (con) {
-                var data = $(this).data('id');
-                $('#tb_row_' + data).remove();
-                var currentid = parseInt($('#icurrent').val()) - 1;
-                $('#icurrent').val(currentid);
-            }
+        
+        $('#tbhtml').on('click', '.xoabtn', function (e) {
+            e.preventDefault();
+            var data = $(this).data('id');
+
+            Swal.fire({
+                title: "Xác nhận xóa",
+                text: "Bạn có chắc chắn muốn xóa ảnh này không?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#c3c3c3",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#tb_row_' + data).remove();
+                    var currentid = parseInt($('#icurrent').val()) - 1;
+                    $('#icurrent').val(currentid);
+
+                    Swal.fire("Đã xóa!", "Ảnh đã được xóa thành công.", "success");
+                }
+            });
         });
 
     </script>

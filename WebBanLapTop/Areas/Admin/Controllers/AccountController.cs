@@ -24,12 +24,21 @@ namespace WebBanLapTop.Areas.Admin.Controllers
             return View();
         }
 
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return Redirect("/Home/Index");
+            FormsAuthentication.SignOut();
+            //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return Redirect("/Account/Login");
         }
         [HttpPost]
         public JsonResult Sign_In()
@@ -75,7 +84,7 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                     {
                         success = false,
                         message = "Tài khoản của bạn không hợp lệ!"
-                     });
+                    });
                 }
             }
             else
@@ -83,6 +92,7 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Tài khoản hoặc mật khẩu không đúng!" });
             }
         }
-        
+
+
     }
 }

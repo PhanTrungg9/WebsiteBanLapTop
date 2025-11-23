@@ -29,6 +29,7 @@
     <link href="~/Content/PagedList.css" rel="stylesheet" />
     <!-- dropzonejs -->
     <link rel="stylesheet" href="~/Content/Admin/plugins/dropzone/min/dropzone.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/Content/Admin/dist/css/adminlte.min.css">
 </head>
@@ -224,7 +225,7 @@
     @*<script src="~/Content/Admin/dist/js/demo.js"></script>*@
     <!-- Page specific script -->
     <script>
-    $(function () {
+        $(function () {
             //Initialize Select2 Elements
             $('.select2').select2()
 
@@ -359,6 +360,7 @@
         // DropzoneJS Demo Code End</script>
     <script src="~/Content/ckeditor/ckeditor.js"></script>
     <script src="~/Content/ckfinder/ckfinder.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

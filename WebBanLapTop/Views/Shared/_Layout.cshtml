@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using WebBanLapTop.Models
+@using WebBanLapTop.Controllers
+<!DOCTYPE html>
 <html>
 <head>
     <title>Colo Shop</title>
@@ -7,12 +9,16 @@
     <meta name="description" content="Colo Shop Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/bootstrap4/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/Content/User/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/animate.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/main_styles.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/responsive.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 </head>
 <body>
     <div class="super_container">
@@ -27,7 +33,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="top_nav_left">free shipping on all u.s orders over $50</div>
+                            <div class="top_nav_left">Miễn phí vận chuyển trên toàn quốc</div>
                         </div>
                         <div class="col-md-6 text-right">
                             <div class="top_nav_right">
@@ -37,11 +43,11 @@
 
                                     <li class="currency">
                                         <a href="#">
-                                            usd
+                                            VNĐ
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                         <ul class="currency_selection">
-                                            <li><a href="#">cad</a></li>
+                                            <li><a href="#">usd</a></li>
                                             <li><a href="#">aud</a></li>
                                             <li><a href="#">eur</a></li>
                                             <li><a href="#">gbp</a></li>
@@ -49,11 +55,11 @@
                                     </li>
                                     <li class="language">
                                         <a href="#">
-                                            English
+                                            Tiếng Việt
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                         <ul class="language_selection">
-                                            <li><a href="#">French</a></li>
+                                            <li><a href="#">English</a></li>
                                             <li><a href="#">Italian</a></li>
                                             <li><a href="#">German</a></li>
                                             <li><a href="#">Spanish</a></li>
@@ -63,7 +69,7 @@
                                         @if (!Request.IsAuthenticated)
                                         {
                                             <a href="#" style="min-width: 110px;">
-                                                My Account
+                                                Tài Khoản
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="account_selection">
@@ -108,23 +114,35 @@
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
-                                    <li><a href="/Home/Index">home</a></li>
-                                    <li><a href="#">shop</a></li>
-                                    <li><a href="#">promotion</a></li>
-                                    <li><a href="#">pages</a></li>
-                                    <li><a href="#">blog</a></li>
-                                    <li><a href="contact.html">contact</a></li>
+                                    <li><a class="font-weight-bold" href="~/Home/Index">Trang chủ</a></li>
+                                    <li><a class="font-weight-bold" href="">Giới Thiệu</a></li>
+                                    <li><a class="font-weight-bold" href="#">Tin Tức</a></li>
+                                    <li><a class="font-weight-bold" href="~/ProductDiscounts/Index">Khuyến mại</a></li>
+                                    <li><a class="font-weight-bold" href="~/Contact/Index">Liên Hệ</a></li>
                                 </ul>
                                 <ul class="navbar_user">
-                                    <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                                    <li class="search-container">
+                                        <!-- Khung chứa input và icon -->
+                                        <div id="searchBox" class="collapse search-box">
+                                            <input type="text" id="searchInput" value="@ViewBag.Search" class="form-control search-input" placeholder="Tìm kiếm...">
+                                        </div>
+
+                                        <!-- Icon bấm để mở -->
+                                        <button class="btn search-btn" data-bs-toggle="collapse" data-bs-target="#searchBox">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </li>
+
                                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+
                                     <li class="checkout">
                                         <a href="#">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                            <span id="checkout_items" class="checkout_items">2</span>
+                                            <span id="cart-count" class="checkout_items cart-count">@CartHelper.GetCartItemCount()</span>
                                         </a>
                                     </li>
                                 </ul>
+
                                 <div class="hamburger_container">
                                     <i class="fa fa-bars" aria-hidden="true"></i>
                                 </div>
@@ -143,11 +161,11 @@
                 <ul class="menu_top_nav">
                     <li class="menu_item has-children">
                         <a href="#">
-                            usd
+                            VNĐ
                             <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="menu_selection">
-                            <li><a href="#">cad</a></li>
+                            <li><a href="#">usd</a></li>
                             <li><a href="#">aud</a></li>
                             <li><a href="#">eur</a></li>
                             <li><a href="#">gbp</a></li>
@@ -155,38 +173,53 @@
                     </li>
                     <li class="menu_item has-children">
                         <a href="#">
-                            English
+                            Tiếng Việt
                             <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="menu_selection">
-                            <li><a href="#">French</a></li>
+                            <li><a href="#">English</a></li>
                             <li><a href="#">Italian</a></li>
                             <li><a href="#">German</a></li>
                             <li><a href="#">Spanish</a></li>
                         </ul>
                     </li>
                     <li class="menu_item has-children">
-                        <a href="#">
-                            My Account
-                            <i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="menu_selection">
-                            <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                            <li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-                        </ul>
+                        @if (!Request.IsAuthenticated)
+                        {
+                            <a href="#">
+                                Tài Khoản
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="menu_selection">
+                                <li><a href="/Account/Login"><i class="fa fa-sign-in" aria-hidden="true"></i>Đăng nhập</a></li>
+                                <li><a href="/Account/Register"><i class="fa fa-user-plus" aria-hidden="true"></i>Đăng kí</a></li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <a href="#">
+                                Xin chào, @User.Identity.Name
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="menu_selection">
+                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
+                                <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Đăng xuât</a></li>
+                            </ul>
+                        }
                     </li>
-                    <li class="menu_item"><a href="#">home</a></li>
-                    <li class="menu_item"><a href="#">shop</a></li>
+                    <li class="menu_item"><a href="/Home/Index">Trang chủ</a></li>
+                    <li class="menu_item"><a href="#">Giới Thiệu</a></li>
                     <li class="menu_item"><a href="#">promotion</a></li>
-                    <li class="menu_item"><a href="#">pages</a></li>
-                    <li class="menu_item"><a href="#">blog</a></li>
-                    <li class="menu_item"><a href="#">contact</a></li>
+                    <li class="menu_item"><a href="#">Tin Tức</a></li>
+                    <li class="menu_item"><a href="#">Khuyến mại</a></li>
+                    <li class="menu_item"><a href="contact.html">Liên Hệ</a></li>
                 </ul>
             </div>
         </div>
-
-        @RenderBody()
-
+        <link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+        <div style="margin-top:160px">
+            @RenderBody()
+        </div>
         <!-- Newsletter -->
 
         <div class="newsletter">
@@ -247,6 +280,79 @@
         </footer>
 
     </div>
+    <style>
+        .navbar_user {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 15px;
+        }
+
+            .navbar_user li {
+                display: flex;
+                align-items: center;
+            }
+
+            .navbar_user a {
+                color: #333;
+                text-decoration: none;
+                font-size: 16px;
+                transition: color 0.3s ease;
+            }
+
+                .navbar_user a:hover {
+                    color: #007bff;
+                }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-btn {
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #searchBox {
+            width: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: width 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+        }
+
+            #searchBox.show {
+                width: 200px;
+                opacity: 1;
+                margin-right: 10px;
+            }
+    </style>
+    <script>
+        $(document).ready(function () {
+            function timkiem_SP() {
+                var searchValue = $('#searchInput').val().trim();
+                var currentUrl = '/Home/Index';
+                window.location.href = currentUrl + '?search=' + encodeURIComponent(searchValue);
+            }
+            $('#searchInput').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    timkiem_SP();
+                }
+            });
+            $('.search-btn').on('click', function () {
+                if ($('#searchBox').hasClass('show') && $('#searchInput').val().trim() !== '') {
+                    timkiem_SP();
+                }
+            });
+        });
+        
+    </script>
 
     @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
@@ -257,8 +363,11 @@
     <script src="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
     <script src="~/Content/User/plugins/easing/easing.js"></script>
     <script src="~/Content/User/js/custom.js"></script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <!-- Slick JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <!-- Template Javascript -->
     @*<script src="~/Content/User/js/main.js"></script>*@
     @RenderSection("scripts", required: false)
