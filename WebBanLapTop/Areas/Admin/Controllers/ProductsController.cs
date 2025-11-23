@@ -14,13 +14,13 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         // GET: Admin/Products
         DatabaseDataContext db = new DatabaseDataContext();
 
-         public ActionResult Index(int? page, string search)
-         {
+        public ActionResult Index(int? page, string search)
+        {
             int pageSize = 5;
             int pageNumber = page ?? 1;
             var query = db.vw_ProductWithDiscountCounts
                           .Where(x => x.is_delete == false || x.is_delete == null);
-            //tim kiem
+           
             if (!string.IsNullOrEmpty(search))
             {
                 search = search.Trim().ToLower();
@@ -32,11 +32,6 @@ namespace WebBanLapTop.Areas.Admin.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.Page = pageNumber;
             ViewBag.Search = search;
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("_ProductListPartial", paged);
-            }
             return View(paged);
         }
         public JsonResult getProductName()

@@ -84,7 +84,7 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                     {
                         success = false,
                         message = "Tài khoản của bạn không hợp lệ!"
-                     });
+                    });
                 }
             }
             else
@@ -93,6 +93,6 @@ namespace WebBanLapTop.Areas.Admin.Controllers
             }
         }
 
-        
+
     }
 }
