@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using WebBanLapTop.Models
+@using WebBanLapTop.Controllers
+<!DOCTYPE html>
 <html>
 <head>
     <title>Colo Shop</title>
@@ -7,12 +9,16 @@
     <meta name="description" content="Colo Shop Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/bootstrap4/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/Content/User/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/animate.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/main_styles.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/responsive.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 </head>
 <body>
     <div class="super_container">
@@ -114,15 +120,28 @@
                                     <li><a href="contact.html">Liên Hệ</a></li>
                                 </ul>
                                 <ul class="navbar_user">
-                                    <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                                    <li class="search-container">
+                                        <!-- Khung chứa input và icon -->
+                                        <div id="searchBox" class="collapse search-box">
+                                            <input type="text" id="searchInput" value="@ViewBag.Search" class="form-control search-input" placeholder="Tìm kiếm...">
+                                        </div>
+
+                                        <!-- Icon bấm để mở -->
+                                        <button class="btn search-btn" data-bs-toggle="collapse" data-bs-target="#searchBox">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </li>
+
                                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+
                                     <li class="checkout">
                                         <a href="/ShoppingCart/Index">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                            <span id="checkout_items" class="checkout_items">0</span>
+                                            <span id="cart-count" class="checkout_items cart-count">@CartHelper.GetCartItemCount()</span>
                                         </a>
                                     </li>
                                 </ul>
+
                                 <div class="hamburger_container">
                                     <i class="fa fa-bars" aria-hidden="true"></i>
                                 </div>
@@ -258,8 +277,79 @@
         </footer>
 
     </div>
+    <style>
+        .navbar_user {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 15px;
+        }
+            .navbar_user li {
+                display: flex;
+                align-items: center;
+            }
 
-    @*@Scripts.Render("~/bundles/jquery")
+            .navbar_user a {
+                color: #333;
+                text-decoration: none;
+                font-size: 16px;
+                transition: color 0.3s ease;
+            }
+
+                .navbar_user a:hover {
+                    color: #007bff;
+                }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-btn {
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #searchBox {
+            width: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: width 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+        }
+
+            #searchBox.show {
+                width: 200px;
+                opacity: 1;
+                margin-right: 10px;
+            }
+    </style>
+    <script>
+        $(document).ready(function () {
+            function timkiem_SP() {
+                var searchValue = $('#searchInput').val().trim();
+                var currentUrl = '/Home/Index';
+                window.location.href = currentUrl + '?search=' + encodeURIComponent(searchValue);
+            }
+            $('#searchInput').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    timkiem_SP();
+                }
+            });
+            $('.search-btn').on('click', function () {
+                if ($('#searchBox').hasClass('show') && $('#searchInput').val().trim() !== '') {
+                    timkiem_SP();
+                }
+            });
+        });
+        
+    </script>
+        @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
     <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
     <script src="~/Content/User/styles/bootstrap4/popper.js"></script>
@@ -268,11 +358,16 @@
     <script src="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
     <script src="~/Content/User/plugins/easing/easing.js"></script>
     <script src="~/Content/User/js/custom.js"></script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <!-- Slick JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <!-- Template Javascript -->
     @*<script src="~/Content/User/js/main.js"></script>*@
     <script src="~/Scripts/jsShopping.js"></script>
     @RenderSection("scripts", required: false)
+      <!-- Template Javascript -->
+    
 </body>
 </html>

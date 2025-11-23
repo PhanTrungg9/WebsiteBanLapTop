@@ -1,0 +1,322 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<WebBanLapTop.Models.vw_OrderList>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section naviheader{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Content/Admin/index3.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Đơn Hàng</a>
+        </li>
+    </ul>
+}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Quản lý đơn hàng</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Quản lý đơn hàng</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title text-bold">Danh Sách Đơn Hàng</h4>
+            <div class="card-tools d-flex align-items-center justify-content-between" style="gap: 20px;">     
+                
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <label class="font-weight-bold mb-0">Từ ngày:</label>
+                    <input type="date" id="fromDate" class="form-control" style="width: 150px;">
+
+                    <label class="font-weight-bold mb-0 ml-2">Đến ngày:</label>
+                    <input type="date" id="toDate" class="form-control" style="width: 150px;">
+
+                    <button class="btn btn-info ml-2" onclick="locDonHangTheoKhoangNgay()">
+                        <i class="fa fa-search"></i> Tìm
+                    </button>
+                </div>
+
+                <div style="border-left: 1px solid #bfbfbf; height: 30px;"></div>
+
+                
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <input type="text" id="searchInput" name="search" value="@ViewBag.Search"
+                           class="form-control" placeholder="Tìm kiếm..." style="width: 260px;" />
+
+                    <button id="btnSearch" type="button" class="btn btn-primary" onclick="timkiem_SP()">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="col-sm-12">
+                <table id="tb_show" class="table table-bordered">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th>Họ tên</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Tên sản phẩm</th>
+                            <th style="width:200px">Hình ảnh</th>
+                            <th>Tổng tiền</th>
+                            <th>Ngày giờ</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var index = (ViewBag.Page - 1) * ViewBag.PageSize + 1;
+                            foreach (var item in Model)
+                            {
+                                <tr class="text-center" id="trow_@item.order_id">
+                                    <td>@index</td>
+                                    <td>@item.UserName</td>
+                                    <td>@item.order_id</td>
+                                    <td>@item.ProductName</td>
+                                    <td data-id="@item.order_id" class="product-image" style="cursor: pointer; width:200px">
+                                        <img src="@item.ProductImage" alt="@item.ProductName" style="width:80px" />
+                                    </td>
+                                    <td>@(item.total_amount.HasValue ? item.total_amount.Value.ToString("N0") : "0") ₫</td>
+                                    <td>@Convert.ToDateTime(item.order_date).ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (item.status == "Hoàn tất")
+                                        {
+                                            <span class="badge bg-success">Đã Thanh Toán</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">Chưa Thanh Toán</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.status == "Hoàn tất")
+                                        {
+                                            <a class="btn btn-danger btn-sm" data-id="@item.order_id" onclick="deleteOrder(this)">Xóa</a>
+                                        }
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center">Không có bản ghi nào</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+                <div class="d-flex justify-content-end">
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, search = ViewBag.Search }), new PagedListRenderOptions
+                        {
+                            UlElementClasses = new[] { "pagination", "pagination-sm", "m-0", "float-right" },
+                            LiElementClasses = new[] { "page-item" },
+                        })
+
+                </div>
+            </div>
+    </div>
+</section>
+
+<!-- Dialog hiển thị hình ảnh -->
+<div id="dialog" style="display: none;">
+    <div style="text-align: center;">
+        <img id="dialogImage" src="" alt="Product Image" style="max-width: 100%; height: auto;" />
+    </div>
+</div>
+
+@section scripts{
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Khởi tạo dialog
+            $('#dialog').dialog({
+                autoOpen: false,
+                show: "fade",
+                hide: "fade",
+                modal: true,
+                height: 450,
+                width: 450,
+                resizable: true,
+                title: 'Hình ảnh sản phẩm'
+            });
+            $('body').on('click', '.product-image', function () {
+                var imgSrc = $(this).find('img').attr('src');
+                $('#dialogImage').attr('src', imgSrc);
+                $('#dialog').dialog('open');
+                return false;
+            });
+        });
+        function timkiem_SP() {
+            var searchValue = $('#searchInput').val().trim();
+            var currentUrl = '@Url.Action("Index", "Orders", new { Area = "Admin" })';
+            window.location.href = currentUrl + '?search=' + encodeURIComponent(searchValue);
+        }
+        $('#btnSearch').on('click', function () {
+            timkiem_SP();
+        });
+
+        $('#searchInput').on('keypress', function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                timkiem_SP();
+            }
+        });
+        function deleteOrder(el) {
+            var orderid = $(el).data('id');
+
+            Swal.fire({
+                title: "Bạn có chắc chắn muốn thu hồi không?",
+                text: "Một khi thu hồi là không thể phục hồi!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#c3c3c3",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy bỏ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: '/Admin/Orders/Delete',
+                        type: 'POST',
+                        data: { id: orderid },
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.success) {
+                                Swal.fire("Thành công!", "Xóa đơn hàng thành công!", "success");
+                                $('#trow_' + orderid).remove();
+                            } else {
+                                Swal.fire("Thất bại!", res.message, "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Lỗi!", "Có lỗi xảy ra!", "error");
+                        }
+                    });
+
+                }
+            });
+        }
+
+        function locDonHangTheoKhoangNgay() {
+            var fromDate = $('#fromDate').val();
+            var toDate = $('#toDate').val();
+            if (!fromDate && !toDate) {
+                alert('Vui lòng chọn ít nhất một ngày!');
+                return;
+            }
+
+            if (fromDate && toDate && fromDate > toDate) {
+                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc!');
+                return;
+            }
+
+            $.ajax({
+                url: '/Admin/Orders/FilterByDate',
+                type: 'GET',
+                data: {
+                    fromDate: fromDate,
+                    toDate: toDate,
+                    search: $('#searchInput').val()
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        renderTable(response.data);
+                    } else {
+                        alert(response.message || 'Có lỗi xảy ra!');
+                    }
+                },
+                error: function ( error) {
+                    alert('Có lỗi xảy ra khi lọc đơn hàng!');
+                }
+            });
+        }
+
+        function renderTable(data) {
+            var html = '';
+            if (!data || data.length === 0) {
+                html = '<tr><td colspan="10" class="text-center">Không có bản ghi nào</td></tr>';
+            } else {
+                $.each(data, function (index, item) {
+                    var badge = item.status === 'Hoàn tất'
+                        ? '<span class="badge bg-success">Đã Thanh Toán</span>'
+                        : '<span class="badge bg-warning">Chưa Thanh Toán</span>';
+                    var deleteButton = item.status === 'Hoàn tất'
+                        ? '<a class="btn btn-danger btn-sm" data-id="' + item.order_id + '" onclick="deleteOrder(this)">Xóa</a>'
+                        : '';
+
+                    var formattedDate = '';
+                    var dateString = item.order_date;
+
+                    if (typeof dateString === 'string') {
+                        var part = dateString.split(/[\/\-]/);
+
+                        if (part.length === 3) {
+                            formattedDate =
+                                part[0].padStart(2, '0') + '/' +
+                                part[1].padStart(2, '0') + '/' +
+                                part[2];
+                        } else {
+                            var date = new Date(dateString);
+                            if (!isNaN(date)) {
+                                formattedDate = date.toLocaleDateString('vi-VN', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                });
+                            } else {
+                                formattedDate = dateString;
+                            }
+                        }
+                    }
+
+                    html += '<tr class="text-center" id="trow_' + item.order_id + '">' +
+                        '<td>' + (index + 1) + '</td>' +
+                        '<td>' + item.UserName + '</td>' +
+                        '<td>' + item.order_id + '</td>' +
+                        '<td>' + item.ProductName + '</td>' +
+                        '<td data-id="' + item.order_id + '" class="product-image" style="cursor: pointer; width:200px">' +
+                        '<img src="' + item.ProductImage + '" alt="' + item.ProductName + '" style="width:80px" />' +
+                        '</td>' +
+                        '<td>' + (item.total_amount ? item.total_amount.toLocaleString() + ' ₫' : '0 ₫') + '</td>' +
+                        '<td>' + formattedDate + '</td>' +
+                        '<td>' + badge + '</td>' +
+                        '<td>' + deleteButton + '</td>' +
+                        ' </tr > '
+                });
+            }
+            $('#tb_show tbody').html(html);
+        }
+
+    </script>
+}

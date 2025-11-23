@@ -1,20 +1,34 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using WebBanLapTop.Models;
-using Newtonsoft.Json;
 
 namespace WebBanLapTop.Areas.Admin.Controllers
 {
     public class QLDMSPController : Controller
     {
         // GET: Admin/QLDMSP
-        public ActionResult DanhMucSanPham()
+        public ActionResult DanhMucSanPham(int page = 1, int pageSize = 5)
         {
             DatabaseDataContext db = new DatabaseDataContext();
-            var items = db.tb_categories;
+            var items = db.tb_categories
+                .OrderBy(c => c.category_id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            int totalCategories = db.tb_categories.Count();
+            int totalPages = (int)Math.Ceiling((double)totalCategories / pageSize);
+
+            ViewBag.Page = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+
             return View(items);
         }
 
