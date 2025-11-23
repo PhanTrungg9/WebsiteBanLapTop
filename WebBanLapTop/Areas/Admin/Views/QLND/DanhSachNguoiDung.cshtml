@@ -70,7 +70,9 @@
                     <tbody id="userTableBody">
                         @if (Model != null && Model.Any())
                         {
-                            var index = 1;
+                            //var index = 1;
+                            var index = (ViewBag.Page - 1) * ViewBag.PageSize + 1;
+
                             foreach (var user in Model)
                             {
                                 <tr id="trow_@user.user_id">
@@ -116,6 +118,41 @@
                         }
                     </tbody>
                 </table>
+                <div class="mt-3">
+                    <nav>
+                        <ul class="pagination" id="mainPagination">
+                            @if (ViewBag.Page > 1)
+                            {
+                                <li class="page-item">
+                                    <a href="javascript:void(0)" onclick="goToPage(@(ViewBag.Page - 1))" class="page-link">«</a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                if (i == ViewBag.Page)
+                                {
+                                    <li class="page-item active">
+                                        <a href="javascript:void(0)" class="page-link">@i</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a href="javascript:void(0)" onclick="goToPage(@i)" class="page-link">@i</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (ViewBag.Page < ViewBag.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a href="javascript:void(0)" onclick="goToPage(@(ViewBag.Page + 1))" class="page-link">»</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
 
             </div>
             <!-- /.card-footer-->
@@ -217,17 +254,15 @@
                 transform: translateX(22px);
             }
 </style>
-
 @section scripts{
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        var currentKeyword = ""; // Lưu keyword hiện tại
 
         $("#SelectAll").click(function () {
             $(".checkuser").prop("checked", this.checked);
         });
-
 
         $(document).on("click", ".btnDelete", function (e) {
             e.preventDefault();
@@ -252,7 +287,6 @@
             }
         });
 
-
         $("#btnDeleteSelected").click(function () {
             var selectedIds = $(".checkuser:checked").map(function () {
                 return $(this).val();
@@ -267,12 +301,18 @@
                 $.ajax({
                     url: '/Admin/QLND/DeleteMulti',
                     type: 'POST',
-                    traditional: true, // cho phép gửi mảng
+                    traditional: true,
                     data: { ids: selectedIds },
                     success: function (res) {
                         if (res.success) {
                             selectedIds.forEach(id => $("#trow_" + id).remove());
                             alert("Đã xóa thành công!");
+                            // Reload lại trang hiện tại
+                            if (currentKeyword) {
+                                goToPage(1);
+                            } else {
+                                location.reload();
+                            }
                         } else {
                             alert(res.message || "Có lỗi xảy ra khi xóa!");
                         }
@@ -284,28 +324,46 @@
             }
         });
 
+        // Hàm tìm kiếm
         $('#btnSearch').click(function () {
-            var keyword = $('#txtSearch').val();
-            $.ajax({
-                url: '/Admin/QLND/SearchUser',
-                type: 'GET',
-                data: { keyword: keyword },
-                success: function (data) {
-                    $('#userTableBody').html(data);
-                },
-                error: function () {
-                    alert('Lỗi khi tìm kiếm người dùng!');
-                }
-            });
+            currentKeyword = $('#txtSearch').val().trim();
+            goToPage(1); // Bắt đầu từ trang 1 khi tìm kiếm mới
         });
 
-
+        // Enter để tìm kiếm
         $('#txtSearch').keypress(function (e) {
             if (e.which === 13) {
                 $('#btnSearch').click();
             }
         });
 
+        // Hàm chuyển trang - HÀM QUAN TRỌNG NHẤT
+        function goToPage(page) {
+            var keyword = $('#txtSearch').val().trim();
+            currentKeyword = keyword;
+
+            if (keyword !== "") {
+                // Ẩn phân trang chính khi đang tìm kiếm
+                $('#mainPagination').parent().hide();
+
+                $.ajax({
+                    url: '/Admin/QLND/SearchUser',
+                    type: 'GET',
+                    data: { keyword: keyword, page: page },
+                    success: function (data) {
+                        $('#userTableBody').html(data);
+                        $('#SelectAll').prop('checked', false);
+                    },
+                    error: function () {
+                        alert('Lỗi khi tìm kiếm người dùng!');
+                    }
+                });
+            } else {
+                // Hiện lại phân trang chính khi không tìm kiếm
+                $('#mainPagination').parent().show();
+                window.location.href = '/Admin/QLND/DanhSachNguoiDung?page=' + page;
+            }
+        }
 
         // Toggle mở khóa / khóa tài khoản
         $(document).on('change', '.toggle-active', function () {
@@ -318,13 +376,13 @@
                 data: { id: id, isActive: isActive },
                 success: function (res) {
                     if (res.success) {
-                        alert(isActive ? " Tài khoản đã được mở khóa!" : " Tài khoản đã bị khóa!");
+                        alert(isActive ? "Tài khoản đã được mở khóa!" : "Tài khoản đã bị khóa!");
                     } else {
-                        alert(res.message || " Cập nhật trạng thái thất bại!");
+                        alert(res.message || "Cập nhật trạng thái thất bại!");
                     }
                 },
                 error: function () {
-                    alert(" Không thể gửi yêu cầu đến server!");
+                    alert("Không thể gửi yêu cầu đến server!");
                 }
             });
         });
@@ -340,16 +398,17 @@
                 data: { id: id, isAdmin: isAdmin },
                 success: function (res) {
                     if (res.success) {
-                        alert(isAdmin ? " Tài khoản đã được cấp quyền Admin!" : " Đã chuyển về quyền User!");
+                        alert(isAdmin ? "Tài khoản đã được cấp quyền Admin!" : "Đã chuyển về quyền User!");
                     } else {
-                        alert(res.message || " Cập nhật quyền thất bại!");
+                        alert(res.message || "Cập nhật quyền thất bại!");
                     }
                 },
                 error: function () {
-                    alert(" Không thể gửi yêu cầu đến server!");
+                    alert("Không thể gửi yêu cầu đến server!");
                 }
             });
         });
 
     </script>
 }
+
