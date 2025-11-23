@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using WebBanLapTop.Models;
 
 namespace WebBanLapTop.Areas.Admin.Controllers
@@ -12,10 +14,22 @@ namespace WebBanLapTop.Areas.Admin.Controllers
     {
         // GET: Admin/QLTH
 
-        public ActionResult DanhSachThuongHieu()
+        public ActionResult DanhSachThuongHieu(int page = 1, int pageSize = 5)
         {
             DatabaseDataContext db = new DatabaseDataContext();
-            var items = db.tb_brands;
+            var items = db.tb_brands
+                .OrderBy(c => c.brand_id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            int totalBrands = db.tb_brands.Count();
+            int totalPages = (int)Math.Ceiling((double)totalBrands / pageSize);
+
+            ViewBag.Page = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+
             return View(items);
         }
         public ActionResult Them()

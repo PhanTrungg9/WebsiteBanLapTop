@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,12 +14,26 @@ namespace WebBanLapTop.Areas.Admin.Controllers
     {
         // GET: Admin/User
 
-        public ActionResult DanhSachNguoiDung()
+        public ActionResult DanhSachNguoiDung(int page = 1, int pageSize = 5)
         {
             DatabaseDataContext db = new DatabaseDataContext();
-            var users = db.tb_users;
+
+            var users = db.tb_users
+                .OrderBy(u => u.user_id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            int totalUsers = db.tb_users.Count();
+            int totalPages = (int)Math.Ceiling((double)totalUsers / pageSize);
+
+            ViewBag.Page = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+
             return View(users);
         }
+
 
         [HttpPost]
         public JsonResult Delete(int id)
@@ -61,16 +76,23 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult SearchUser(string keyword)
+        public ActionResult SearchUser(string keyword, int page = 1, int pageSize = 5)
         {
             DatabaseDataContext db = new DatabaseDataContext();
 
-            var users = db.tb_users
-                .Where(u =>
-                    string.IsNullOrEmpty(keyword) ||
-                    u.full_name.Contains(keyword))
-                //u.email.Contains(keyword) ||
-                //u.phone.Contains(keyword))
+            var query = db.tb_users.Where(u =>
+                string.IsNullOrEmpty(keyword) ||
+                u.full_name.Contains(keyword) ||
+                u.email.Contains(keyword)
+            );
+
+            int total = query.Count();
+            int totalPages = (int)Math.Ceiling((double)total / pageSize);
+
+            var users = query
+                .OrderBy(u => u.user_id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
             // Nếu không có kết quả
@@ -79,40 +101,66 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                 return Content("<tr><td colspan='10' class='text-center text-danger'>Không tìm thấy người dùng nào</td></tr>");
             }
 
-            int stt = 1;
+            int stt = (page - 1) * pageSize + 1;
             string html = "";
 
             foreach (var user in users)
             {
                 html += $@"
-        <tr id='trow_{user.user_id}'>
-            <td><input type='checkbox' class='checkuser' value='{user.user_id}' /></td>
-            <td>{stt}</td>
-            <td>{user.full_name}</td>
-            <td>{user.user_name}</td>
-            <td>{user.password}</td>
-            <td>{user.email}</td>
-            <td>{user.phone}</td>
-            <td>{user.address}</td>
+                <tr id='trow_{user.user_id}'>
+                <td><input type='checkbox' class='checkuser' value='{user.user_id}' /></td>
+                <td>{stt}</td>
+                <td>{user.full_name}</td>
+                <td>{user.user_name}</td>
+                <td>{user.password}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.address}</td>
 
-            <!-- Toggle tròn: khóa / mở khóa -->
-            <td class='text-center'>
-                <label class='toggle-round'>
-                    <input type='checkbox' class='toggle-active' data-id='{user.user_id}' {(user.is_active == true ? "checked" : "")} />
-                    <span class='slider'></span>
-                </label>
-            </td>
+                <!-- Toggle tròn: khóa / mở khóa -->
+                <td class='text-center'>
+                    <label class='toggle-round'>
+                        <input type='checkbox' class='toggle-active' data-id='{user.user_id}' {(user.is_active == true ? "checked" : "")} />
+                        <span class='slider'></span>
+                    </label>
+                </td>
 
-            <!-- Toggle vuông: phân quyền -->
-            <td class='text-center'>
-                <label class='toggle-square'>
-                    <input type='checkbox' class='toggle-role' data-id='{user.user_id}' {(user.usertype == true ? "checked" : "")} />
-                    <span class='slider'></span>
-                </label>
-            </td>
-        </tr>";
+                <!-- Toggle vuông: phân quyền -->
+                <td class='text-center'>
+                    <label class='toggle-square'>
+                        <input type='checkbox' class='toggle-role' data-id='{user.user_id}' {(user.usertype == true ? "checked" : "")} />
+                        <span class='slider'></span>
+                    </label>
+                </td>
+                </tr>";
                 stt++;
             }
+
+            // Thêm phân trang vào kết quả trả về
+            html += "<tr><td colspan='10'>";
+            html += "<nav><ul class='pagination justify-content-center' id='searchPagination'>";
+
+            // Nút Previous
+            if (page > 1)
+            {
+                html += $"<li class='page-item'><a href='javascript:void(0)' onclick='goToPage({page - 1})' class='page-link'>«</a></li>";
+            }
+
+            // Các số trang
+            for (int i = 1; i <= totalPages; i++)
+            {
+                string activeClass = (i == page) ? "active" : "";
+                html += $"<li class='page-item {activeClass}'><a href='javascript:void(0)' onclick='goToPage({i})' class='page-link'>{i}</a></li>";
+            }
+
+            // Nút Next
+            if (page < totalPages)
+            {
+                html += $"<li class='page-item'><a href='javascript:void(0)' onclick='goToPage({page + 1})' class='page-link'>»</a></li>";
+            }
+
+            html += "</ul></nav>";
+            html += "</td></tr>";
 
             return Content(html);
         }
