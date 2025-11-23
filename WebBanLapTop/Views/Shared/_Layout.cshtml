@@ -114,11 +114,10 @@
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
-                                    <li><a class="font-weight-bold" href="~/Home/Index">Trang chủ</a></li>
-                                    <li><a class="font-weight-bold" href="">Giới Thiệu</a></li>
-                                    <li><a class="font-weight-bold" href="#">Tin Tức</a></li>
-                                    <li><a class="font-weight-bold" href="~/ProductDiscounts/Index">Khuyến mại</a></li>
-                                    <li><a class="font-weight-bold" href="~/Contact/Index">Liên Hệ</a></li>
+                                    <li><a href="/Home/Index">Trang chủ</a></li>
+                                    <li><a href="#">Giới Thiệu</a></li>
+                                    <li><a href="#">Khuyến mại</a></li>
+                                    <li><a href="contact.html">Liên Hệ</a></li>
                                 </ul>
                                 <ul class="navbar_user">
                                     <li class="search-container">
@@ -136,7 +135,7 @@
                                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
 
                                     <li class="checkout">
-                                        <a href="#">
+                                        <a href="/ShoppingCart/Index">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                                             <span id="cart-count" class="checkout_items cart-count">@CartHelper.GetCartItemCount()</span>
                                         </a>
@@ -209,8 +208,6 @@
                     </li>
                     <li class="menu_item"><a href="/Home/Index">Trang chủ</a></li>
                     <li class="menu_item"><a href="#">Giới Thiệu</a></li>
-                    <li class="menu_item"><a href="#">promotion</a></li>
-                    <li class="menu_item"><a href="#">Tin Tức</a></li>
                     <li class="menu_item"><a href="#">Khuyến mại</a></li>
                     <li class="menu_item"><a href="contact.html">Liên Hệ</a></li>
                 </ul>
@@ -289,7 +286,6 @@
             padding: 0;
             gap: 15px;
         }
-
             .navbar_user li {
                 display: flex;
                 align-items: center;
@@ -353,7 +349,6 @@
         });
         
     </script>
-
         @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
     <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
@@ -370,6 +365,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <!-- Template Javascript -->
     @*<script src="~/Content/User/js/main.js"></script>*@
+    <script src="~/Scripts/jsShopping.js"></script>
     @RenderSection("scripts", required: false)
+      <!-- Template Javascript -->
+    
 </body>
 </html>

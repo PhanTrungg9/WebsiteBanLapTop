@@ -3288,6 +3288,7 @@
     <Content Include="Content\User\js\contact_custom.js" />
     <Content Include="Content\User\js\custom.js" />
     <Content Include="Content\User\js\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jsShopping.js" />
     <Content Include="Content\User\js\single_custom.js" />
     <Content Include="Content\User\plugins\easing\easing.js" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\css\font-awesome.css" />
@@ -3469,16 +3470,6 @@
     <Content Include="Areas\Admin\Views\QLTH\DanhSachThuongHieu.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Sua.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
-    <Content Include="Models\Database.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>Database.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
-    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
-    <None Include="Models\Database.dbml.layout">
-      <DependentUpon>Database.dbml</DependentUpon>
-    </None>
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -3506,6 +3497,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\ShoppingCart\Index.cshtml" />
     <Content Include="Views\Menu\Slider.cshtml" />
     <Content Include="Uploads\images\banner5.jpg" />
     <Content Include="Views\Home\ProductList.cshtml" />
