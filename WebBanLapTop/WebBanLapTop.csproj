@@ -180,11 +180,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Database.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Database.dbml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -3466,14 +3461,6 @@
     <Content Include="Areas\Admin\Views\QLTH\DanhSachThuongHieu.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Sua.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
-    <Content Include="Models\Database.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>Database.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="Models\Database.dbml.layout">
-      <DependentUpon>Database.dbml</DependentUpon>
-    </None>
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
