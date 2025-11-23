@@ -176,6 +176,7 @@
     <Compile Include="Areas\Admin\Controllers\ThongkeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ShoppingCartController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -3282,6 +3283,7 @@
     <Content Include="Content\User\js\contact_custom.js" />
     <Content Include="Content\User\js\custom.js" />
     <Content Include="Content\User\js\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jsShopping.js" />
     <Content Include="Content\User\js\single_custom.js" />
     <Content Include="Content\User\plugins\easing\easing.js" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\css\font-awesome.css" />
@@ -3499,6 +3501,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\ShoppingCart\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

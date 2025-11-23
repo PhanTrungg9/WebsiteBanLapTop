@@ -110,7 +110,6 @@
                                 <ul class="navbar_menu">
                                     <li><a href="/Home/Index">Trang chủ</a></li>
                                     <li><a href="#">Giới Thiệu</a></li>
-                                    <li><a href="#">Tin Tức</a></li>
                                     <li><a href="#">Khuyến mại</a></li>
                                     <li><a href="contact.html">Liên Hệ</a></li>
                                 </ul>
@@ -118,9 +117,9 @@
                                     <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
                                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
                                     <li class="checkout">
-                                        <a href="#">
+                                        <a href="/ShoppingCart/Index">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                            <span id="checkout_items" class="checkout_items">2</span>
+                                            <span id="checkout_items" class="checkout_items">0</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -190,8 +189,6 @@
                     </li>
                     <li class="menu_item"><a href="/Home/Index">Trang chủ</a></li>
                     <li class="menu_item"><a href="#">Giới Thiệu</a></li>
-                    <li class="menu_item"><a href="#">promotion</a></li>
-                    <li class="menu_item"><a href="#">Tin Tức</a></li>
                     <li class="menu_item"><a href="#">Khuyến mại</a></li>
                     <li class="menu_item"><a href="contact.html">Liên Hệ</a></li>
                 </ul>
@@ -262,19 +259,20 @@
 
     </div>
 
-        @*@Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
-        <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
-        <script src="~/Content/User/styles/bootstrap4/popper.js"></script>
-        <script src="~/Content/User/styles/bootstrap4/bootstrap.min.js"></script>
-        <script src="~/Content/User/plugins/Isotope/isotope.pkgd.min.js"></script>
-        <script src="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
-        <script src="~/Content/User/plugins/easing/easing.js"></script>
-        <script src="~/Content/User/js/custom.js"></script>
+    <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
+    <script src="~/Content/User/styles/bootstrap4/popper.js"></script>
+    <script src="~/Content/User/styles/bootstrap4/bootstrap.min.js"></script>
+    <script src="~/Content/User/plugins/Isotope/isotope.pkgd.min.js"></script>
+    <script src="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+    <script src="~/Content/User/plugins/easing/easing.js"></script>
+    <script src="~/Content/User/js/custom.js"></script>
 
 
-        <!-- Template Javascript -->
-        @*<script src="~/Content/User/js/main.js"></script>*@
-        @RenderSection("scripts", required: false)
+    <!-- Template Javascript -->
+    @*<script src="~/Content/User/js/main.js"></script>*@
+    <script src="~/Scripts/jsShopping.js"></script>
+    @RenderSection("scripts", required: false)
 </body>
 </html>

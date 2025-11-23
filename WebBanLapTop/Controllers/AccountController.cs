@@ -57,6 +57,18 @@ namespace WebBanLapTop.Controllers
                 {
                     // Tạo cookie xác thực
                     FormsAuthentication.SetAuthCookie(acc.user_name, false);
+                    string returnUrl = Session["ReturnUrl"] as string;
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        Session["ReturnUrl"] = null; // Xóa sau khi dùng
+
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Đăng nhập thành công!",
+                            redirectUrl = returnUrl // ← QUAY LẠI TRANG GIỎ HÀNG
+                        });
+                    }
                     // Redirect theo role
                     if (acc.usertype == true)
                     {
