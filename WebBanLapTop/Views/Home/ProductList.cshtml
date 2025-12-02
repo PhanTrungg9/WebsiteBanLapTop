@@ -18,17 +18,19 @@
                 foreach (var category in groupdProducts)
                 {
                     <div class="section-header">
-                        <a href="">
+                        <a href="/Product/ProductCategory?categoryId=@category.CategoryId">
                             @category.CategoryName
                         </a>
                     </div>
 
                     <div class="filter-tabs">
                         <span class="filter-label">Mức giá:</span>
-                        <a href="" class="filter-tab">5 TRIỆU - 10 TRIỆU</a>
-                        <a href="" class="filter-tab">15 TRIỆU - 20 TRIỆU</a>
-                        <a href="" class="filter-tab">25 TRIỆU - 30 TRIỆU</a>
-                        <a href="" class="filter-tab">TRÊN 40 TRIỆU</a>
+                        <a href="/Product/ProductCategory?priceRange=5-10" class="filter-tab">5 TRIỆU - 10 TRIỆU</a>
+                        <a href="/Product/ProductCategory?priceRange=10-15" class="filter-tab">10 TRIỆU - 15 TRIỆU</a>
+                        <a href="/Product/ProductCategory?priceRange=15-20" class="filter-tab">15 TRIỆU - 20 TRIỆU</a>
+                        <a href="/Product/ProductCategory?priceRange=20-30" class="filter-tab">20 TRIỆU - 30 TRIỆU</a>
+                        <a href="/Product/ProductCategory?priceRange=30-40" class="filter-tab">30 TRIỆU - 40 TRIỆU</a>
+                        <a href="/Product/ProductCategory?priceRange=40%2B" class="filter-tab">TRÊN 40 TRIỆU</a>
                     </div>
 
                     <div class="products-slider">
@@ -79,7 +81,10 @@
                                 <div class="product-quantity">
                                     @if (product.quantity > 0)
                                     {
-                                        <div class="in-stock ">Còn hàng: <span class="count-quantity">@product.quantity</span> </div>
+                                        <div class="in-stock">
+                                            <i class="fas fa-check-circle"></i>
+                                            Còn hàng: <strong class="count-quantity">@product.quantity</strong>
+                                        </div>
                                     }
                                     else
                                     {
@@ -145,6 +150,7 @@
         </div>
     </div>
 </body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
 <style>
@@ -153,18 +159,9 @@
         padding: 0;
         box-sizing: border-box;
     }
-
     body {
-        font-family: Arial, sans-serif;
         background-color: #f5f5f5;
-        padding: 20px;
     }
-
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
     .section {
         margin-bottom: 40px;
     }
@@ -329,7 +326,9 @@
             .product-name a:hover {
                 color: #007bff;
             }
-
+    .in-stock{
+        color:green;
+    }
     .product_dates {
         background-color: #f8f9fa;
         padding: 8px 12px;
@@ -352,7 +351,7 @@
         padding: 10px 0;
         position: absolute;
         bottom: 60px;
-        width: 100%;
+        width: 87%;
     }
 
     .discount {
@@ -435,7 +434,16 @@
         .slick-dots li.slick-active button:before {
             color: #4169E1;
         }
+    @@media screen and (max-width: 768px){
+        .filter-tabs{
+            display:none;
+        }
+        .slick-dots {
+            margin-bottom: 5px;
+        }
+    }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script>
@@ -473,35 +481,87 @@
         $('.btnadd').on('click', function () {
             var btn = $(this);
             var productId = $(this).data('id');
-            console.log('Product ID:', productId);
+ 
+            var originalHtml = btn.html();
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
             $.ajax({
                 url: '/Home/Add',
                 type: 'POST',
                 data: { id: productId },
                 dataType: 'json',
                 success: function (response) {
-                    console.log('Response:', response);
                     if (response.success) {
-                        alert(response.message);
-                        $('.cart-count').text(response.totalItems)
-                        btn.closest('.product-card').find('.count-quantity').text(response.quantityproduct)
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: response.message || 'Đã thêm vào giỏ hàng'
+                        });
+
+                        $('.cart-count').text(response.totalItems);
+
+                        $('.cart-count').addClass('animate-bounce');
+                        setTimeout(function () {
+                            $('.cart-count').removeClass('animate-bounce');
+                        }, 1000);
 
                     } else {
                         if (response.requireLogin) {
-                            if (confirm(response.message + ' Bạn có muốn chuyển đến trang đăng nhập?')) {
-                                window.location.href = '/Account/Login';
-                            }
-                        }
-                        else {
-                            alert(response.message);
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Yêu cầu đăng nhập',
+                                text: response.message || 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Đăng nhập ngay',
+                                cancelButtonText: 'Để sau',
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/Account/Login';
+                                }
+                            });
+                        } else {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true
+                            });
+
+                            Toast.fire({
+                                icon: 'error',
+                                title: response.message || 'Không thể thêm sản phẩm'
+                            });
                         }
                     }
+                    btn.prop('disabled', false).html(originalHtml);
                 },
-                error: function () {
-                    alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.');
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.',
+                        footer: '<small>Vui lòng thử lại sau</small>',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
+                    btn.prop('disabled', false).html(originalHtml);
                 }
             });
-
         });
     });
 </script>

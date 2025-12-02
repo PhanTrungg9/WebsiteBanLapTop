@@ -1,0 +1,95 @@
+﻿.shoe-store-footer {
+    width:100%;
+    background-color: #555555 !important;
+    color: #ffffff !important;
+    padding: 50px 40px 10px !important;
+}
+
+.footer-section-title {
+    color: #ffffff !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+}
+
+.footer-description {
+    color: #b8b8b8 !important;
+    display: block !important;
+    margin-bottom: 20px !important;
+    line-height: 1;
+}
+
+.social-space {
+    margin-top: 10px;
+}
+
+.social-icon {
+    font-size: 24px !important;
+    color: #ffffff !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .social-icon:hover {
+        color: #ff4d4f !important;
+        transform: translateY(-3px);
+    }
+.footer-link {
+    color: #b8b8b8 !important;
+    display: block !important;
+    margin-bottom: 12px !important;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+    .footer-link:hover {
+        color: #ff4d4f !important;
+    }
+
+.footer-link {
+    position: relative;
+}
+
+    .footer-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background-color: #ff4d4f;
+        transition: width 0.3s ease;
+    }
+
+    .footer-link:hover::after {
+        width: 40px;
+    }
+
+
+.contact-info-space {
+    width: 100%;
+}
+
+/* Text thông tin liên hệ */
+.contact-info-text {
+    color: #b8b8b8 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .contact-info-text .anticon {
+        font-size: 16px;
+    }
+
+/* Divider */
+.footer-divider {
+    border-color: #3a3a3a !important;
+}
+
+
+.footer-copyright {
+    color: #b8b8b8 !important;
+    text-align: center;
+    font-size: 14px;
+}

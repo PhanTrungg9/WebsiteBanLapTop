@@ -43,7 +43,7 @@
 
             <div class="card-tools">
                 @*<a href="#" class="btn btn-info">Thêm mới</a>*@
-                <a href="@Url.Action("Them", "QLTH", new { area = "Admin" })" class="btn btn-info">Thêm mới</a>
+                <a href="@Url.Action("Them", "QLTH", new { area = "Admin" })" class="btn btn-info"><i class="fas fa-plus"></i> Thêm mới</a>
 
             </div>
         </div>
@@ -62,20 +62,21 @@
                     <tbody>
                         @if (Model != null && Model.Any())
                         {
-                            var i = 1;
+                      
+                            var index = (ViewBag.Page - 1) * ViewBag.PageSize + 1;
                             foreach (var item in Model)
                             {
                                 <tr id="trow_@item.brand_id">
-                                    <td>@i</td>
+                                    <td>@index</td>
                                     <td>@item.brand_id</td>
                                     <td>@item.name</td>
                                     <td>@item.description</td>
                                     <td>
-                                        <a href="/Admin/QLTH/Sua/@item.brand_id" class="btn btn-primary">Sửa</a>
-                                        <a href="#" data-id="@item.brand_id" class="btn  btn-danger btnDelete">Xóa</a>
+                                        <a href="/Admin/QLTH/Sua/@item.brand_id" class="btn btn-primary"><i class="fas fa-edit"></i>Sửa</a>
+                                        <a href="#" data-id="@item.brand_id" class="btn  btn-danger btnDelete"><i class="fas fa-trash"></i>Xóa</a>
                                     </td>
                                 </tr>
-                                i++;
+                                index++;
                             }
                         }
                         else
@@ -89,7 +90,7 @@
                 </table>
                 <div class="mt-3">
                     <nav>
-                        <ul class="pagination">
+                        <ul class="pagination d-flex justify-content-end">
                             @if (ViewBag.Page > 1)
                             {
                                 <li class="page-item">
@@ -132,22 +133,62 @@
 
     <script>
         $(".btnDelete").click(function () {
-            if (confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
-                var id = $(this).data("id");
+            var id = $(this).data("id");
+            var brandRow = $(this).closest('tr');
 
-                $.ajax({
-                    url: window.location.origin + '/Admin/QLTH/Delete',
-                    type: 'POST',
-                    data: { id: id },
-                    success: function (response) {
-                        alert(response);
-                        location.reload(); // reload lại danh sách sau khi xoá
-                    },
-                    error: function () {
-                        alert("Đã xảy ra lỗi khi gửi yêu cầu!");
-                    }
-                });
-            }
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: "Bạn sẽ không thể hoàn tác hành động này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Vâng, xóa nó!',
+                cancelButtonText: 'Hủy bỏ',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: window.location.origin + '/Admin/QLTH/Delete',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (response) {
+                            if (response.includes("thành công") || response.includes("success")) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Đã xóa!',
+                                    text: response,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    brandRow.fadeOut(400, function () {
+                                        location.reload();
+                                    });
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: response,
+                                    confirmButtonText: 'Đóng',
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Đã xảy ra lỗi khi gửi yêu cầu!',
+                                footer: '<small>Vui lòng thử lại sau</small>',
+                                confirmButtonText: 'Đóng',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    });
+                }
+            });
         });
 
     </script>

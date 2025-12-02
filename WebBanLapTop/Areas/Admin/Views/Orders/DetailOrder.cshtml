@@ -1,0 +1,352 @@
+﻿@model IEnumerable<WebBanLapTop.Models.vw_OrderDetailList>
+@{
+    ViewBag.Title = "DetailOrder";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var order = Model.FirstOrDefault();
+    var status = order.status?.Trim();
+}
+
+@section naviheader{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Admin/Home/Index" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="~/Admin/Orders/Index" class="nav-link">Đơn Hàng</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Chi tiết</a>
+        </li>
+    </ul>
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Chi tiết đơn hàng</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Home/Index">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Orders/Index">Đơn hàng</a></li>
+                    <li class="breadcrumb-item active">Chi tiết đơn hàng</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row d-flex mb-3">
+            <div class="col-6 ">
+                <a class="btn btn-secondary me-2" href="~/Admin/Orders/Index">
+                    <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                </a>
+            </div>
+            <div class="col-6 text-right">
+                <button class="btn btn-danger print-btn ml-2" onclick="downloadPDF()">
+                    <i class="fas fa-file-pdf"></i> Tải PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-info-circle"></i> Thông tin đơn hàng
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td class="text-bold" style="width:40%">Mã đơn hàng:</td>
+                                <td>
+                                    <span class="badge badge-primary">
+                                        @order.order_id
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Ngày đặt hàng:</td>
+                                <td>@Convert.ToDateTime(order.order_date).ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Trạng thái:</td>
+                                <td>
+                                    @if (string.Equals(status, "Hoàn tất"))
+                                    {
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-check-circle"></i> Đã Thanh Toán
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning">
+                                            <i class="fas fa-clock"></i> Chưa Thanh Toán
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-success">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-user"></i> Thông tin khách hàng
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td class="text-bold" style="width:40%">Tên khách hàng:</td>
+                                <td>@order.UserName</td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Số điện thoại:</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(order.Phone))
+                                    {
+                                        <span>@order.Phone</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa cập nhật<</span>
+                                    }
+
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Địa chỉ giao hàng:</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(order.address))
+                                    {
+                                        <span>@order.address</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa cập nhật<</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-shopping-cart"></i> Danh sách sản phẩm
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="bg-light">
+                                <tr class="text-center">
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 15%;">Hình ảnh</th>
+                                    <th style="width: 30%;">Tên sản phẩm</th>
+                                    <th style="width: 15%;">Đơn giá</th>
+                                    <th style="width: 10%;">Số lượng</th>
+                                    <th style="width: 15%;">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any() && Model != null)
+                                {
+                                    int index = 1;
+                                    foreach (var item in Model)
+                                    {
+
+                                        <tr>
+                                            <td class="text-center align-middle">@index</td>
+                                            <td class="text-center align-middle">
+                                                <img src="@item.ProductImage"
+                                                     style="max-width: 100px; max-height: 100px; cursor: pointer;"
+                                                     alt="@item.ProductName" />
+                                            </td>
+                                            <td class="text-center align-middle">@item.ProductName</td>
+                                            <td class="text-center align-middle">@(item.OrderPrice.HasValue ? item.OrderPrice.Value.ToString("N0"):"0") VND</td>
+                                            <td class="text-center align-middle">@item.quantity</td>
+                                            <td class="text-center align-middle">@(Convert.ToDecimal(item.OrderPrice.GetValueOrDefault() * item.quantity).ToString("N0")) VND</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 ml-auto">
+            <div class="card summary-card" data-toggle="collapse" data-target="#orderSummary">
+                <div class="card-body text-center summary-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-calculator icon-wrapper"></i>
+                            <span style="font-size: 18px; font-weight: bold;">TỔNG HÓA ĐƠN</span>
+                        </div>
+                        <i class="fas fa-chevron-down collapse-indicator"></i>
+                    </div>
+                    @{
+                        var subtotal = Model.Sum(item => item.OrderPrice.GetValueOrDefault() * item.quantity.GetValueOrDefault());
+                        var totalproduct = Model.Sum(item => item.ProductPrice.GetValueOrDefault() * item.quantity.GetValueOrDefault());
+
+                        var discountprice = totalproduct - subtotal;
+
+
+                    }
+
+                    <div class="summary-amount pulse-animation"> @Convert.ToDecimal(subtotal).ToString("N0") VND</div>
+                    <small><i class="fas fa-info-circle"></i> Click để xem chi tiết</small>
+                </div>
+                <div id="orderSummary" class="collapse show">
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <i class="fas fa-box text-primary"></i> Tạm tính (@order.TotalProduct sản phẩm)
+                            </span>
+                            <span class="detail-value">@Convert.ToDecimal(totalproduct).ToString("N0") VND</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <i class="fa fa-tag text-danger"></i>  Giảm Giá
+                            </span>
+                            <span class="detail-value">@Convert.ToDecimal(discountprice).ToString("N0") VND</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <i class="fas fa-percent text-warning"></i> Thuế VAT (0%):
+                            </span>
+                            <span class="detail-value">0 VND</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">
+                                <i class="fas fa-truck text-info"></i> Phí vận chuyển:
+                            </span>
+                            <span class="detail-value">0 VND</span>
+                        </div>
+                        <div class="detail-row total-row">
+                            <span class="detail-label">
+                                <i class="fas fa-credit-card text-primary"></i>
+                                Số tiền phải trả
+                            </span>
+                            <span class="detail-value">@Convert.ToDecimal(totalproduct).ToString("N0") VND</span>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<style>
+    .badge-primary {
+        font-size: 16px;
+        position: relative;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .summary-card {
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all.3s ease;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .summary-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .summary-amount {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 15px 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px dashed #dee2e6;
+        font-size: 16px;
+    }
+
+        .detail-row.total-row {
+            border-top: 3px solid #007bff;
+            border-bottom: none;
+            padding-top: 15px;
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin-left: -15px;
+            margin-right: -15px;
+            margin-bottom: -15px;
+        }
+
+    .detail-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .summary-card[aria-expanded="true"] .collapse-indicator {
+        transform: rotate(180deg);
+    }
+</style>
+<script>
+   function downloadPDF() {
+     var orderId = @order.order_id;
+     window.location.href = '/Admin/Orders/ExportOrderToPDF?orderId=' + orderId;
+
+
+     setTimeout(function() {
+         Swal.close();
+         Swal.fire({
+             icon: 'success',
+             title: 'Thành công!',
+             text: 'Đã tải xuống file PDF',
+             timer: 1500,
+             showConfirmButton: false
+         });
+     }, 1500);
+ }
+</script>

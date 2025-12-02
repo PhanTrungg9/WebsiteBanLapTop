@@ -158,18 +158,17 @@ namespace WebBanLapTop.Areas.Admin.Controllers
 
             DatabaseDataContext db = new DatabaseDataContext();
 
-            // kiểm tra dữ liệu đầu vào (chỉ kiểm tra, không return)
+            
             if (!string.IsNullOrEmpty(categoryIdStr))
             {
                 int categoryId;
                 if (int.TryParse(categoryIdStr, out categoryId))
                 {
-                    // tìm thương hiệu cần xóa
+                    
                     var category_obj = db.tb_categories.SingleOrDefault(o => o.category_id == categoryId);
 
                     if (category_obj != null)
                     {
-                        // XÓA CỨNG bản ghi khỏi database
                         db.tb_categories.DeleteOnSubmit(category_obj);
 
                         try

@@ -35,25 +35,67 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         }
 
 
-        [HttpPost]
-        public JsonResult Delete(int id)
-        {
-            DatabaseDataContext db = new DatabaseDataContext();
-            try
-            {
-                var user = db.tb_users.FirstOrDefault(x => x.user_id == id);
-                if (user == null)
-                    return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+        //[HttpPost]
+        //public JsonResult Delete(int id)
+        //{
+        //    DatabaseDataContext db = new DatabaseDataContext();
+        //    try
+        //    {
+        //        var user = db.tb_users.FirstOrDefault(x => x.user_id == id);
+        //        if (user == null)
+        //        {
+        //            return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+        //        }
+        //        var cart = db.tb_carts.FirstOrDefault(c => c.user_id == id);
+        //        if (cart != null)
+        //        {
+        //            var cartItems = db.tb_cart_items.Where(ci => ci.cart_id == cart.cart_id).ToList();
+        //            if (cartItems.Any())
+        //            {
+        //                db.tb_cart_items.DeleteAllOnSubmit(cartItems);
+        //                db.SubmitChanges();
+        //            }
+        //        }
+        //        var orders = db.tb_orders.Where(o => o.user_id == id).ToList();
+                
+        //        if (orders.Any())
+        //        {
+        //            foreach (var order in orders)
+        //            {
+        //                var orderDetails = db.tb_order_details.Where(od => od.order_id == order.order_id).ToList();
+        //                if (orderDetails.Any())
+        //                {
+        //                    db.tb_order_details.DeleteAllOnSubmit(orderDetails);
+        //                }
+        //            }
+        //            db.SubmitChanges();
 
-                db.tb_users.DeleteOnSubmit(user);
-                db.SubmitChanges();
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
+        //            db.tb_orders.DeleteAllOnSubmit(orders);
+        //            db.SubmitChanges();
+        //        }
+        //        var review = db.tb_reviews.Where(r => r.user_id == id).ToList();
+        //        if (review.Any())
+        //        {
+        //            db.tb_reviews.DeleteAllOnSubmit(review);
+        //            db.SubmitChanges();
+        //        }
+        //        if (cart != null)
+        //        {
+        //            db.tb_carts.DeleteOnSubmit(cart);
+        //            db.SubmitChanges();
+        //        }
+
+        //        db.tb_users.DeleteOnSubmit(user);
+        //        db.SubmitChanges();
+
+        //        return Json(new { success = true, message = "Xóa người dùng thành công!" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = "Lỗi: " + ex.Message });
+        //    }
+        //}
+
 
         [HttpPost]
         public JsonResult DeleteMulti(int[] ids)
@@ -61,13 +103,49 @@ namespace WebBanLapTop.Areas.Admin.Controllers
             DatabaseDataContext db = new DatabaseDataContext();
             try
             {
+                foreach (int id in ids)
+                {
+                    var cart = db.tb_carts.FirstOrDefault(c => c.user_id == id);
+                    if (cart != null)
+                    {
+                        var cartItems = db.tb_cart_items.Where(ci => ci.cart_id == cart.cart_id).ToList();
+                        if (cartItems.Any())
+                        {
+                            db.tb_cart_items.DeleteAllOnSubmit(cartItems);
+                        }
+                    }
+                    var orders = db.tb_orders.Where(o => o.user_id == id).ToList();
+                    if (orders.Any())
+                    {
+                        foreach (var order in orders)
+                        {
+                            var orderDetails = db.tb_order_details.Where(od => od.order_id == order.order_id).ToList();
+                            if (orderDetails.Any())
+                            {
+                                db.tb_order_details.DeleteAllOnSubmit(orderDetails);
+                            }
+                        }
+                        db.tb_orders.DeleteAllOnSubmit(orders);
+                    }
+                    var reviews = db.tb_reviews.Where(r => r.user_id == id).ToList();
+                    if (reviews.Any())
+                    {
+                        db.tb_reviews.DeleteAllOnSubmit(reviews);
+                    }
+
+                    if (cart != null)
+                    {
+                        db.tb_carts.DeleteOnSubmit(cart);
+                    }
+                }
                 var users = db.tb_users.Where(x => ids.Contains(x.user_id)).ToList();
                 if (!users.Any())
                     return Json(new { success = false, message = "Không tìm thấy bản ghi nào!" });
 
                 db.tb_users.DeleteAllOnSubmit(users);
                 db.SubmitChanges();
-                return Json(new { success = true });
+
+                return Json(new { success = true, message = "Xóa thành công!" });
             }
             catch (Exception ex)
             {

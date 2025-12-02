@@ -45,15 +45,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="CKFinder, Version=2.4.0.2631, Culture=neutral, PublicKeyToken=579e7adc719a1423, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Users\ADMIN\Downloads\ckfinder\ckfinder\bin\Release\CKFinder.dll</HintPath>
+      <HintPath>C:\Users\ADMIN\Downloads\ckfinder (1)\ckfinder\bin\Debug\CKFinder.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -179,8 +185,10 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IntroducesController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ProductDiscountsController.cs" />
+    <Compile Include="Controllers\ShoppingCartController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -2341,6 +2349,7 @@
     <Content Include="Content\assets\styles\categories_styles.css" />
     <Content Include="Content\assets\styles\contact_responsive.css" />
     <Content Include="Content\assets\styles\contact_styles.css" />
+    <Content Include="Content\assets\styles\footer.css" />
     <Content Include="Content\assets\styles\main_styles.css" />
     <Content Include="Content\assets\styles\responsive.css" />
     <Content Include="Content\assets\styles\single_responsive.css" />
@@ -3288,6 +3297,7 @@
     <Content Include="Content\User\js\contact_custom.js" />
     <Content Include="Content\User\js\custom.js" />
     <Content Include="Content\User\js\jquery-3.2.1.min.js" />
+    <Content Include="Content\User\styles\bootstrap.min.css" />
     <Content Include="Scripts\jsShopping.js" />
     <Content Include="Content\User\js\single_custom.js" />
     <Content Include="Content\User\plugins\easing\easing.js" />
@@ -3306,9 +3316,6 @@
     <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\owl.video.play.png" />
     <Content Include="Content\User\plugins\themify-icons\fonts\themify.svg" />
     <Content Include="Content\User\plugins\themify-icons\themify-icons.css" />
-    <Content Include="Content\User\styles\bootstrap4\bootstrap.min.css" />
-    <Content Include="Content\User\styles\bootstrap4\bootstrap.min.js" />
-    <Content Include="Content\User\styles\bootstrap4\popper.js" />
     <Content Include="Content\User\styles\categories_responsive.css" />
     <Content Include="Content\User\styles\categories_styles.css" />
     <Content Include="Content\User\styles\contact_responsive.css" />
@@ -3470,6 +3477,18 @@
     <Content Include="Areas\Admin\Views\QLTH\DanhSachThuongHieu.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Sua.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
+    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
+    <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
+    <Content Include="Models\Database.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>Database.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Admin\Views\Orders\DetailOrder.cshtml" />
+    <Content Include="fonts\arial.ttf" />
+    <None Include="Models\Database.dbml.layout">
+      <DependentUpon>Database.dbml</DependentUpon>
+    </None>
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -3503,6 +3522,8 @@
     <Content Include="Views\Home\ProductList.cshtml" />
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\ProductDiscounts\Index.cshtml" />
+    <Content Include="Views\Introduces\Index.cshtml" />
+    <Content Include="Views\Product\ProductCategory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

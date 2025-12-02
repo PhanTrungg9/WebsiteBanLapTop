@@ -75,14 +75,12 @@
                 <table id="tb_show" class="table table-bordered">
                     <thead>
                         <tr class="text-center">
-                            <th>STT</th>
-                            <th>Họ tên</th>
-                            <th>Mã đơn hàng</th>
-                            <th>Tên sản phẩm</th>
-                            <th style="width:200px">Hình ảnh</th>
+                            <th>Mã Đơn Hàng</th>
+                            <th>Ngày Đặt</th>
+                            <th>Khách Hàng</th>
+                            <th>Số Sản Phẩm</th>
                             <th>Tổng tiền</th>
-                            <th>Ngày giờ</th>
-                            <th>Trạng thái</th>
+                            <th>Trang Thái</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -93,15 +91,13 @@
                             foreach (var item in Model)
                             {
                                 <tr class="text-center" id="trow_@item.order_id">
-                                    <td>@index</td>
-                                    <td>@item.UserName</td>
                                     <td>@item.order_id</td>
-                                    <td>@item.ProductName</td>
-                                    <td data-id="@item.order_id" class="product-image" style="cursor: pointer; width:200px">
-                                        <img src="@item.ProductImage" alt="@item.ProductName" style="width:80px" />
-                                    </td>
-                                    <td>@(item.total_amount.HasValue ? item.total_amount.Value.ToString("N0") : "0") ₫</td>
                                     <td>@Convert.ToDateTime(item.order_date).ToString("dd/MM/yyyy")</td>
+                                    <td>@item.UserName</td>
+                                    <td>
+                                        @item.TotalProduct
+                                    </td>
+                                    <td>@(item.total_amount.HasValue ? item.total_amount.Value.ToString("N0") : "0") ₫</td>                              
                                     <td>
                                         @if (item.status == "Hoàn tất")
                                         {
@@ -112,12 +108,7 @@
                                             <span class="badge bg-warning">Chưa Thanh Toán</span>
                                         }
                                     </td>
-                                    <td>
-                                        @if (item.status == "Hoàn tất")
-                                        {
-                                            <a class="btn btn-danger btn-sm" data-id="@item.order_id" onclick="deleteOrder(this)">Xóa</a>
-                                        }
-                                    </td>
+                                    <th class="btn-detail" ><a href="/Admin/Orders/DetailOrder/@item.order_id">Xem chi tiết → </a></th>
                                 </tr>
                                 index++;
                             }
@@ -152,7 +143,13 @@
         <img id="dialogImage" src="" alt="Product Image" style="max-width: 100%; height: auto;" />
     </div>
 </div>
-
+<style>
+    .btn-detail {
+        cursor:pointer;
+        font-size:14px;
+        font-weight:700;
+    }
+</style>
 @section scripts{
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
     <script>
@@ -178,7 +175,7 @@
         function timkiem_SP() {
             var searchValue = $('#searchInput').val().trim();
             var currentUrl = '@Url.Action("Index", "Orders", new { Area = "Admin" })';
-            window.location.href = currentUrl + '?search=' + encodeURIComponent(searchValue);
+            window.location.href = '/Admin/Orders/Index?search=' + encodeURIComponent(searchValue);
         }
         $('#btnSearch').on('click', function () {
             timkiem_SP();
@@ -190,42 +187,7 @@
                 timkiem_SP();
             }
         });
-        function deleteOrder(el) {
-            var orderid = $(el).data('id');
 
-            Swal.fire({
-                title: "Bạn có chắc chắn muốn thu hồi không?",
-                text: "Một khi thu hồi là không thể phục hồi!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#c3c3c3",
-                confirmButtonText: "Đồng ý",
-                cancelButtonText: "Hủy bỏ"
-            }).then((result) => {
-                if (result.isConfirmed) {
-
-                    $.ajax({
-                        url: '/Admin/Orders/Delete',
-                        type: 'POST',
-                        data: { id: orderid },
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.success) {
-                                Swal.fire("Thành công!", "Xóa đơn hàng thành công!", "success");
-                                $('#trow_' + orderid).remove();
-                            } else {
-                                Swal.fire("Thất bại!", res.message, "error");
-                            }
-                        },
-                        error: function () {
-                            Swal.fire("Lỗi!", "Có lỗi xảy ra!", "error");
-                        }
-                    });
-
-                }
-            });
-        }
 
         function locDonHangTheoKhoangNgay() {
             var fromDate = $('#fromDate').val();
@@ -271,9 +233,8 @@
                     var badge = item.status === 'Hoàn tất'
                         ? '<span class="badge bg-success">Đã Thanh Toán</span>'
                         : '<span class="badge bg-warning">Chưa Thanh Toán</span>';
-                    var deleteButton = item.status === 'Hoàn tất'
-                        ? '<a class="btn btn-danger btn-sm" data-id="' + item.order_id + '" onclick="deleteOrder(this)">Xóa</a>'
-                        : '';
+                    var detailorder = '<a href="/Admin/Orders/DetailOrder/' + item.order_id + '">Xem chi tiết → </a>';
+
 
                     var formattedDate = '';
                     var dateString = item.order_date;
@@ -301,17 +262,13 @@
                     }
 
                     html += '<tr class="text-center" id="trow_' + item.order_id + '">' +
-                        '<td>' + (index + 1) + '</td>' +
-                        '<td>' + item.UserName + '</td>' +
                         '<td>' + item.order_id + '</td>' +
-                        '<td>' + item.ProductName + '</td>' +
-                        '<td data-id="' + item.order_id + '" class="product-image" style="cursor: pointer; width:200px">' +
-                        '<img src="' + item.ProductImage + '" alt="' + item.ProductName + '" style="width:80px" />' +
-                        '</td>' +
-                        '<td>' + (item.total_amount ? item.total_amount.toLocaleString() + ' ₫' : '0 ₫') + '</td>' +
                         '<td>' + formattedDate + '</td>' +
+                        '<td>' + item.UserName + '</td>' +
+                        '<td>' + item.TotalProduct + '</td>' +
+                        '<td>' + (item.total_amount ? item.total_amount.toLocaleString() + '₫' : '0 ₫') + '</td>' +
                         '<td>' + badge + '</td>' +
-                        '<td>' + deleteButton + '</td>' +
+                        '<td>' + detailorder + '</td>' +
                         ' </tr > '
                 });
             }
