@@ -1,0 +1,31 @@
+﻿@model List<WebBanLapTop.Models.vw_ShoppingCart>
+@using WebBanLapTop.Models
+
+@if (Model != null && Model.Any())
+{
+    <h3>GIỎ HÀNG <span style="float:right;position:relative"><small>@CartHelper.GetCartItemCount()</small></span></h3>
+    var i = 0;
+    var tongtien = decimal.Zero;
+    <div style="border:1px solid #808080;">
+        <table class="table">
+            @foreach (var item in Model)
+            {
+                tongtien += item.TotalAmount ?? decimal.Zero;
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@String.Format("{0:N0} đ", item.DiscountedPrice)</td>
+                    <td>@("x" + item.Quantity)</td>
+                </tr>
+            }
+            <tr>
+                <td class="font-weight-bold">Tổng tiền</td>
+                <td class="font-weight-bold">@String.Format("{0:N0} đ", tongtien)</td>
+            </tr>
+        </table>
+    </div>
+
+}
+else
+{
+
+}
