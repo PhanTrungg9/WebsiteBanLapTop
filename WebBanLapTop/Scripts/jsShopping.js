@@ -47,11 +47,13 @@
                 data: { id: id, quantity: quantity },
                 success: function (rs) {
                     if (rs.Success) {
-
-                        //$('#checkout_items').html(rs.Count);
-                        //$('#trow_' + id).remove();
                         alert('Số lượng đã được cập nhật');
-                        window.location.href = window.location.href; 
+                        window.location.href = window.location.href;
+                    }
+                    else {
+                        if (rs.Message != null) {
+                            alert(rs.Message);
+                        }
                     }
                 }
             });

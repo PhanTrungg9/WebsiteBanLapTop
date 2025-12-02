@@ -178,7 +178,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Doanh thu (VNĐ)',
+                            label: 'Doanh thu (đ)',
                             data: values,
                             borderColor: '#ffffff',
                             backgroundColor: 'rgba(255,255,255,0.1)',
@@ -210,7 +210,7 @@
                                 ticks: {
                                     color: '#ffffff',
                                     callback: function (value) {
-                                        return value.toLocaleString('vi-VN') + ' VNĐ';
+                                        return value.toLocaleString('vi-VN') + ' đ';
                                     }
                                 },
                                 grid: { color: 'rgba(255,255,255,0.2)' }
@@ -248,7 +248,7 @@
                 var colors = generateColors(labels.length);
                 var tong = values.reduce((sum, val) => sum + val, 0);
                 document.getElementById("tongDoanhThu").innerText =
-                    "Tổng doanh thu: " + tong.toLocaleString('vi-VN') + " VNĐ";
+                    "Tổng doanh thu: " + tong.toLocaleString('vi-VN') + "đ";
 
                 const donutCtx = document.getElementById('donutChart').getContext('2d');
                 new Chart(donutCtx, {
@@ -277,7 +277,7 @@
                                     label: function (context) {
                                         var label = context.label || '';
                                         var value = context.parsed || 0;
-                                        return label + ': ' + value.toLocaleString('vi-VN') + ' VNĐ';
+                                        return label + ': ' + value.toLocaleString('vi-VN') + ' đ';
                                     }
                                 }
                             }
