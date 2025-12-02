@@ -1,0 +1,1008 @@
+﻿@model WebBanLapTop.Models.vw_ProductDetail
+@{
+    ViewBag.Title = Model.product_name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var images = ViewBag.ProductImages as List<WebBanLapTop.Models.vw_ProductImage> ?? new List<WebBanLapTop.Models.vw_ProductImage>();
+    var reviews = ViewBag.Reviews as List<WebBanLapTop.Models.vw_ProductReview> ?? new List<WebBanLapTop.Models.vw_ProductReview>();
+    var relatedProducts = ViewBag.RelatedProducts as List<WebBanLapTop.Models.vw_CategoryProductList> ?? new List<WebBanLapTop.Models.vw_CategoryProductList>();
+}
+
+<div class="product-detail-container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="@Url.Action("Index", "Home")">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <span class="separator">/</span>
+        <a href="@Url.Action("ProductCategory", "Product", new { categoryId = Model.category_id })">
+            @Model.category_name
+        </a>
+        <span class="separator">/</span>
+        <span class="current">@Model.product_name</span>
+    </div>
+
+    <!-- Main Product Section -->
+    <div class="product-main-section">
+
+        <!-- Left: Image Gallery -->
+        <div class="product-gallery">
+
+            <!-- Thumbnail List -->
+            <div class="thumbnail-list">
+                <!-- Main Image as first thumbnail -->
+                <div class="thumbnail active" data-image="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg" : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))">
+                    <img src="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg" : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))"
+                         alt="@Model.product_name" />
+                </div>
+
+                @if (images.Any())
+                {
+                    foreach (var img in images)
+                    {
+                        <div class="thumbnail" data-image="@(string.IsNullOrEmpty(img.image) ? "/images/no-image.jpg" : (img.image.StartsWith("/") ? img.image : "/images/products/" + img.image))">
+                            <img src="@(string.IsNullOrEmpty(img.image) ? "/images/no-image.jpg" : (img.image.StartsWith("/") ? img.image : "/images/products/" + img.image))"
+                                 alt="@Model.product_name" />
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- Main Image Display -->
+            <div class="main-image-display">
+                <img id="mainProductImage"
+                     src="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg" : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))"
+                     alt="@Model.product_name" />
+
+                @if (Model.has_active_discount == 1)
+                {
+                    <div class="discount-badge">
+                        -@Model.discount_percentage.Value.ToString("0")%
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Right: Product Info -->
+        <div class="product-info-section">
+
+            <h1 class="product-title">@Model.product_name</h1>
+
+            <p class="product-description">
+                @(string.IsNullOrEmpty(Model.description) ? "Nam tempus turpis at metus scelerisque placerat nulla deumantos solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis ut..." : Model.description)
+            </p>
+
+            <!-- Free Delivery Badge -->
+            <div class="delivery-badge">
+                <i class="fas fa-shipping-fast"></i>
+                <span>FREE DELIVERY</span>
+            </div>
+
+            <!-- Price Section -->
+            <div class="price-section">
+                @if (Model.has_active_discount == 1)
+                {
+                    <div class="price-with-discount">
+                        <span class="original-price">@Model.price.Value.ToString("N0") đ</span>
+                        <span class="current-price">@Model.final_price.Value.ToString("N0") đ</span>
+                    </div>
+                }
+                else
+                {
+                    <span class="current-price">@Model.price.Value.ToString("N0") đ</span>
+                }
+
+
+            </div>
+
+
+
+            <!-- Stock Status -->
+            <div class="stock-status">
+                @if (Model.quantity > 0)
+                {
+                    <span class="in-stock">
+                        <i class="fas fa-check-circle"></i>
+                        Sẵn hàng
+                    </span>
+                }
+                else
+                {
+                    <span class="out-of-stock">
+                        <i class="fas fa-times-circle"></i>
+                        Hết hàng
+                    </span>
+                }
+            </div>
+
+            <!-- Quantity & Actions -->
+            <div class="quantity-actions">
+                <div class="quantity-selector">
+                    <label>Số lượng:</label>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" id="btnMinus">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="quantityInput" value="1" min="1" max="@Model.quantity" readonly />
+                        <button class="qty-btn plus" id="btnPlus">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn-add-to-cart" id="btnAddToCart" data-id="@Model.product_id">
+                    <i class="fas fa-shopping-cart"></i>
+                    Thêm vào giỏ hàng
+                </button>
+
+
+            </div>
+
+            <!-- Additional Info -->
+            <div class="additional-info">
+                <div class="info-item">
+                    <i class="fas fa-building"></i>
+                    <strong>Brand:</strong> @(Model.brand_name ?? "N/A")
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-tag"></i>
+                    <strong>Category:</strong> @(Model.category_name ?? "N/A")
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    @*@if (reviews.Any())
+        {
+            <div class="reviews-section">
+                <h2 class="section-title">
+                    <i class="fas fa-comments"></i> Customer Reviews (@reviews.Count)
+                </h2>
+                <div class="reviews-list">
+                    @foreach (var review in reviews)
+                    {
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="review-meta">
+                                    <strong>@review.user_name</strong>
+                                    <span class="review-date">@review.created_at.Value.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+                            <p class="review-comment">@review.comment</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }*@
+
+    <!-- Related Products Section -->
+    <div class="related-products-section">
+        <h2 class="section-title">
+            <i class="fas fa-layer-group"></i> Sản phẩm tương tự
+        </h2>
+
+        @if (relatedProducts != null && relatedProducts.Any())
+        {
+            <div class="related-products-grid">
+                @foreach (var rp in relatedProducts)
+                {
+                    <div class="related-product-card">
+
+                        @if (rp.has_active_discount == 1 && rp.amount.HasValue)
+                        {
+                            <div class="discount-badge-small">
+                                @if (rp.is_fixed == true)
+                                {
+                                    @("-" + ((rp.amount.Value / rp.price.Value) * 100).ToString("0") + "%")
+                                }
+                                else
+                                {
+                                    @("-" + rp.amount.Value + "%")
+                                }
+                            </div>
+                        }
+
+                        <a href="@Url.Action("Detail","Product",new { id = rp.product_id })">
+                            <div class="related-product-image">
+                                <img src="@(string.IsNullOrEmpty(rp.image) ? "/images/no-image.jpg" : (rp.image.StartsWith("/") ? rp.image : "/images/products/" + rp.image))"
+                                     alt="@rp.product_name" />
+                            </div>
+                        </a>
+
+                        <div class="related-product-info">
+                            <h3 class="related-product-name">
+                                <a href="@Url.Action("Detail","Product",new { id = rp.product_id })">
+                                    @rp.product_name
+                                </a>
+                            </h3>
+
+                            <div class="related-product-brand">
+                                <i class="fas fa-building"></i> @(rp.brand_name ?? "N/A")
+                            </div>
+
+                            <div class="related-product-price">
+                                @if (rp.has_active_discount == 1)
+                                {
+                                    <span class="related-original-price">@rp.price.Value.ToString("N0") đ</span>
+                                    <span class="related-current-price">@rp.final_price.Value.ToString("N0") đ</span>
+                                }
+                                else
+                                {
+                                    <span class="related-current-price">@rp.price.Value.ToString("N0") đ</span>
+                                }
+                            </div>
+
+                            <button class="btn-add-cart-small btnadd" data-id="@rp.product_id">
+                                <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-related-products">
+                <p>Không có sản phẩm tương tự.</p>
+            </div>
+        }
+    </div>
+
+
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+    }
+
+    .product-detail-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        background: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+        .breadcrumb a {
+            color: #4169E1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+            .breadcrumb a:hover {
+                color: #2a4fb8;
+            }
+
+        .breadcrumb .separator {
+            color: #999;
+        }
+
+        .breadcrumb .current {
+            color: #666;
+            font-weight: 500;
+        }
+
+    /* Main Product Section */
+    .product-main-section {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+    }
+
+    /* Product Gallery */
+    .product-gallery {
+        display: flex;
+        gap: 20px;
+    }
+
+    .thumbnail-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100px;
+    }
+
+    .thumbnail {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.3s;
+        padding: 5px;
+        background: white;
+    }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: #4169E1;
+            box-shadow: 0 2px 8px rgba(65, 105, 225, 0.3);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    .main-image-display {
+        flex: 1;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: #fafafa;
+        min-height: 500px;
+    }
+
+        .main-image-display img {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+    .discount-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+    }
+
+    /* Product Info Section */
+    .product-info-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .product-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    .product-description {
+        font-size: 15px;
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .delivery-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #f0f4ff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: #4169E1;
+        font-weight: 600;
+        width: fit-content;
+    }
+
+        .delivery-badge i {
+            font-size: 20px;
+        }
+
+    /* Price Section */
+    .price-section {
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+
+    .price-with-discount {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .original-price {
+        font-size: 20px;
+        color: #999;
+        text-decoration: line-through;
+    }
+
+    .current-price {
+        font-size: 36px;
+        font-weight: bold;
+        color: #e74c3c;
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 5px;
+        font-size: 18px;
+        color: #ffa500;
+    }
+
+        .star-rating .far {
+            color: #ddd;
+        }
+
+    /* Select Options */
+    .select-option {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .select-option label {
+            font-weight: 600;
+            color: #333;
+        }
+
+    .color-options {
+        display: flex;
+        gap: 12px;
+    }
+
+    .color-option {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s;
+    }
+
+        .color-option:hover,
+        .color-option.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+    /* Stock Status */
+    .stock-status {
+        font-size: 16px;
+    }
+
+    .in-stock {
+        color: #27ae60;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .out-of-stock {
+        color: #e74c3c;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    /* Quantity & Actions */
+    .quantity-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px 0;
+    }
+
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .quantity-selector label {
+            font-weight: 600;
+            color: #333;
+        }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .qty-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+    }
+
+        .qty-btn:hover {
+            background: #4169E1;
+            color: white;
+        }
+
+    #quantityInput {
+        width: 60px;
+        height: 40px;
+        border: none;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        border-left: 1px solid #e0e0e0;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    .btn-add-to-cart {
+        flex: 1;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+        .btn-add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+    .btn-wishlist {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #666;
+    }
+
+        .btn-wishlist:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transform: scale(1.1);
+        }
+
+    /* Additional Info */
+    .additional-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #666;
+    }
+
+        .info-item i {
+            color: #4169E1;
+            width: 20px;
+        }
+
+        .info-item strong {
+            color: #333;
+        }
+
+    /* Reviews Section */
+    .reviews-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .section-title i {
+            color: #4169E1;
+        }
+
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .review-item {
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #4169E1;
+    }
+
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .review-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #4169E1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+    }
+
+    .review-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+        .review-meta strong {
+            font-size: 16px;
+            color: #333;
+        }
+
+    .review-date {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .review-comment {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Related Products Section */
+    .related-products-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .related-products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
+
+    .related-product-card {
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 20px;
+        position: relative;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .related-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: #4169E1;
+        }
+
+    .discount-badge-small {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 12px;
+        z-index: 2;
+        box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .related-product-image {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+        .related-product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+    .related-product-card:hover .related-product-image img {
+        transform: scale(1.08);
+    }
+
+    .related-product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .related-product-name {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+        .related-product-name a {
+            color: #333;
+            text-decoration: none;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.3s;
+        }
+
+            .related-product-name a:hover {
+                color: #4169E1;
+            }
+
+    .related-product-brand {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #888;
+    }
+
+        .related-product-brand i {
+            color: #4169E1;
+        }
+
+    .related-product-price {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin: 10px 0;
+    }
+
+    .related-original-price {
+        font-size: 13px;
+        color: #999;
+        text-decoration: line-through;
+    }
+
+    .related-current-price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e74c3c;
+    }
+
+    .btn-add-cart-small {
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, #4169E1, #5B8CFF);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+        .btn-add-cart-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(65, 105, 225, 0.3);
+        }
+</style>
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Thumbnail Click
+            $('.thumbnail').on('click', function () {
+                $('.thumbnail').removeClass('active');
+                $(this).addClass('active');
+
+                var newImage = $(this).data('image');
+                $('#mainProductImage').attr('src', newImage);
+            });
+
+            // Quantity Controls
+            $('#btnPlus').on('click', function () {
+                var input = $('#quantityInput');
+                var currentVal = parseInt(input.val());
+                var maxVal = parseInt(input.attr('max'));
+
+                if (currentVal < maxVal) {
+                    input.val(currentVal + 1);
+                }
+            });
+
+            $('#btnMinus').on('click', function () {
+                var input = $('#quantityInput');
+                var currentVal = parseInt(input.val());
+                var minVal = parseInt(input.attr('min'));
+
+                if (currentVal > minVal) {
+                    input.val(currentVal - 1);
+                }
+            });
+
+
+
+            // Add to Cart - Main Product
+            $('#btnAddToCart').on('click', function () {
+                var productId = $(this).data('id');
+                var quantity = parseInt($('#quantityInput').val());
+
+                $.ajax({
+                    url: '/Home/Add',
+                    type: 'POST',
+                    data: {
+                        id: productId,
+                        quantity: quantity
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('.cart-count').text(response.totalItems);
+                        } else {
+                            if (response.requireLogin) {
+                                if (confirm(response.message + ' Bạn có muốn chuyển đến trang đăng nhập?')) {
+                                    window.location.href = '/Account/Login';
+                                }
+                            } else {
+                                alert(response.message);
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                    }
+                });
+            });
+
+            // Add to Cart - Related Products
+            $('.btnadd').on('click', function () {
+                var productId = $(this).data('id');
+                var quantity = 1;
+
+                $.ajax({
+                    url: '/Home/Add',
+                    type: 'POST',
+                    data: {
+                        id: productId,
+                        quantity: quantity
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('.cart-count').text(response.totalItems);
+                        } else {
+                            if (response.requireLogin) {
+                                if (confirm(response.message + ' Bạn có muốn chuyển đến trang đăng nhập?')) {
+                                    window.location.href = '/Account/Login';
+                                }
+                            } else {
+                                alert(response.message);
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                    }
+                });
+            });
+
+            // Prevent quantity input manual change
+            $('#quantityInput').on('keydown paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Image zoom on hover (optional enhancement)
+            $('#mainProductImage').on('mouseenter', function () {
+                $(this).css({
+                    'transform': 'scale(1.05)',
+                    'transition': 'transform 0.3s ease'
+                });
+            }).on('mouseleave', function () {
+                $(this).css('transform', 'scale(1)');
+            });
+
+            // Smooth scroll to reviews
+            $('.reviews-section').on('click', function () {
+                $('html, body').animate({
+                    scrollTop: $(this).offset().top - 20
+                }, 500);
+            });
+
+        });
+    </script>
+}

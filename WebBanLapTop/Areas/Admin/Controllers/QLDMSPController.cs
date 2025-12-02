@@ -13,6 +13,7 @@ namespace WebBanLapTop.Areas.Admin.Controllers
     public class QLDMSPController : Controller
     {
         // GET: Admin/QLDMSP
+
         public ActionResult DanhMucSanPham(int page = 1, int pageSize = 5)
         {
             DatabaseDataContext db = new DatabaseDataContext();
@@ -151,52 +152,20 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string Delete()
+        public ActionResult Toggle(int id)
         {
-            string rs = "";
-            string categoryIdStr = Request["id"];
-
             DatabaseDataContext db = new DatabaseDataContext();
-
-            
-            if (!string.IsNullOrEmpty(categoryIdStr))
+            var item = db.tb_categories.SingleOrDefault(c => c.category_id == id);
+            if (item == null)
             {
-                int categoryId;
-                if (int.TryParse(categoryIdStr, out categoryId))
-                {
-                    
-                    var category_obj = db.tb_categories.SingleOrDefault(o => o.category_id == categoryId);
-
-                    if (category_obj != null)
-                    {
-                        db.tb_categories.DeleteOnSubmit(category_obj);
-
-                        try
-                        {
-                            db.SubmitChanges();
-                            rs = "Xóa danh mục thành công!";
-                        }
-                        catch (Exception ex)
-                        {
-                            rs = "Lỗi khi xóa danh mục: " + ex.Message;
-                        }
-                    }
-                    else
-                    {
-                        rs = "Không tìm thấy danh mục cần xóa!";
-                    }
-                }
-                else
-                {
-                    rs = "Mã danh mục không hợp lệ!";
-                }
-            }
-            else
-            {
-                rs = "Thiếu mã danh mục!";
+                return Content("Không tìm thấy danh mục!");
             }
 
-            return rs;
+            // Đảo trạng thái
+            item.is_active = !item.is_active;
+            db.SubmitChanges();
+
+            return Content(item.is_active ? "Đã hiển thị danh mục!" : "Đã ẩn danh mục!");
         }
     }
 }

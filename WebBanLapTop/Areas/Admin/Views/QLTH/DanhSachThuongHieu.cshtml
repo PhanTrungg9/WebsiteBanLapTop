@@ -62,8 +62,7 @@
                     <tbody>
                         @if (Model != null && Model.Any())
                         {
-                      
-                            var index = (ViewBag.Page - 1) * ViewBag.PageSize + 1;
+                            var i = (ViewBag.Page - 1) * ViewBag.PageSize + 1;
                             foreach (var item in Model)
                             {
                                 <tr id="trow_@item.brand_id">
@@ -72,8 +71,14 @@
                                     <td>@item.name</td>
                                     <td>@item.description</td>
                                     <td>
-                                        <a href="/Admin/QLTH/Sua/@item.brand_id" class="btn btn-primary"><i class="fas fa-edit"></i>Sửa</a>
-                                        <a href="#" data-id="@item.brand_id" class="btn  btn-danger btnDelete"><i class="fas fa-trash"></i>Xóa</a>
+                                        <a href="/Admin/QLTH/Sua/@item.brand_id" class="btn btn-primary">Sửa</a>
+                                        <a href="#"
+                                           data-id="@item.brand_id"
+                                           data-status="@item.is_active"
+                                           class="btn btn-sm @(item.is_active ? "btn-warning" : "btn-success") btnToggle">
+
+                                            @(item.is_active ? "Ẩn" : "Hiện")
+                                        </a>
                                     </td>
                                 </tr>
                                 index++;
@@ -90,11 +95,11 @@
                 </table>
                 <div class="mt-3">
                     <nav>
-                        <ul class="pagination d-flex justify-content-end">
+                        <ul class="pagination" id="mainPagination">
                             @if (ViewBag.Page > 1)
                             {
                                 <li class="page-item">
-                                    <a href="?page=@(ViewBag.Page - 1)" class="page-link">«</a>
+                                    <a href="javascript:void(0)" onclick="goToPage(@(ViewBag.Page - 1))" class="page-link">«</a>
                                 </li>
                             }
 
@@ -103,13 +108,13 @@
                                 if (i == ViewBag.Page)
                                 {
                                     <li class="page-item active">
-                                        <a class="page-link">@i</a>
+                                        <a href="javascript:void(0)" class="page-link">@i</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li class="page-item">
-                                        <a href="?page=@i" class="page-link">@i</a>
+                                        <a href="javascript:void(0)" onclick="goToPage(@i)" class="page-link">@i</a>
                                     </li>
                                 }
                             }
@@ -117,7 +122,7 @@
                             @if (ViewBag.Page < ViewBag.TotalPages)
                             {
                                 <li class="page-item">
-                                    <a href="?page=@(ViewBag.Page + 1)" class="page-link">»</a>
+                                    <a href="javascript:void(0)" onclick="goToPage(@(ViewBag.Page + 1))" class="page-link">»</a>
                                 </li>
                             }
                         </ul>
@@ -130,65 +135,22 @@
     </div>
 </section>
 @section scripts{
-
     <script>
-        $(".btnDelete").click(function () {
-            var id = $(this).data("id");
-            var brandRow = $(this).closest('tr');
+        function goToPage(page) {
+            window.location.href = "?page=" + page;
+        }
 
-            Swal.fire({
-                title: 'Bạn có chắc chắn?',
-                text: "Bạn sẽ không thể hoàn tác hành động này!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Vâng, xóa nó!',
-                cancelButtonText: 'Hủy bỏ',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: window.location.origin + '/Admin/QLTH/Delete',
-                        type: 'POST',
-                        data: { id: id },
-                        success: function (response) {
-                            if (response.includes("thành công") || response.includes("success")) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Đã xóa!',
-                                    text: response,
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                    timerProgressBar: true
-                                }).then(() => {
-                                    brandRow.fadeOut(400, function () {
-                                        location.reload();
-                                    });
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Lỗi!',
-                                    text: response,
-                                    confirmButtonText: 'Đóng',
-                                    confirmButtonColor: '#d33'
-                                });
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Đã xảy ra lỗi khi gửi yêu cầu!',
-                                footer: '<small>Vui lòng thử lại sau</small>',
-                                confirmButtonText: 'Đóng',
-                                confirmButtonColor: '#d33'
-                            });
-                        }
-                    });
-                }
-            });
+        $(".btnToggle").click(function () {
+            let id = $(this).data("id");
+            let active = $(this).data("status");
+            let actionText = active ? "ẩn" : "hiện";
+
+            if (confirm("Bạn có chắc chắn muốn " + actionText + " thương hiệu này không?")) {
+                $.post("/Admin/QLTH/Toggle", { id: id }, function (response) {
+                    alert(response);
+                    location.reload();
+                });
+            }
         });
 
     </script>

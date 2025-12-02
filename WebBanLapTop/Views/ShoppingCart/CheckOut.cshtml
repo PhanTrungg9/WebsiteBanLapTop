@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Thanh Toán";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix">
+
+            <!-- Breadcrumbs -->
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a href="/Home/Index">Home</a></li>
+                    <li class="active"><a href="/"><i class="fa fa-angle-right" aria-hidden="true"></i>Giỏ hàng</a></li>
+                </ul>
+            </div>
+
+            <!-- Sidebar -->
+            <!-- Main Content -->
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1>Thanh Toán</h1>
+                    <p>Hãy kiểm tra chính xác đơn hàng bạn muốn thanh toán</p>
+                </div>
+            </div>
+            <div class="row">
+                <div id="show_success"></div>
+                <div class="col-md-8">
+                    @Html.Action("Partial_CheckOut", "ShoppingCart")
+                </div>
+                <div class="col-md-4">
+                    @Html.Action("Partial_Item_ThanhToan", "ShoppingCart")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -151,53 +151,20 @@ namespace WebBanLapTop.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string Delete()
+        public ActionResult Toggle(int id)
         {
-            string rs = "";
-            string brandIdStr = Request["id"];
-
             DatabaseDataContext db = new DatabaseDataContext();
-
-            // kiểm tra dữ liệu đầu vào (chỉ kiểm tra, không return)
-            if (!string.IsNullOrEmpty(brandIdStr))
+            var item = db.tb_brands.SingleOrDefault(b => b.brand_id == id);
+            if (item == null)
             {
-                int brandId;
-                if (int.TryParse(brandIdStr, out brandId))
-                {
-                    // tìm thương hiệu cần xóa
-                    var brand_obj = db.tb_brands.SingleOrDefault(o => o.brand_id == brandId);
-
-                    if (brand_obj != null)
-                    {
-                        // XÓA CỨNG bản ghi khỏi database
-                        db.tb_brands.DeleteOnSubmit(brand_obj);
-
-                        try
-                        {
-                            db.SubmitChanges();
-                            rs = "Xóa thương hiệu thành công!";
-                        }
-                        catch (Exception ex)
-                        {
-                            rs = "Lỗi khi xóa thương hiệu: " + ex.Message;
-                        }
-                    }
-                    else
-                    {
-                        rs = "Không tìm thấy thương hiệu cần xóa!";
-                    }
-                }
-                else
-                {
-                    rs = "mã thương hiệu không hợp lệ!";
-                }
-            }
-            else
-            {
-                rs = "Thiếu mã thương hiệu!";
+                return Content("Không tìm thấy thương hiệu!");
             }
 
-            return rs;
+            // Đảo trạng thái
+            item.is_active = !item.is_active;
+            db.SubmitChanges();
+
+            return Content(item.is_active ? "Đã hiển thị thương hiệu!" : "Đã ẩn thương hiệu!");
         }
 
     }

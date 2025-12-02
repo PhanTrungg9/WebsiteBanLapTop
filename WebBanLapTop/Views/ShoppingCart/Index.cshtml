@@ -43,13 +43,41 @@
                                 <tr class="text-center" id="trow_@item.cartitem_id">
                                     <td>@(i+1)</td>
                                     <td><img src="@item.ProductImage" width="60"></td>
-                                    <td><a href="#">@item.ProductName</a></td>
+                                    <td>
+                                        @if (item.start_date < DateTime.Now && item.end_date > DateTime.Now)
+                                        {
+                                            <a href="#">@item.ProductName</a>
+                                            <span class="badge badge-danger">SALE</span>
+                                        }
+                                        else
+                                        {
+                                            <a href="#">@item.ProductName</a>
+                                        }
+                                    </td>
                                     <td>@item.CategoryName</td>
-                                    <td>@String.Format("{0:N0} VNĐ", item.ProductPrice)</td>
+                                    <td>
+                                        @if (item.start_date < DateTime.Now && item.end_date > DateTime.Now)
+                                        {
+                                            decimal discountPrice = 0;
+                                            if (item.is_fixed == true)
+                                            {
+                                                discountPrice = (decimal)item.ProductPrice - (decimal)item.amount;
+                                            }
+                                            else
+                                            {
+                                                discountPrice = (decimal)item.ProductPrice * (1 - (decimal)item.amount / 100);
+                                            }
+                                            <span class="selling-price">@discountPrice.ToString("N0") đ</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="selling-price">@item.ProductPrice.Value.ToString("N0") đ</span>
+                                        }
+                                    </td>
                                     <td>
                                         <input type="number" class="form-control" id="Quantity_@item.cartitem_id" value="@item.Quantity" />
                                     </td>
-                                    <td>@String.Format("{0:N0} VNĐ", item.TotalAmount)</td>
+                                    <td>@String.Format("{0:N0} đ", item.TotalAmount)</td>
                                     <td>
                                         <a href="#" data-id="@item.cartitem_id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
                                         <a href="#" data-id="@item.cartitem_id" class="btn btn-sm btn-success btnUpdate">Cập nhật</a>
@@ -60,15 +88,14 @@
                             }
                             <tr>
                                 <th colspan="6" class="text-right">Tổng: </th>
-                                <th class="text-center">@String.Format("{0:N0} VNĐ", tongtien)</th>
+                                <th class="text-center">@String.Format("{0:N0} đ", tongtien)</th>
                                 <th></th>
                             </tr>
                             <tr>
                                 <th colspan="6" class="text-right"></th>
-                                <th></th>
-                                <th class="text-center">
+                                <th colspan="2" class="text-center">
                                     <a href="#" class="btn btn-warning btnDeleteAll">Xóa Hết</a>
-                                    <a href="#" class="btn btn-info">Thanh Toán</a>
+                                    <a href="/ShoppingCart/Checkout" class="btn btn-info">Thanh Toán</a>
                                 </th>
                             </tr>
                         }

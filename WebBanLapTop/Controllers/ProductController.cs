@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using WebBanLapTop.Models;
@@ -123,6 +124,44 @@ namespace WebBanLapTop.Controllers
                 .ToList();
 
             return View(products);
+        }
+        // Thêm vào ProductController.cs
+
+        public ActionResult Detail(int? id)
+        {
+            // Kiểm tra id có null không
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Product Detail
+            var product = db.vw_ProductDetails.FirstOrDefault(p => p.product_id == id.Value);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Product Images
+            ViewBag.ProductImages = db.vw_ProductImages
+                .Where(pi => pi.product_id == id.Value)
+                .ToList();
+
+            // Reviews
+            ViewBag.Reviews = db.vw_ProductReviews
+                .Where(r => r.product_id == id.Value)
+                .OrderByDescending(r => r.created_at)
+                .Take(10)
+                .ToList();
+
+            // Related Products (cùng category, khác product_id)
+            ViewBag.RelatedProducts = db.vw_CategoryProductLists
+                .Where(p => p.product_id != id.Value && (p.brand_id == product.brand_id))
+                .OrderByDescending(p => p.create_at)
+                .Take(4)
+                .ToList();
+
+            return View(product);
         }
     }
 }
