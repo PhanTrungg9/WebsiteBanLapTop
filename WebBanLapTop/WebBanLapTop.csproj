@@ -3512,6 +3512,7 @@
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\ProductDiscounts\Index.cshtml" />
     <Content Include="Views\Product\ProductCategory.cshtml" />
+    <Content Include="Views\Product\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
