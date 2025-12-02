@@ -1,86 +1,326 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Register";
 }
 <link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+
 <div class="container" style="margin-top:160px">
     <div class="row">
         <div class="col-md-12">
             <h2>@ViewBag.Title.</h2>
             <h4>Create a new account</h4>
             <hr />
-        <form id="registerForm" class="form-horizontal">
-            <!--begin::Body-->
-            <div class="card-body">
 
-                <div class="row">
-                    <div class="col-lg-5 mb-2">
-                        <label for="full_name" class="form-label">Họ Tên</label>
-                        <input type="text" class="form-control" id="full_name" name="full_name" />
-                    </div>
-                    <div class="col-lg-5 mb-2">
-                        <label for="address" class="form-label">Địa chỉ</label>
-                        <input type="text" class="form-control" id="address" name="address" />
-                    </div>
+            <form id="registerForm" class="form-horizontal">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-5 mb-2">
+                            <label for="full_name" class="form-label">Họ Tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" />
+                            <span class="error-message" id="error-full_name"></span>
+                        </div>
 
-                    <div class="col-lg-5 mb-2">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" />
-                    </div>
-                    <div class="col-lg-5 mb-2">
-                        <label for="phone" class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="phone" name="phone" />
-                    </div>
+                        <div class="col-lg-5 mb-2">
+                            <label for="address" class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="address" name="address" />
+                            <span class="error-message" id="error-address"></span>
+                        </div>
 
-                    <div class="col-lg-10 mb-2">
-                        <label for="user_name" class="form-label">Tên tài khoản</label>
-                        <input type="text" class="form-control" id="user_name" name="user_name" />
-                    </div>
-                    <div class="col-lg-5 mb-2">
-                        <label for="password" class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-control" id="password" name="password" />
-                    </div>
+                        <div class="col-lg-5 mb-2">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" />
+                            <span class="error-message" id="error-email"></span>
+                        </div>
 
-                    <div class="col-lg-5 mb-2">
-                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" />
-                    </div>
-                    <div id="registerMessage" class="mt-3"></div>
-                    <div class="col-md-offset-2 col-md-10">
-                        <button type="button" id="btn_register" class="btn btn-info">Đăng kí</button>
+                        <div class="col-lg-5 mb-2">
+                            <label for="phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="phone" name="phone" />
+                            <span class="error-message" id="error-phone"></span>
+                        </div>
+
+                        <div class="col-lg-10 mb-2">
+                            <label for="user_name" class="form-label">Tên tài khoản <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="user_name" name="user_name" />
+                            <span class="error-message" id="error-user_name"></span>
+                        </div>
+
+                        <div class="col-lg-5 mb-2">
+                            <label for="password" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" />
+                            <span class="error-message" id="error-password"></span>
+                        </div>
+
+                        <div class="col-lg-5 mb-2">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" />
+                            <span class="error-message" id="error-confirmPassword"></span>
+                        </div>
+
+                        <div id="registerMessage" class="mt-3"></div>
+
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="button" id="btn_register" class="btn btn-info">Đăng ký</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--end::Body-->
-            <!--begin::Footer-->
-            <!--end::Footer-->
-        </form>
+            </form>
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $("#btn_register").click(function () {
-        var form = $('#registerForm')[0];
-        var formData = new FormData(form);
-        $.ajax({
-            type: "POST",
-            data: formData,
-            url: window.location.origin + '/Account/In_Register',   // API xử lý
-            //data: formData,                                 // Dữ liệu form
-            processData: false,                             // Không xử lý data thành query string
-            contentType: false,                             // Không tự động set Content-Type
-            cache: false,                                   // Không cache
-            success: function (response) {
-                alert(response);
-                console.log("Ajax success:", response);
-                if (response.toLowerCase().includes("thành công")) {
-                    window.location.href = "/Account/Login";
-                }
-            },
-            error: function (data) {
-                console.log(data);
+    $(document).ready(function () {
+
+        // Hàm xóa tất cả lỗi
+        function clearAllErrors() {
+            $('.error-message').text('').hide();
+            $('.form-control').removeClass('is-invalid');
+        }
+
+        // Hàm hiển thị lỗi cho từng trường
+        function showError(fieldId, message) {
+            $('#' + fieldId).addClass('is-invalid');
+            $('#error-' + fieldId).text(message).show();
+        }
+
+        // Validate Họ Tên
+        $('#full_name').blur(function() {
+            var value = $(this).val().trim();
+            $('#error-full_name').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('full_name', 'Vui lòng nhập họ tên');
+            } else if (value.length < 2) {
+                showError('full_name', 'Họ tên phải có ít nhất 2 ký tự');
             }
+        });
+
+        // Validate Địa chỉ
+        $('#address').blur(function() {
+            var value = $(this).val().trim();
+            $('#error-address').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('address', 'Vui lòng nhập địa chỉ');
+            }
+        });
+
+        // Validate Email
+        $('#email').blur(function() {
+            var value = $(this).val().trim();
+            $('#error-email').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('email', 'Vui lòng nhập email');
+            }
+        });
+
+        // Validate Số điện thoại
+        $('#phone').blur(function() {
+            var value = $(this).val().trim();
+            $('#error-phone').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('phone', 'Vui lòng nhập số điện thoại');
+            } else if (!/^[0-9]{10,11}$/.test(value)) {
+                showError('phone', 'Số điện thoại không hợp lệ (phải có 10-11 chữ số)');
+            }
+        });
+
+        // Validate Tên tài khoản
+        $('#user_name').blur(function() {
+            var value = $(this).val().trim();
+            $('#error-user_name').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('user_name', 'Vui lòng nhập tên tài khoản');
+            } else if (value.length < 4) {
+                showError('user_name', 'Tên tài khoản phải có ít nhất 4 ký tự');
+            } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+                showError('user_name', 'Tên tài khoản chỉ chứa chữ, số và dấu gạch dưới');
+            }
+        });
+
+        // Validate Mật khẩu
+        $('#password').blur(function() {
+            var value = $(this).val();
+            $('#error-password').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('password', 'Vui lòng nhập mật khẩu');
+            } else if (value.length <3 ) {
+                showError('password', 'Mật khẩu phải có ít nhất 3 ký tự');
+            }
+
+            // Kiểm tra lại xác nhận mật khẩu nếu đã nhập
+            var confirmPass = $('#confirmPassword').val();
+            if (confirmPass !== '') {
+                $('#confirmPassword').blur();
+            }
+        });
+
+        // Validate Xác nhận mật khẩu
+        $('#confirmPassword').blur(function() {
+            var value = $(this).val();
+            var password = $('#password').val();
+            $('#error-confirmPassword').text('').hide();
+            $(this).removeClass('is-invalid');
+
+            if (value === '') {
+                showError('confirmPassword', 'Vui lòng xác nhận mật khẩu');
+            } else if (value !== password) {
+                showError('confirmPassword', 'Mật khẩu xác nhận không khớp');
+            }
+        });
+
+        // Hàm validate toàn bộ form
+        function validateForm() {
+            var isValid = true;
+            clearAllErrors();
+
+            // Kiểm tra Họ Tên
+            var fullName = $('#full_name').val().trim();
+            if (fullName === '') {
+                showError('full_name', 'Vui lòng nhập họ tên');
+                isValid = false;
+            } else if (fullName.length < 2) {
+                showError('full_name', 'Họ tên phải có ít nhất 2 ký tự');
+                isValid = false;
+            }
+
+            // Kiểm tra Địa chỉ
+            var address = $('#address').val().trim();
+            if (address === '') {
+                showError('address', 'Vui lòng nhập địa chỉ');
+                isValid = false;
+            }
+
+            // Kiểm tra Email
+            var email = $('#email').val().trim();
+            if (email === '') {
+                showError('email', 'Vui lòng nhập email');
+                isValid = false;
+            }
+            // Kiểm tra Số điện thoại
+            var phone = $('#phone').val().trim();
+            if (phone === '') {
+                showError('phone', 'Vui lòng nhập số điện thoại');
+                isValid = false;
+            } else if (!/^[0-9]{10,11}$/.test(phone)) {
+                showError('phone', 'Số điện thoại không hợp lệ (phải có 10-11 chữ số)');
+                isValid = false;
+            }
+
+            // Kiểm tra Tên tài khoản
+            var userName = $('#user_name').val().trim();
+            if (userName === '') {
+                showError('user_name', 'Vui lòng nhập tên tài khoản');
+                isValid = false;
+            } else if (userName.length < 4) {
+                showError('user_name', 'Tên tài khoản phải có ít nhất 4 ký tự');
+                isValid = false;
+            } else if (!/^[a-zA-Z0-9_]+$/.test(userName)) {
+                showError('user_name', 'Tên tài khoản chỉ chứa chữ, số và dấu gạch dưới');
+                isValid = false;
+            }
+
+            // Kiểm tra Mật khẩu
+            var password = $('#password').val();
+            if (password === '') {
+                showError('password', 'Vui lòng nhập mật khẩu');
+                isValid = false;
+            } else if (password.length < 3) {
+                showError('password', 'Mật khẩu phải có ít nhất 3 ký tự');
+                isValid = false;
+            }
+
+            // Kiểm tra Xác nhận mật khẩu
+            var confirmPassword = $('#confirmPassword').val();
+            if (confirmPassword === '') {
+                showError('confirmPassword', 'Vui lòng xác nhận mật khẩu');
+                isValid = false;
+            } else if (confirmPassword !== password) {
+                showError('confirmPassword', 'Mật khẩu xác nhận không khớp');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Xử lý click nút đăng ký
+        $("#btn_register").click(function () {
+            // Validate form
+            if (!validateForm()) {
+                // Cuộn đến trường lỗi đầu tiên
+                var firstError = $('.is-invalid').first();
+                if (firstError.length) {
+                    $('html, body').animate({
+                        scrollTop: firstError.offset().top - 100
+                    }, 500);
+                }
+                return false;
+            }
+
+            // Disable button để tránh click nhiều lần
+            $(this).prop('disabled', true).text('Đang xử lý...');
+
+            var form = $('#registerForm')[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: "POST",
+                data: formData,
+                url: window.location.origin + '/Account/In_Register',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (response) {
+                    console.log("Ajax success:", response);
+                    alert(response);
+
+                    if (response.toLowerCase().includes("thành công")) {
+                        window.location.href = "/Account/Login";
+                    } else {
+                        // Enable lại button nếu đăng ký thất bại
+                        $("#btn_register").prop('disabled', false).text('Đăng ký');
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                    alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                    $("#btn_register").prop('disabled', false).text('Đăng ký');
+                }
+            });
         });
     });
 </script>
+
+<style>
+    .text-danger {
+        color: red;
+        font-weight: bold;
+    }
+
+    .error-message {
+        display: none;
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    .mb-2 {
+        margin-bottom: 20px;
+    }
+</style>
