@@ -32,7 +32,12 @@ namespace WebBanLapTop.Controllers
             {
                 if (Session["UserID"] == null)
                 {
-                    return Json(new { success = false, message = "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.", requireLogin = true }, JsonRequestBehavior.AllowGet);
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.",
+                        requireLogin = true
+                    }, JsonRequestBehavior.AllowGet);
                 }
 
                 int userId = Convert.ToInt32(Session["UserID"]);
@@ -49,23 +54,12 @@ namespace WebBanLapTop.Controllers
                     db.SubmitChanges();
                 }
 
-                var product = db.tb_products
-                                .FirstOrDefault(p => p.product_id == id && (p.is_delete == false || p.is_delete == null));
-                if (product == null)
-                {
-                    return Json(new { success = false, message = "Sản phẩm không tồn tại." });
-                }
-
-                int stock = product.quantity ?? 0;
-                if (stock <= 0)
-                {
-                    return Json(new { success = false, message = "Sản phẩm đã hết hàng." });
-                }
-
-                var cartItem = db.tb_cart_items.FirstOrDefault(ci => ci.cart_id == cart.cart_id && ci.product_id == id);
+                var cartItem = db.tb_cart_items
+                                 .FirstOrDefault(ci => ci.cart_id == cart.cart_id && ci.product_id == id);
 
                 if (cartItem != null)
                 {
+                    // an toàn với giá trị null
                     cartItem.quantity = (cartItem.quantity ?? 0) + 1;
                 }
                 else
@@ -78,18 +72,19 @@ namespace WebBanLapTop.Controllers
                     };
                     db.tb_cart_items.InsertOnSubmit(cartItem);
                 }
-                product.quantity = stock - 1;
+
                 db.SubmitChanges();
+
                 int totalItems = db.tb_cart_items
-                                    .Where(ci => ci.cart_id == cart.cart_id)
-                                    .Sum(ci => ci.quantity ?? 0);
+                                   .Where(ci => ci.cart_id == cart.cart_id)
+                                   .Sum(ci => (int?)ci.quantity) ?? 0;
 
                 return Json(new
                 {
                     success = true,
                     message = "Sản phẩm đã được thêm vào giỏ hàng!",
-                    quantityproduct = product.quantity,
-                    totalItems = totalItems
+                    totalItems = totalItems,
+                    quantityproduct = cartItem.quantity ?? 0
                 });
             }
             catch (Exception ex)
@@ -97,5 +92,7 @@ namespace WebBanLapTop.Controllers
                 return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
     }
 }

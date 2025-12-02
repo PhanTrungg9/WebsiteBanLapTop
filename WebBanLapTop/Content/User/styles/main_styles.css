@@ -474,61 +474,58 @@ section
 {
 	margin-left: 8px;
 }
-.account:hover .account_selection
-{
-	visibility: visible;
-	opacity: 1;
-	top: 100%;
-}
-.account_selection
-{
-	display: block;
-	position: absolute;
-	right: 0;
-	top: 120%;
-	margin: 0;
-	width: 100%;
-	background: #FFFFFF;
-	visibility: hidden;
-	opacity: 0;
-	z-index: 1;
-	box-shadow: 0 0 25px rgba(63, 78, 100, 0.15);
-	-webkit-transition: opacity 0.3s ease;
-	-moz-transition: opacity 0.3s ease;
-	-ms-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: all 0.3s ease;
-}
-.account_selection li
-{
-	padding-left: 10px;
-	padding-right: 10px;
-	line-height: 50px;
-}
-.account_selection li a
-{
-	display: block;
-	color: #232530;
-	border-bottom: solid 1px #dddddd;
-	font-size: 14px;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
-}
-.account_selection li a:hover
-{
-	color: #b5aec4;
-}
-.account_selection li:last-child a
-{
-	border-bottom: none;
-}
-.account_selection li a i
-{
-	margin-right: 10px;
-}
+.account-selection {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            list-style: none;
+        }
+
+        .account-menu:hover .account-selection {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .account-selection li {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .account-selection li:last-child {
+            border-bottom: none;
+        }
+
+        .account-selection a {
+            display: block;
+            padding: 0 10px;
+            color: #232530;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            line-height: 50px;
+            border-bottom: solid 1px #dddddd;
+        }
+
+        .account-selection a:hover {
+            color: #b5aec4;
+        }
+
+        .account-selection li:last-child a {
+            border-bottom: none;
+        }
+
+        .account-selection a i {
+            margin-right: 10px;
+        }
 
 /*********************************
 3.4 Main Navigation

@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace WebBanLapTop.Controllers
 {
-    public class ProductsController : Controller
+    public class IntroducesController : Controller
     {
-        // GET: Products
+        // GET: Introduces
         public ActionResult Index()
         {
             return View();

@@ -59,7 +59,7 @@
                         </div>
                         <div class="col-md-2 col-sm-4">
                             <button type="button" id="btn_timkiem" class="btn btn-info w-75" style="height: 42px;" onclick="timkiem_SP()">
-                                Tìm kiếm
+                                <i class="fas fa-search"></i> Tìm kiếm
                             </button>
                         </div>
                         <div class="col-md-4 d-none d-md-block"></div>
@@ -433,35 +433,66 @@
                 var productId = $(this).data('id');
                 var productRow = $('#trow_' + productId);
 
-                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
-                    $.ajax({
-                        url: '/Admin/Products/Delete',
-                        type: 'POST',
-                        data: { id: productId },
-                        dataType: 'json',
-                        success: function (result) {
-                            if (result.success) {
-                                productRow.fadeOut(400, function () {
-                                    $(this).remove();
-                                    window.location.reload();
+                Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: "Bạn sẽ không thể hoàn tác hành động này!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Vâng, xóa nó!',
+                    cancelButtonText: 'Hủy bỏ',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Admin/Products/Delete',
+                            type: 'POST',
+                            data: { id: productId },
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Đã xóa!',
+                                        text: response.message || 'Sản phẩm đã được xóa thành công.',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        timerProgressBar: true
+                                    }).then(() => {
+                                        productRow.fadeOut(400, function () {
+                                            $(this).remove();
+                                            window.location.reload();
+                                        });
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi!',
+                                        text: response.message || 'Không thể xóa sản phẩm',
+                                        confirmButtonText: 'Đóng',
+                                        confirmButtonColor: '#d33'
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Có lỗi xảy ra khi xóa sản phẩm!',
+                                    footer: '<small>Vui lòng thử lại sau</small>',
+                                    confirmButtonText: 'Đóng',
+                                    confirmButtonColor: '#d33'
                                 });
-
-                                alert(result.message);
-                            } else {
-                                alert('Lỗi: ' + result.message);
                             }
-                        },
-                        error: function () {
-                            alert('Có lỗi xảy ra khi xóa sản phẩm!');
-                        }
-                    });
-                }
-
+                        });
+                    }
+                });
             });
 
             function timkiem_SP() {
                 var searchValue = $('#searchInput').val().trim();
-                var currentUrl = '@Url.Action("Index", "Products", new { Area= "Admin" })';
+                var currentUrl = '/Admin/Products/Index';
                 window.location.href = currentUrl + '?search=' + encodeURIComponent(searchValue);
             }
 
@@ -629,38 +660,79 @@
             const startDate = $('#startdate').val();
             const endDate = $('#enddate').val();
             const description = $('#description').val();
-            const discountId = parseInt($('#product_discount_id').val() || 0); // ⭐ QUAN TRỌNG: Lấy ID để biết Insert hay Update
+            const discountId = parseInt($('#product_discount_id').val() || 0);
 
             if (!productId) {
-                alert('Vui lòng chọn sản phẩm!');
-                return;
-            }
-            if (!discountType) {
-                alert('Vui lòng chọn hình thức giảm giá!');
-                return;
-            }
-            if (!discountValue || discountValue <= 0) {
-                alert('Vui lòng nhập giá trị giảm hợp lệ!');
-                return;
-            }
-            if (discountType == '0' && discountValue > 100) {
-                alert('Giá trị giảm giá theo phần trăm không được vượt quá 100%!');
-                return;
-            }
-            if (!startDate) {
-                alert('Vui lòng chọn ngày bắt đầu!');
-                return;
-            }
-            if (!endDate) {
-                alert('Vui lòng chọn ngày kết thúc!');
-                return;
-            }
-            if (new Date(endDate) <= new Date(startDate)) {
-                alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng chọn sản phẩm!',
+                    confirmButtonText: 'Đóng'
+                });
                 return;
             }
 
-            const isUpdate = discountId > 0
+            if (!discountType) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng chọn hình thức giảm giá!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+
+            if (!discountValue || discountValue <= 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Giá trị không hợp lệ',
+                    text: 'Vui lòng nhập giá trị giảm hợp lệ!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+
+            if (discountType == '0' && discountValue > 100) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Giá trị vượt quá',
+                    text: 'Giá trị giảm giá theo phần trăm không được vượt quá 100%!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+
+            if (!startDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng chọn ngày bắt đầu!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+
+            if (!endDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng chọn ngày kết thúc!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+
+            if (new Date(endDate) <= new Date(startDate)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ngày không hợp lệ',
+                    text: 'Ngày kết thúc phải sau ngày bắt đầu!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+
+            const isUpdate = discountId > 0;
 
             const data = {
                 product_id: parseInt(productId),
@@ -679,12 +751,8 @@
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
 
-           
             const url = isUpdate ? '/Admin/ProductDiscount/UpdateDiscount' : '/Admin/ProductDiscount/SaveDiscount';
             const successMessage = isUpdate ? 'Cập nhật giảm giá thành công!' : 'Thêm giảm giá thành công!';
-
-            console.log(isUpdate ? 'Updating discount...' : 'Saving new discount...', data);
-
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -692,16 +760,33 @@
                 dataType: 'json',
                 success: function (result) {
                     if (result.success) {
-                        resetDiscountForm();
-                        toggleShowAddDiscount();
-                        window.location.reload();
-                        if (selectedProductId == productId) {
-                            loadDiscount(productId);
-                        } else {
-                            selectProduct(productId, $('#product_name option:selected').text());
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: successMessage,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true
+                        }).then(() => {
+                            resetDiscountForm();
+                            toggleShowAddDiscount();
+
+                            if (selectedProductId == productId) {
+                                loadDiscount(productId);
+                            } else {
+                                selectProduct(productId, $('#product_name option:selected').text());
+                            }
+
+                            window.location.reload();
+                        });
                     } else {
-                        alert((isUpdate ? 'Cập nhật' : 'Thêm') + ' giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'));
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: (isUpdate ? 'Cập nhật' : 'Thêm') + ' giảm giá thất bại: ' + (result.message || 'Lỗi không xác định'),
+                            confirmButtonText: 'Đóng',
+                            confirmButtonColor: '#d33'
+                        });
                     }
 
                     saveBtn.disabled = false;
@@ -713,7 +798,16 @@
                         error: error,
                         responseText: xhr.responseText
                     });
-                    alert('Có lỗi xảy ra khi lưu giảm giá!');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Có lỗi xảy ra khi ' + (isUpdate ? 'cập nhật' : 'lưu') + ' giảm giá!',
+                        footer: '<small>Vui lòng thử lại sau</small>',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
+
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isUpdate ? 'Cập nhật' : 'Lưu');
                 }

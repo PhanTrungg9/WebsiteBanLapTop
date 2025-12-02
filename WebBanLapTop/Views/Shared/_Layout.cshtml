@@ -18,7 +18,9 @@
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/responsive.css">
     @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">*@
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="~/Content/assets/styles/footer.css" rel="stylesheet" />
 </head>
 <body>
     <div class="super_container">
@@ -35,7 +37,7 @@
                         <div class="col-md-6">
                             <div class="top_nav_left">Miễn phí vận chuyển trên toàn quốc</div>
                         </div>
-                        <div class="col-md-6 text-right">
+                        <div class="col-md-6 text-end">
                             <div class="top_nav_right">
                                 <ul class="top_nav_menu">
 
@@ -72,9 +74,9 @@
                                                 Tài Khoản
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
-                                            <ul class="account_selection">
-                                                <li><a href="/Account/Login"><i class="fa fa-sign-in" aria-hidden="true"></i>Đăng nhập</a></li>
-                                                <li><a href="/Account/Register"><i class="fa fa-user-plus" aria-hidden="true"></i>Đăng kí</a></li>
+                                            <ul class="account_selection" style="width:120%">
+                                                <li><a href="/Account/Login"><i class="fas fa-sign-in-alt"></i>Đăng nhập</a></li>
+                                                <li><a href="/Account/Register"><i class="fas fa-sign-in-alt"></i>Đăng kí</a></li>
                                             </ul>
                                         }
                                         else
@@ -84,8 +86,8 @@
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="account_selection">
-                                                <li><a href="~/QLHoso/Index"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
-                                                <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Đăng xuât</a></li>
+                                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
+                                                <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fas fa-sign-in-alt"></i>Đăng xuât</a></li>
                                             </ul>
                                         }
                                     </li>
@@ -110,14 +112,14 @@
                     <div class="row">
                         <div class="col-lg-12 text-right">
                             <div class="logo_container">
-                                <a href="#">colo<span>shop</span></a>
+                                <a href="~/Home/Index">colo<span>shop</span></a>
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
-                                    <li><a href="/Home/Index">Trang chủ</a></li>
-                                    <li><a href="#">Giới Thiệu</a></li>
-                                    <li><a href="/ProductDiscounts/Index">Khuyến mại</a></li>
-                                    <li><a href="/Contact/Index">Liên Hệ</a></li>
+                                    <li><a href="/Home/Index" class="fw-bold">Trang chủ</a></li>
+                                    <li><a href="/Introduces/Index" class="fw-bold">Giới Thiệu </a></li>
+                                    <li><a href="/ProductDiscounts/Index" class="fw-bold">Khuyến mại</a></li>
+                                    <li><a href="/Contact/Index" class="fw-bold">Liên Hệ</a></li>
                                 </ul>
                                 <ul class="navbar_user">
                                     <li class="search-container">
@@ -207,9 +209,9 @@
                         }
                     </li>
                     <li class="menu_item"><a href="/Home/Index">Trang chủ</a></li>
-                    <li class="menu_item"><a href="#">Giới Thiệu</a></li>
-                    <li class="menu_item"><a href="#">Khuyến mại</a></li>
-                    <li class="menu_item"><a href="contact.html">Liên Hệ</a></li>
+                    <li class="menu_item"><a href="/Introduce/Index">Giới Thiệu</a></li>
+                    <li class="menu_item"><a href="/ProductDiscounts/Index">Khuyến mại</a></li>
+                    <li class="menu_item"><a href="/Contact/Index">Liên Hệ</a></li>
                 </ul>
             </div>
         </div>
@@ -219,7 +221,7 @@
         </div>
         <!-- Newsletter -->
 
-        <div class="newsletter">
+        @*<div class="newsletter">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
@@ -238,43 +240,75 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
 
         <!-- Footer -->
 
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
-                            <ul class="footer_nav">
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">FAQs</a></li>
-                                <li><a href="contact.html">Contact us</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
-                            <ul>
-                                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-skype" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
-                            </ul>
-                        </div>
+    <footer class="shoe-store-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <h4 class="footer-section-title">COLO SHOP</h4>
+                    <p class="footer-description">
+                        Chuyên cung cấp các sản phẩm laptop chính hãng với chất lượng tốt nhất và dịch vụ hậu mãi tận tâm.
+                    </p>
+                    <div class="social-space">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="footer_nav_container">
-                            <div class="cr">©2018 All Rights Reserverd. Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#">Colorlib</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
-                        </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <h4 class="footer-section-title">LIÊN KẾT NHANH</h4>
+                    <div class="footer-links">
+                        <a href="@Url.Action("Index", "Home")" class="footer-link">Trang chủ</a>
+                        <a href="@Url.Action("Products", "Home")" class="footer-link">Sản phẩm</a>
+                        <a href="@Url.Action("About", "Home")" class="footer-link">Giới thiệu</a>
+                        <a href="@Url.Action("News", "Home")" class="footer-link">Tin tức</a>
+                        <a href="@Url.Action("Contact", "Home")" class="footer-link">Liên hệ</a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <h4 class="footer-section-title">CHÍNH SÁCH</h4>
+                    <div class="footer-links">
+                        <a href="@Url.Action("ReturnPolicy", "Policy")" class="footer-link">Chính sách đổi trả</a>
+                        <a href="@Url.Action("Privacy", "Policy")" class="footer-link">Chính sách bảo mật</a>
+                        <a href="@Url.Action("Terms", "Policy")" class="footer-link">Điều khoản dịch vụ</a>
+                        <a href="@Url.Action("BuyingGuide", "Policy")" class="footer-link">Hướng dẫn mua hàng</a>
+                        <a href="@Url.Action("Payment", "Policy")" class="footer-link">Phương thức thanh toán</a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <h4 class="footer-section-title">LIÊN HỆ</h4>
+                    <div class="contact-info-space">
+                        <p class="contact-info-text">
+                            <i class="fas fa-map-marker-alt"></i> 55 Giải Phóng, Hai Bà Trưng, TP.Hà Nội
+                        </p>
+                        <p class="contact-info-text">
+                            <i class="fas fa-phone"></i> 0123 456 789
+                        </p>
+                        <p class="contact-info-text">
+                            <i class="fas fa-envelope"></i> info@@coloshop.vn
+                        </p>
                     </div>
                 </div>
             </div>
-        </footer>
+
+            <hr class="footer-divider" />
+
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="footer-copyright">
+                        © @DateTime.Now.Year Sneaker Store. All rights reserved
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     </div>
     <style>
@@ -296,6 +330,7 @@
             padding: 0;
             gap: 15px;
         }
+
             .navbar_user li {
                 display: flex;
                 align-items: center;
@@ -324,6 +359,7 @@
             cursor: pointer;
             font-size: 16px;
         }
+
 
         #searchBox {
             width: 0;
@@ -357,9 +393,9 @@
                 }
             });
         });
-        
+
     </script>
-        @*@Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
     <script src="~/Content/User/js/jquery-3.2.1.min.js"></script>
     <script src="~/Content/User/styles/bootstrap4/popper.js"></script>
@@ -373,11 +409,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <!-- Slick JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Template Javascript -->
     @*<script src="~/Content/User/js/main.js"></script>*@
     <script src="~/Scripts/jsShopping.js"></script>
     @RenderSection("scripts", required: false)
-      <!-- Template Javascript -->
-    
+    <!-- Template Javascript -->
+
 </body>
 </html>

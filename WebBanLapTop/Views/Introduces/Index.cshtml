@@ -1,0 +1,189 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="highlight-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="divider-line"></div>
+            <h2 class="section-title">Vì sao bạn sẽ yêu  <span class="text-black"> COLO<span class="text-danger">SHOP </span></span></h2>
+            <div class="divider-line"></div>
+        </div>
+
+        <div class="cards-grid">
+            <div class="highlight-card">
+                <div class="card-icon thunderbolt">
+                    <i class="icon">⚡</i>
+                </div>
+                <h3>Xu hướng toàn cầu</h3>
+                <p>
+                    Luôn cập nhật cập nhật những mẫu laptop mới nhất từ các thương hiệu hàng đầu.
+                </p>
+            </div>
+
+            <div class="highlight-card">
+                <div class="card-icon heart">
+                    <i class="icon">❤️</i>
+                </div>
+                <h3>Chất lượng được đảm bảo</h3>
+                <p>
+                    100% chính hãng – đặt uy tín và trải nghiệm khách hàng lên
+                    hàng đầu.
+                </p>
+            </div>
+
+            <div class="highlight-card">
+                <div class="card-icon shopping">
+                    <i class="icon">🛒</i>
+                </div>
+                <h3>Trải nghiệm dễ dàng</h3>
+                <p>
+                    Mua sắm nhanh, thanh toán linh hoạt, giao hàng toàn quốc.
+                </p>
+            </div>
+
+            <div class="highlight-card">
+                <div class="card-icon trophy">
+                    <i class="icon">🏆</i>
+                </div>
+                <h3>Chính hãng & minh bạch</h3>
+                <p>
+                    Hóa đơn đầy đủ, kiểm định nguồn gốc rõ ràng cho từng sản phẩm.
+                </p>
+            </div>
+
+            <div class="highlight-card">
+                <div class="card-icon smile">
+                    <i class="icon">😊</i>
+                </div>
+                <h3>Hậu mãi tận tâm</h3>
+                <p>
+                    Đổi trả linh hoạt, hỗ trợ đổi máy mới trong 7 ngày đầu nếu gặp lỗi từ nhà sản xuất.
+                </p>
+            </div>
+
+            <div class="highlight-card">
+                <div class="card-icon community">
+                    <i class="icon">💬</i>
+                </div>
+                <h3>Cộng đồng đam mê</h3>
+                <p>
+                    Sự kiện offline/online, review chân thực từ chính khách hàng
+                    của chúng tôi.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .highlight-section {
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.divider-line {
+    width: 60px;
+    height: 2px;
+    background-color: #dc3545;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
+.text-black {
+    color: #000;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.highlight-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.thunderbolt {
+    background-color: #fff3cd;
+}
+
+.heart {
+    background-color: #f8d7da;
+}
+
+.shopping {
+    background-color: #d1ecf1;
+}
+
+.trophy {
+    background-color: #fff3cd;
+}
+
+.smile {
+    background-color: #d4edda;
+}
+
+.community {
+    background-color: #e7d6f5;
+}
+
+.highlight-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.highlight-card p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #666;
+    margin: 0;
+}
+
+
+</style>

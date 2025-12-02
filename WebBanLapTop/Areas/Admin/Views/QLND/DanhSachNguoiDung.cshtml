@@ -45,8 +45,8 @@
                 @*<a href="#" class="btn btn-info">Thêm mới</a>*@
                 <div class="d-flex align-items-center">
                     <input type="text" id="txtSearch" class="form-control mr-2" placeholder="Tìm kiếm tên hoặc email..." style="width: 250px;" />
-                    <button id="btnSearch" class="btn btn-primary mr-2">Tìm kiếm</button>
-                    <button id="btnDeleteSelected" class="btn btn-danger">Xóa </button>
+                    <button id="btnSearch" class="btn btn-primary mr-2"><i class="fas fa-search"></i> Tìm kiếm</button>
+                    <button id="btnDeleteSelected" class="btn btn-danger"> <i class="fas fa-trash"></i> Xóa </button>
                 </div>
             </div>
         </div>
@@ -120,7 +120,7 @@
                 </table>
                 <div class="mt-3">
                     <nav>
-                        <ul class="pagination" id="mainPagination">
+                        <ul class="pagination d-flex justify-content-end" id="mainPagination">
                             @if (ViewBag.Page > 1)
                             {
                                 <li class="page-item">
@@ -162,7 +162,6 @@
 </section>
 
 <style>
-    /* ========== Toggle Tròn (Khóa / Mở khóa) ========== */
     .toggle-round {
         position: relative;
         display: inline-block;
@@ -208,7 +207,7 @@
                 transform: translateX(24px);
             }
 
-    /* ========== Toggle Vuông (Phân quyền) ========== */
+ 
     .toggle-square {
         position: relative;
         display: inline-block;
@@ -264,28 +263,28 @@
             $(".checkuser").prop("checked", this.checked);
         });
 
-        $(document).on("click", ".btnDelete", function (e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            if (confirm("Bạn có chắc chắn muốn xóa người dùng này không?")) {
-                $.ajax({
-                    url: '/Admin/QLND/Delete',
-                    type: 'POST',
-                    data: { id: id },
-                    success: function (res) {
-                        if (res.success) {
-                            $("#trow_" + id).remove();
-                            alert("Đã xóa thành công!");
-                        } else {
-                            alert(res.message || "Xóa thất bại!");
-                        }
-                    },
-                    error: function () {
-                        alert("Không thể gửi yêu cầu xóa đến server!");
-                    }
-                });
-            }
-        });
+        //$(document).on("click", ".btnDelete", function (e) {
+        //    e.preventDefault();
+        //    var id = $(this).data("id");
+        //    if (confirm("Bạn có chắc chắn muốn xóa người dùng này không?")) {
+        //        $.ajax({
+        //            url: '/Admin/QLND/Delete',
+        //            type: 'POST',
+        //            data: { id: id },
+        //            success: function (res) {
+        //                if (res.success) {
+        //                    $("#trow_" + id).remove();
+        //                    alert("Đã xóa thành công!");
+        //                } else {
+        //                    alert(res.message || "Xóa thất bại!");
+        //                }
+        //            },
+        //            error: function () {
+        //                alert("Không thể gửi yêu cầu xóa đến server!");
+        //            }
+        //        });
+        //    }
+        //});
 
         $("#btnDeleteSelected").click(function () {
             var selectedIds = $(".checkuser:checked").map(function () {
@@ -293,35 +292,77 @@
             }).get();
 
             if (selectedIds.length === 0) {
-                alert("Vui lòng chọn ít nhất 1 người dùng để xóa!");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa chọn người dùng',
+                    text: 'Vui lòng chọn ít nhất 1 người dùng để xóa!',
+                    confirmButtonText: 'Đóng'
+                });
                 return;
             }
 
-            if (confirm("Bạn có chắc muốn xóa " + selectedIds.length + " người dùng đã chọn không?")) {
-                $.ajax({
-                    url: '/Admin/QLND/DeleteMulti',
-                    type: 'POST',
-                    traditional: true,
-                    data: { ids: selectedIds },
-                    success: function (res) {
-                        if (res.success) {
-                            selectedIds.forEach(id => $("#trow_" + id).remove());
-                            alert("Đã xóa thành công!");
-                            // Reload lại trang hiện tại
-                            if (currentKeyword) {
-                                goToPage(1);
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: `Bạn đang xóa ${selectedIds.length} người dùng. Không thể hoàn tác!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: `Xóa ${selectedIds.length} người`,
+                cancelButtonText: 'Hủy',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/QLND/DeleteMulti',
+                        type: 'POST',
+                        traditional: true,
+                        data: { ids: selectedIds },
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Đã xóa!',
+                                    text: `Đã xóa thành công ${selectedIds.length} người dùng.`,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    selectedIds.forEach(id => {
+                                        $("#trow_" + id).fadeOut(400, function () {
+                                            $(this).remove();
+                                        });
+                                    });
+
+                                    setTimeout(() => {
+                                        if (currentKeyword) {
+                                            goToPage(1);
+                                        } else {
+                                            location.reload();
+                                        }
+                                    }, 500);
+                                });
                             } else {
-                                location.reload();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: res.message || 'Có lỗi xảy ra khi xóa!',
+                                    confirmButtonText: 'Đóng'
+                                });
                             }
-                        } else {
-                            alert(res.message || "Có lỗi xảy ra khi xóa!");
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Không thể gửi yêu cầu xóa nhiều!',
+                                confirmButtonText: 'Đóng'
+                            });
                         }
-                    },
-                    error: function () {
-                        alert("Không thể gửi yêu cầu xóa nhiều!");
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
 
         // Hàm tìm kiếm

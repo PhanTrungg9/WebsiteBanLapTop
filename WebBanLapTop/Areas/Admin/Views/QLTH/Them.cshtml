@@ -67,27 +67,56 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $("#btn_them").click(function () {
-
-            // Lấy dữ liệu trực tiếp từ input
             var data = {
                 txt_brandid: $("#txt_brandid").val(),
                 txt_name: $("#txt_name").val(),
                 txt_description: $("#txt_description").val()
             };
+            if (!data.txt_name || data.txt_name.trim() === '') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng nhập tên thương hiệu!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
 
             $.ajax({
                 type: "POST",
                 url: "/Admin/QLTH/Insert",
                 data: data,
                 success: function (response) {
-                    alert(response); // Hiện thông báo từ Controller
-                    // Nếu muốn quay lại danh sách sau khi thêm thành công
                     if (response.includes("thành công")) {
-                        window.location.href = "/Admin/QLTH/DanhSachThuongHieu";
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true
+                        }).then(() => {
+                            window.location.href = "/Admin/QLTH/DanhSachThuongHieu";
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: response,
+                            confirmButtonText: 'Đóng',
+                            confirmButtonColor: '#d33'
+                        });
                     }
                 },
-                error: function () {
-                    alert("Có lỗi xảy ra khi thêm thương hiệu!");
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Có lỗi xảy ra khi thêm thương hiệu!',
+                        footer: '<small>Vui lòng thử lại sau</small>',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             });
         });

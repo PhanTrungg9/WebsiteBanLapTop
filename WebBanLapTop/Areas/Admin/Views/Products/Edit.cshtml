@@ -171,17 +171,41 @@
                     processData: false,
                     contentType: false,
                     cache: false,
+                    dataType: 'json', 
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
-                            $('#form-act')[0].reset();
-                            window.location.href = '/Admin/Products/Index';
-
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: response.message || 'Cập nhật sản phẩm thành công!',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true
+                            }).then(() => {
+                                $('#form-act')[0].reset();
+                                window.location.href = '/Admin/Products/Index';
+                            });
                         } else {
-                            alert(response.message || 'Cập nhật sản phẩm thất bại');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: response.message || 'Cập nhật sản phẩm thất bại',
+                                confirmButtonText: 'Đóng',
+                                confirmButtonColor: '#d33'
+                            });
                         }
                     },
-                })
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Đã xảy ra lỗi trong quá trình cập nhật!',
+                            footer: '<small>Vui lòng thử lại sau</small>',
+                            confirmButtonText: 'Đóng',
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+                });
             });
 
         });

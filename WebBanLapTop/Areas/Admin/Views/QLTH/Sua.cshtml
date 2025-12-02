@@ -68,11 +68,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Lấy id thật cuối cùng trong URL (bỏ qua các phần thừa)
             var urlParts = window.location.pathname.split('/');
-            var brandId = urlParts[urlParts.length - 1]; // lấy phần tử cuối
+            var brandId = urlParts[urlParts.length - 1];
             if (isNaN(brandId) || brandId === "") {
-                console.error("ID thương hiệu không hợp lệ:", brandId);
+                //console.error("ID thương hiệu không hợp lệ:", brandId);
                 return;
             }
 
@@ -95,33 +94,74 @@
                 }
             });
         });
-    </script>
-
-    <script>
-        // Khi bấm nút cập nhật
         $("#btn_capnhat").click(function () {
             var id = $("#txt_brandid").val();
             var name = $("#txt_name").val();
             var description = $("#txt_description").val();
 
-            $.ajax({
-                url: '/Admin/QLTH/CapNhat',
-                type: 'POST',
-                data: {
-                    brand_id: id,
-                    name: name,
-                    description: description
-                },
-                success: function (res) {
-                    if (res.success) {
-                        alert(res.message);
-                        window.location.href = '/Admin/QLTH/DanhSachThuongHieu';
-                    } else {
-                        alert(res.message);
-                    }
-                },
-                error: function () {
-                    alert("Không thể gửi yêu cầu đến server!");
+            if (!name || name.trim() === '') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng nhập tên thương hiệu!',
+                    confirmButtonText: 'Đóng'
+                });
+                return;
+            }
+            Swal.fire({
+                title: 'Xác nhận cập nhật',
+                text: "Bạn có chắc chắn muốn cập nhật thương hiệu này?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Cập nhật',
+                cancelButtonText: 'Hủy bỏ',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/QLTH/CapNhat',
+                        type: 'POST',
+                        data: {
+                            brand_id: id,
+                            name: name,
+                            description: description
+                        },
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công!',
+                                    text: res.message || 'Cập nhật thương hiệu thành công!',
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    window.location.href = '/Admin/QLTH/DanhSachThuongHieu';
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: res.message || 'Cập nhật thương hiệu thất bại!',
+                                    confirmButtonText: 'Đóng',
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Không thể gửi yêu cầu đến server!',
+                                footer: '<small>Vui lòng kiểm tra kết nối và thử lại</small>',
+                                confirmButtonText: 'Đóng',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    });
                 }
             });
         });

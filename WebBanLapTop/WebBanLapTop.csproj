@@ -44,15 +44,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="CKFinder, Version=2.4.0.2631, Culture=neutral, PublicKeyToken=579e7adc719a1423, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\ckfinder (1)\ckfinder\bin\Debug\CKFinder.dll</HintPath>
+      <HintPath>C:\Users\ADMIN\Downloads\ckfinder (1)\ckfinder\bin\Debug\CKFinder.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -177,9 +183,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IntroducesController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ProductDiscountsController.cs" />
-    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ShoppingCartController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2497,6 +2503,7 @@
     <Content Include="Content\assets\styles\categories_styles.css" />
     <Content Include="Content\assets\styles\contact_responsive.css" />
     <Content Include="Content\assets\styles\contact_styles.css" />
+    <Content Include="Content\assets\styles\footer.css" />
     <Content Include="Content\assets\styles\main_styles.css" />
     <Content Include="Content\assets\styles\responsive.css" />
     <Content Include="Content\assets\styles\single_responsive.css" />
@@ -3470,10 +3477,126 @@
     <Content Include="Content\User\js\contact_custom.js" />
     <Content Include="Content\User\js\custom.js" />
     <Content Include="Content\User\js\jquery-3.2.1.min.js" />
+    <Content Include="Content\User\styles\bootstrap.min.css" />
+    <Content Include="Scripts\jsShopping.js" />
     <Content Include="Content\User\js\single_custom.js" />
     <Content Include="Content\User\plugins\easing\easing.js" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\css\font-awesome.css" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\css\font-awesome.min.css" />
+    <Content Include="Content\User\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\User\plugins\font-awesome-4.7.0\HELP-US-OUT.txt" />
+    <Content Include="Content\User\plugins\Isotope\isotope.pkgd.min.js" />
+    <Content Include="Content\User\plugins\jquery-ui-1.12.1.custom\jquery-ui.css" />
+    <Content Include="Content\User\plugins\jquery-ui-1.12.1.custom\jquery-ui.js" />
+    <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\ajax-loader.gif" />
+    <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\animate.css" />
+    <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\owl.carousel.css" />
+    <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\owl.carousel.js" />
+    <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\owl.theme.default.css" />
+    <Content Include="Content\User\plugins\OwlCarousel2-2.2.1\owl.video.play.png" />
+    <Content Include="Content\User\plugins\themify-icons\fonts\themify.svg" />
+    <Content Include="Content\User\plugins\themify-icons\themify-icons.css" />
+    <Content Include="Content\User\styles\categories_responsive.css" />
+    <Content Include="Content\User\styles\categories_styles.css" />
+    <Content Include="Content\User\styles\contact_responsive.css" />
+    <Content Include="Content\User\styles\contact_styles.css" />
+    <Content Include="Content\User\styles\main_styles.css" />
+    <Content Include="Content\User\styles\responsive.css" />
+    <Content Include="Content\User\styles\single_responsive.css" />
+    <Content Include="Content\User\styles\single_styles.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootstrap.bundle.js" />
+    <Content Include="Scripts\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bootstrap.esm.js" />
+    <Content Include="Scripts\bootstrap.esm.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Content\Admin\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.css.map" />
+    <Content Include="Content\Admin\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.min.css.map" />
+    <Content Include="Content\Admin\plugins\bootstrap-colorpicker\js\bootstrap-colorpicker.js.map" />
+    <Content Include="Content\Admin\plugins\bootstrap-colorpicker\js\bootstrap-colorpicker.min.js.map" />
+    <Content Include="Content\Admin\plugins\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Include="Content\Admin\plugins\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Content\Admin\plugins\bootstrap\js\bootstrap.js.map" />
+    <Content Include="Content\Admin\plugins\bootstrap\js\bootstrap.min.js.map" />
+    <Content Include="Content\Admin\plugins\bs-custom-file-input\bs-custom-file-input.js.map" />
+    <Content Include="Content\Admin\plugins\bs-custom-file-input\bs-custom-file-input.min.js.map" />
+    <Content Include="Content\Admin\plugins\bs-stepper\css\bs-stepper.css.map" />
+    <Content Include="Content\Admin\plugins\bs-stepper\css\bs-stepper.min.css.map" />
+    <Content Include="Content\Admin\plugins\bs-stepper\js\bs-stepper.js.map" />
+    <Content Include="Content\Admin\plugins\bs-stepper\js\bs-stepper.min.js.map" />
+    <Content Include="Content\Admin\plugins\dropzone\dropzone.js.map" />
+    <Content Include="Content\Admin\plugins\ekko-lightbox\ekko-lightbox.js.map" />
+    <Content Include="Content\Admin\plugins\ekko-lightbox\ekko-lightbox.min.js.map" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-brands-400.eot" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-brands-400.ttf" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-brands-400.woff" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-brands-400.woff2" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-regular-400.eot" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-regular-400.ttf" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-regular-400.woff" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-regular-400.woff2" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-solid-900.eot" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-solid-900.ttf" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-solid-900.woff" />
+    <Content Include="Content\Admin\plugins\fontawesome-free\webfonts\fa-solid-900.woff2" />
+    <Content Include="Content\Admin\plugins\icheck-bootstrap\LICENSE" />
+    <Content Include="Content\Admin\plugins\ion-rangeslider\License.md" />
+    <Content Include="Content\Admin\plugins\jquery\jquery.min.map" />
+    <Content Include="Content\Admin\plugins\jquery\jquery.slim.min.map" />
+    <Content Include="Content\Admin\plugins\moment\locales.min.js.map" />
+    <Content Include="Content\Admin\plugins\moment\moment-with-locales.min.js.map" />
+    <Content Include="Content\Admin\plugins\moment\moment.min.js.map" />
+    <Content Include="Content\Admin\plugins\pdfmake\pdfmake.js.map" />
+    <Content Include="Content\Admin\plugins\pdfmake\pdfmake.min.js.map" />
+    <Content Include="Content\Admin\plugins\popper\esm\popper-utils.js.map" />
+    <Content Include="Content\Admin\plugins\popper\esm\popper-utils.min.js.map" />
+    <Content Include="Content\Admin\plugins\popper\esm\popper.js.map" />
+    <Content Include="Content\Admin\plugins\popper\esm\popper.min.js.map" />
+    <Content Include="Content\Admin\plugins\popper\popper-utils.js.map" />
+    <Content Include="Content\Admin\plugins\popper\popper-utils.min.js.map" />
+    <Content Include="Content\Admin\plugins\popper\popper.js.map" />
+    <Content Include="Content\Admin\plugins\popper\popper.min.js.map" />
+    <Content Include="Content\Admin\plugins\popper\umd\popper-utils.js.map" />
+    <Content Include="Content\Admin\plugins\popper\umd\popper-utils.min.js.map" />
+    <Content Include="Content\Admin\plugins\popper\umd\popper.js.flow" />
+    <Content Include="Content\Admin\plugins\popper\umd\popper.js.map" />
+    <Content Include="Content\Admin\plugins\popper\umd\popper.min.js.map" />
+    <Content Include="Content\Admin\plugins\summernote\font\summernote.eot" />
+    <Content Include="Content\Admin\plugins\summernote\font\summernote.ttf" />
+    <Content Include="Content\Admin\plugins\summernote\font\summernote.woff" />
+    <Content Include="Content\Admin\plugins\summernote\font\summernote.woff2" />
+    <Content Include="Content\Admin\plugins\summernote\summernote-bs4.js.map" />
+    <Content Include="Content\Admin\plugins\summernote\summernote-bs4.min.js.map" />
+    <Content Include="Content\Admin\plugins\summernote\summernote-lite.js.map" />
+    <Content Include="Content\Admin\plugins\summernote\summernote-lite.min.js.map" />
+    <Content Include="Content\Admin\plugins\summernote\summernote.js.map" />
+    <Content Include="Content\Admin\plugins\summernote\summernote.min.js.map" />
+    <Content Include="Content\Admin\plugins\toastr\toastr.js.map" />
+    <Content Include="Content\Admin\dist\css\adminlte.css.map" />
+    <Content Include="Content\Admin\dist\css\adminlte.min.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.components.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.components.min.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.core.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.core.min.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.extra-components.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.extra-components.min.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.light.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.light.min.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.pages.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.pages.min.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.plugins.css.map" />
+    <Content Include="Content\Admin\dist\css\alt\adminlte.plugins.min.css.map" />
+    <Content Include="Content\Admin\dist\js\.eslintrc.json" />
+    <Content Include="Content\Admin\dist\js\adminlte.js.map" />
+    <Content Include="Content\Admin\dist\js\adminlte.min.js.map" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Sidebar.cshtml" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\User\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
@@ -3595,11 +3718,15 @@
     <Content Include="Areas\Admin\Views\QLTH\DanhSachThuongHieu.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Sua.cshtml" />
     <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
+    <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
+    <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
     <Content Include="Models\Database.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>Database.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\Admin\Views\Orders\DetailOrder.cshtml" />
+    <Content Include="fonts\arial.ttf" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>
@@ -3719,8 +3846,8 @@
     <Content Include="Views\Home\ProductList.cshtml" />
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\ProductDiscounts\Index.cshtml" />
+    <Content Include="Views\Introduces\Index.cshtml" />
     <Content Include="Views\Product\ProductCategory.cshtml" />
-    <Content Include="Views\Product\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
