@@ -35,14 +35,18 @@
             <!-- Sidebar Filter -->
             <aside class="filter-sidebar">
 
-                <!-- CATEGORY LIST -->
+                <!-- CATEGORY LIST - FIXED VERSION -->
                 <div class="filter-section">
                     <h3 class="filter-title">
                         <i class="fas fa-list"></i> Danh mục
                     </h3>
                     <ul class="filter-list">
                         <li>
-                            <a href="@Url.Action("ProductCategory", "Product")"
+                            <a href="@Url.Action("ProductCategory", "Product", new {
+                   priceRange = Request["priceRange"],
+                   brand = Request["brand"],
+                   sort = Request["sort"]
+               })"
                                class="@(catId == null ? "active" : "")">
                                 Tất cả sản phẩm
                             </a>
@@ -53,7 +57,12 @@
                             foreach (var cat in categories)
                             {
                                 <li>
-                                    <a href="@Url.Action("ProductCategory", "Product", new { categoryId = cat.category_id })"
+                                    <a href="@Url.Action("ProductCategory", "Product", new {
+                           categoryId = cat.category_id,
+                           priceRange = Request["priceRange"],
+                           brand = Request["brand"],
+                           sort = Request["sort"]
+                       })"
                                        class="@(catId == cat.category_id ? "active" : "")">
                                         @cat.name
                                     </a>

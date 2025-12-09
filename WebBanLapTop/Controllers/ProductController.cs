@@ -130,7 +130,6 @@ namespace WebBanLapTop.Controllers
 
             return View(products);
         }
-        // Thêm vào ProductController.cs
 
         public ActionResult Detail(int? id)
         {
@@ -169,85 +168,116 @@ namespace WebBanLapTop.Controllers
             return View(product);
         }
         [HttpPost]
-        public JsonResult AddReview(int productId, string comment)
+        public JsonResult Add(int id, int qty)
         {
             try
             {
+                // Kiểm tra đăng nhập
                 if (Session["UserID"] == null)
                 {
-                    return Json(new { success = false, message = "Vui lòng đăng nhập để đánh giá!" });
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Vui lòng đăng nhập để thêm vào giỏ hàng.",
+                        requireLogin = true
+                    });
                 }
 
-                int userId = (int)Session["UserID"];
-
-                if (string.IsNullOrWhiteSpace(comment))
+                // Validate số lượng
+                if (qty <= 0)
                 {
-                    return Json(new { success = false, message = "Nội dung đánh giá không được để trống!" });
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Số lượng phải lớn hơn 0."
+                    });
                 }
 
-                var newReview = new tb_review
-                {
-                    user_id = userId,
-                    product_id = productId,
-                    comment = comment.Trim(),
-                    created_at = DateTime.Now
-                };
+                int userId = Convert.ToInt32(Session["UserID"]);
 
-                db.tb_reviews.InsertOnSubmit(newReview);
+                // Kiểm tra sản phẩm có tồn tại không
+                var product = db.tb_products.FirstOrDefault(p => p.product_id == id);
+                if (product == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Sản phẩm không tồn tại."
+                    });
+                }
+
+                // Kiểm tra tồn kho (nếu có trường stock/quantity trong bảng product)
+                // if (product.stock < qty)
+                // {
+                //     return Json(new
+                //     {
+                //         success = false,
+                //         message = $"Sản phẩm chỉ còn {product.stock} sản phẩm trong kho."
+                //     });
+                // }
+
+                // Lấy hoặc tạo giỏ hàng
+                var cart = db.tb_carts.FirstOrDefault(c => c.user_id == userId);
+                if (cart == null)
+                {
+                    cart = new tb_cart
+                    {
+                        user_id = userId,
+                        created_at = DateTime.Now
+                    };
+                    db.tb_carts.InsertOnSubmit(cart);
+                    db.SubmitChanges();
+                }
+
+                // Kiểm tra sản phẩm đã có trong giỏ chưa
+                var cartItem = db.tb_cart_items
+                                 .FirstOrDefault(ci => ci.cart_id == cart.cart_id && ci.product_id == id);
+
+                if (cartItem != null)
+                {
+                    // Cộng dồn số lượng
+                    int newQuantity = (cartItem.quantity ?? 0) + qty;
+
+                    // Kiểm tra tồn kho sau khi cộng dồn (nếu cần)
+                    // if (product.stock < newQuantity)
+                    // {
+                    //     return Json(new
+                    //     {
+                    //         success = false,
+                    //         message = $"Không thể thêm. Tổng số lượng ({newQuantity}) vượt quá tồn kho ({product.stock})."
+                    //     });
+                    // }
+
+                    cartItem.quantity = newQuantity;
+                    
+                }
+                else
+                {
+                    // Thêm mới sản phẩm vào giỏ
+                    cartItem = new tb_cart_item
+                    {
+                        cart_id = cart.cart_id,
+                        product_id = id,
+                        quantity = qty,
+                        
+                    };
+                    db.tb_cart_items.InsertOnSubmit(cartItem);
+                }
+
                 db.SubmitChanges();
 
-                var user = db.tb_users.FirstOrDefault(u => u.user_id == userId);
+                // Tính tổng số lượng sản phẩm trong giỏ
+                int totalItems = db.tb_cart_items
+                                   .Where(ci => ci.cart_id == cart.cart_id)
+                                   .Sum(ci => (int?)ci.quantity) ?? 0;
 
                 return Json(new
                 {
                     success = true,
-                    message = "Đánh giá của bạn đã được gửi thành công!",
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
-            }
-        }
-        [HttpPost]
-        public JsonResult EditReview(int reviewId, string comment)
-        {
-            try
-            {
-                if (Session["UserID"] == null)
-                {
-                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
-                }
-
-                int userId = (int)Session["UserID"];
-
-                // Validate comment
-                if (string.IsNullOrWhiteSpace(comment))
-                {
-                    return Json(new { success = false, message = "Nội dung đánh giá không được để trống!" });
-                }
-
-                // Tìm review
-                var review = db.tb_reviews.FirstOrDefault(r => r.review_id == reviewId);
-
-                if (review == null)
-                {
-                    return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
-                }
-
-                if (review.user_id != userId)
-                {
-                    return Json(new { success = false, message = "Bạn không có quyền chỉnh sửa đánh giá này!" });
-                }
-
-                review.comment = comment.Trim();
-                review.created_at = DateTime.Now;
-
-                db.SubmitChanges();
-                return Json(new
-                {
-                    success = true,
-                    message = "Cập nhật đánh giá thành công!",
+                    message = $"Đã thêm {qty} sản phẩm vào giỏ hàng!",
+                    totalItems = totalItems,
+                    quantityProduct = cartItem.quantity ?? 0,
+                    productName = product.name // Thêm tên sản phẩm để hiển thị
                 });
             }
             catch (Exception ex)
@@ -299,3 +329,4 @@ namespace WebBanLapTop.Controllers
         }
     }
 }
+        
