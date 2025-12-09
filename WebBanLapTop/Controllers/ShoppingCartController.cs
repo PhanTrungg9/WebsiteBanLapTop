@@ -165,10 +165,11 @@ namespace WebBanLapTop.Controllers
                     count++;
                 }
 
-                return Json(new { Count = count , JsonRequestBehavior.AllowGet });
+                return Json(new { Count = count, JsonRequestBehavior.AllowGet });
             }
             return Json(new { Count = 0 }, JsonRequestBehavior.AllowGet);
         }
+
 
         [AllowAnonymous]
         [HttpPost]

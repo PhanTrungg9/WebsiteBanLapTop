@@ -30,9 +30,9 @@
         <div class="product-gallery">
 
             <!-- Thumbnail List -->
-            <div class="thumbnail-list">
-                <!-- Main Image as first thumbnail -->
-                <div class="thumbnail active" data-image="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg" : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))">
+            <!--<div class="thumbnail-list">-->
+            <!-- Main Image as first thumbnail -->
+            <!--<div class="thumbnail active" data-image="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg" : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))">
                     <img src="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg" : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))"
                          alt="@Model.product_name" />
                 </div>
@@ -47,7 +47,39 @@
                         </div>
                     }
                 }
+            </div>-->
+            <!-- Thumbnail List -->
+            <div class="thumbnail-list">
+
+                <!-- Main Image as first thumbnail -->
+                <div class="thumbnail active"
+                     data-image="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg"
+                     : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))">
+                    <img src="@(string.IsNullOrEmpty(Model.main_image) ? "/images/no-image.jpg"
+                 : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image))"
+                         alt="@Model.product_name" />
+                </div>
+
+                @if (images.Any())
+                {
+                    var mainImgPath = string.IsNullOrEmpty(Model.main_image)
+                        ? "/images/no-image.jpg"
+                        : (Model.main_image.StartsWith("/") ? Model.main_image : "/images/products/" + Model.main_image);
+
+                    foreach (var img in images.Where(i =>
+                        (i.image.StartsWith("/") ? i.image : "/images/products/" + i.image) != mainImgPath))
+                    {
+                        var imgPath = string.IsNullOrEmpty(img.image)
+                            ? "/images/no-image.jpg"
+                            : (img.image.StartsWith("/") ? img.image : "/images/products/" + img.image);
+
+                        <div class="thumbnail" data-image="@imgPath">
+                            <img src="@imgPath" alt="@Model.product_name" />
+                        </div>
+                    }
+                }
             </div>
+
 
             <!-- Main Image Display -->
             <div class="main-image-display">
@@ -875,10 +907,79 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(65, 105, 225, 0.3);
         }
+
+    .thumbnail-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100px;
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 8px; /* Thêm khoảng trống cho scrollbar */
+    }
+
+        /* Tùy chỉnh scrollbar cho Chrome, Safari, Edge */
+        .thumbnail-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-thumb {
+            background: #c0c4cc;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+            .thumbnail-list::-webkit-scrollbar-thumb:hover {
+                background: #888;
+            }
+
+        /* Ẩn nút mũi tên ở đầu và cuối thanh cuộn */
+        .thumbnail-list::-webkit-scrollbar-button {
+            display: none;
+        }
+
+    /* Tùy chỉnh scrollbar cho Firefox */
+    .thumbnail-list {
+        scrollbar-width: thin;
+        scrollbar-color: #c0c4cc #f1f1f1;
+    }
+
+    .thumbnail {
+        width: 90px; /* Giảm một chút để tránh bị che */
+        height: 90px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.3s;
+        padding: 5px;
+        background: white;
+        flex-shrink: 0; /* Ngăn không cho thumbnail bị co lại */
+    }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: #4169E1;
+            box-shadow: 0 2px 8px rgba(65, 105, 225, 0.3);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
 </style>
 
 @section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script>
         $(document).ready(function () {
 
@@ -913,52 +1014,69 @@
             });
 
 
-
-            // Add to Cart - Main Product
             $('#btnAddToCart').on('click', function () {
-                var productId = $(this).data('id');
-                var quantity = parseInt($('#quantityInput').val());
+                var btn = $(this);
+                var productId = btn.data('id');
+                var qty = parseInt($('#quantityInput').val());
+                var maxStock = parseInt($('#quantityInput').attr('max'));
+
+                if (isNaN(qty) || qty <= 0) {
+                    alert('Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn 0');
+                    return;
+                }
+
+                if (qty > maxStock) {
+                    alert(`Vượt quá tồn kho. Sản phẩm chỉ còn ${maxStock} trong kho`);
+                    return;
+                }
+
+                var originalHtml = btn.html();
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang thêm...');
 
                 $.ajax({
-                    url: '/Home/Add',
+                    url: '/Product/Add',
                     type: 'POST',
-                    data: {
-                        id: productId,
-                        quantity: quantity
-                    },
+                    data: { id: productId, qty: qty },
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
-                            $('.cart-count').text(response.totalItems);
+                            alert(response.message || `Đã thêm ${qty} sản phẩm vào giỏ hàng`);
+
+                            // Update cart count
+                            if (response.totalItems !== undefined) {
+                                $('.cart-count').text(response.totalItems);
+                                $('.cart-count').addClass('animate-bounce');
+                                setTimeout(() => $('.cart-count').removeClass('animate-bounce'), 1000);
+                            }
                         } else {
                             if (response.requireLogin) {
                                 if (confirm(response.message + ' Bạn có muốn chuyển đến trang đăng nhập?')) {
                                     window.location.href = '/Account/Login';
                                 }
                             } else {
-                                alert(response.message);
+                                alert(response.message || 'Không thể thêm sản phẩm');
                             }
                         }
                     },
-                    error: function () {
-                        alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau');
+                    },
+                    complete: function () {
+                        btn.prop('disabled', false).html(originalHtml);
                     }
                 });
             });
 
-            // Add to Cart - Related Products
+            // Add to Cart
             $('.btnadd').on('click', function () {
-                var productId = $(this).data('id');
-                var quantity = 1;
+                const btn = $(this);
+                const productId = $(this).data('id');
 
                 $.ajax({
                     url: '/Home/Add',
                     type: 'POST',
-                    data: {
-                        id: productId,
-                        quantity: quantity
-                    },
+                    data: { id: productId },
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
@@ -975,10 +1093,12 @@
                         }
                     },
                     error: function () {
-                        alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                        alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.');
                     }
                 });
             });
+
+
 
             // Prevent quantity input manual change
             $('#quantityInput').on('keydown paste', function (e) {
@@ -986,7 +1106,7 @@
                 return false;
             });
 
-            // Image zoom on hover (optional enhancement)
+            // Image zoom on hover
             $('#mainProductImage').on('mouseenter', function () {
                 $(this).css({
                     'transform': 'scale(1.05)',
