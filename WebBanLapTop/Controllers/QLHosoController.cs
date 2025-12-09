@@ -83,7 +83,10 @@ namespace WebBanLapTop.Controllers
         public ActionResult Xemchitiet(int id)
         {
             // Lấy tất cả chi tiết sản phẩm của order_id
-            var detailList = db.vw_OrderDetailList
+            //var detailList = db.vw_OrderDetailList
+            //                   .Where(x => x.order_id == id)
+            //                   .ToList();
+            var detailList = db.vw_OrderDetailLists
                                .Where(x => x.order_id == id)
                                .ToList();
 
@@ -99,13 +102,107 @@ namespace WebBanLapTop.Controllers
 
             return View(detailList);
         }
+       
 
+        /// <summary>
+        /// Sửa review
+        /// </summary>
+        //[HttpPost]
+        //public JsonResult EditReview(int reviewId, string comment)
+        //{
+        //    try
+        //    {
+        //        // Kiểm tra đăng nhập
+        //        if (Session["UserID"] == null)
+        //        {
+        //            return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+        //        }
 
+        //        int userId = (int)Session["UserID"];
 
+        //        // Validate comment
+        //        if (string.IsNullOrWhiteSpace(comment))
+        //        {
+        //            return Json(new { success = false, message = "Nội dung đánh giá không được để trống!" });
+        //        }
 
+        //        // Tìm review
+        //        var review = db.tb_reviews.FirstOrDefault(r => r.review_id == reviewId);
 
+        //        if (review == null)
+        //        {
+        //            return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
+        //        }
+
+        //        // Kiểm tra quyền sở hữu
+        //        if (review.user_id != userId)
+        //        {
+        //            return Json(new { success = false, message = "Bạn không có quyền chỉnh sửa đánh giá này!" });
+        //        }
+
+        //        // Cập nhật
+        //        review.comment = comment.Trim();
+        //        review.created_at = DateTime.Now; // Có thể thêm trường updated_at nếu muốn
+
+        //        db.SubmitChanges();
+
+        //        return Json(new
+        //        {
+        //            success = true,
+        //            message = "Cập nhật đánh giá thành công!",
+        //            data = new
+        //            {
+        //                review_id = review.review_id,
+        //                comment = review.comment,
+        //                created_at = review.created_at.ToString("dd/MM/yyyy HH:mm")
+        //            }
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+        //    }
+        //}
+        //[HttpPost]
+        //public JsonResult DeleteReview(int reviewId)
+        //{
+        //    try
+        //    {
+        //        // Kiểm tra đăng nhập
+        //        if (Session["UserID"] == null)
+        //        {
+        //            return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+        //        }
+
+        //        int userId = (int)Session["UserID"];
+
+        //        // Tìm review
+        //        var review = db.tb_reviews.FirstOrDefault(r => r.review_id == reviewId);
+
+        //        if (review == null)
+        //        {
+        //            return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
+        //        }
+
+        //        // Kiểm tra quyền sở hữu
+        //        if (review.user_id != userId)
+        //        {
+        //            return Json(new { success = false, message = "Bạn không có quyền xóa đánh giá này!" });
+        //        }
+
+        //        // Xóa
+        //        db.tb_reviews.DeleteOnSubmit(review);
+        //        db.SubmitChanges();
+
+        //        return Json(new
+        //        {
+        //            success = true,
+        //            message = "Xóa đánh giá thành công!"
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+        //    }
     }
-
-
-
 }

@@ -46,12 +46,12 @@
                                     <td>
                                         @if (item.start_date < DateTime.Now && item.end_date > DateTime.Now)
                                         {
-                                            <a href="#">@item.ProductName</a>
-                                            <span class="badge badge-danger">SALE</span>
+                                            <a href="/Product/Detail/@item.product_id">@item.ProductName</a>
+                                            <span class="badge badge-danger text-danger">SALE</span>
                                         }
                                         else
                                         {
-                                            <a href="#">@item.ProductName</a>
+                                            <a href="/Product/Detail/@item.product_id">@item.ProductName</a>
                                         }
                                     </td>
                                     <td>@item.CategoryName</td>
@@ -80,7 +80,7 @@
                                     <td>@String.Format("{0:N0} đ", item.TotalAmount)</td>
                                     <td>
                                         <a href="#" data-id="@item.cartitem_id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
-                                        <a href="#" data-id="@item.cartitem_id" class="btn btn-sm btn-success btnUpdate">Cập nhật</a>
+                                        @*<a href="#" data-id="@item.cartitem_id" class="btn btn-sm btn-success btnUpdate">Cập nhật</a>*@
                                     </td>
                                 </tr>
                                 tongtien += item.TotalAmount ?? decimal.Zero;

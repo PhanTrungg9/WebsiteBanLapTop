@@ -1,5 +1,37 @@
 ﻿$(document).ready(function () {
     ShowCount();
+    var updateTimeout;
+
+    // Tự động cập nhật khi thay đổi số lượng
+    $('body').on('input change', 'input[id^="Quantity_"]', function () {
+        var $input = $(this);
+        var id = $input.attr('id').split('_')[1];
+        var quantity = $input.val();
+
+        // Clear timeout cũ
+        clearTimeout(updateTimeout);
+
+        // Đợi 800ms sau khi user ngừng nhập mới gọi API
+        updateTimeout = setTimeout(function () {
+            $.ajax({
+                url: '/ShoppingCart/Update',
+                type: 'POST',
+                data: { id: id, quantity: quantity },
+                success: function (rs) {
+                    if (rs.Success) {
+                        // Reload lại trang để cập nhật tổng tiền
+                        window.location.href = window.location.href;
+                    }
+                    else {
+                        if (rs.Message != null) {
+                            alert(rs.Message);
+                            window.location.href = window.location.href;
+                        }
+                    }
+                }
+            });
+        }, 800);
+    });
     $('body').on('click', '.btnDelete', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
