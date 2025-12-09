@@ -13,6 +13,11 @@ namespace WebBanLapTop.Controllers
         DatabaseDataContext db = new DatabaseDataContext();
 
         // GET: Product/Category
+
+        public ActionResult Review()
+        {
+            return PartialView();
+        }
         public ActionResult ProductCategory(int? categoryId, string priceRange, string brand, string sort, int page = 1)
         {
             int pageSize = 16;
@@ -162,6 +167,135 @@ namespace WebBanLapTop.Controllers
                 .ToList();
 
             return View(product);
+        }
+        [HttpPost]
+        public JsonResult AddReview(int productId, string comment)
+        {
+            try
+            {
+                if (Session["UserID"] == null)
+                {
+                    return Json(new { success = false, message = "Vui lòng đăng nhập để đánh giá!" });
+                }
+
+                int userId = (int)Session["UserID"];
+
+                if (string.IsNullOrWhiteSpace(comment))
+                {
+                    return Json(new { success = false, message = "Nội dung đánh giá không được để trống!" });
+                }
+
+                var newReview = new tb_review
+                {
+                    user_id = userId,
+                    product_id = productId,
+                    comment = comment.Trim(),
+                    created_at = DateTime.Now
+                };
+
+                db.tb_reviews.InsertOnSubmit(newReview);
+                db.SubmitChanges();
+
+                var user = db.tb_users.FirstOrDefault(u => u.user_id == userId);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Đánh giá của bạn đã được gửi thành công!",
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult EditReview(int reviewId, string comment)
+        {
+            try
+            {
+                if (Session["UserID"] == null)
+                {
+                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+                }
+
+                int userId = (int)Session["UserID"];
+
+                // Validate comment
+                if (string.IsNullOrWhiteSpace(comment))
+                {
+                    return Json(new { success = false, message = "Nội dung đánh giá không được để trống!" });
+                }
+
+                // Tìm review
+                var review = db.tb_reviews.FirstOrDefault(r => r.review_id == reviewId);
+
+                if (review == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
+                }
+
+                if (review.user_id != userId)
+                {
+                    return Json(new { success = false, message = "Bạn không có quyền chỉnh sửa đánh giá này!" });
+                }
+
+                review.comment = comment.Trim();
+                review.created_at = DateTime.Now;
+
+                db.SubmitChanges();
+                return Json(new
+                {
+                    success = true,
+                    message = "Cập nhật đánh giá thành công!",
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult DeleteReview(int reviewId)
+        {
+            try
+            {
+                // Kiểm tra đăng nhập
+                if (Session["UserID"] == null)
+                {
+                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+                }
+
+                int userId = (int)Session["UserID"];
+
+                // Tìm review
+                var review = db.tb_reviews.FirstOrDefault(r => r.review_id == reviewId);
+
+                if (review == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
+                }
+
+                // Kiểm tra quyền sở hữu
+                if (review.user_id != userId)
+                {
+                    return Json(new { success = false, message = "Bạn không có quyền xóa đánh giá này!" });
+                }
+
+                // Xóa
+                db.tb_reviews.DeleteOnSubmit(review);
+                db.SubmitChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Xóa đánh giá thành công!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
         }
     }
 }

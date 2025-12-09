@@ -1,0 +1,79 @@
+﻿@model WebBanLapTop.Models.vw_ProductDetail
+@{
+    ViewBag.Title = "Review";
+    var reviews = ViewBag.Reviews as List<WebBanLapTop.Models.vw_ProductReview> ?? new List<WebBanLapTop.Models.vw_ProductReview>();
+}
+<div class="reviews-header">
+    <h2 class="section-title">
+        <i class="fas fa-comments"></i> Customer Reviews (@(reviews?.Count ?? 0))
+    </h2>
+</div>
+
+@if (reviews != null && reviews.Any())
+{
+    <div class="reviews-list">
+        @foreach (var review in reviews)
+        {
+            <div class="review-item" data-review-id="@review.review_id">
+                <div class="review-header d-flex">
+                    <div class="review-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+
+                    <div class="review-meta">
+                        <strong>@review.user_name</strong>
+                        <span class="review-date">
+                            @review.created_at
+                        </span>
+                    </div>
+
+                    @if (Session["UserID"] != null && Session["UserID"].ToString() == review.user_id.ToString())
+                    {
+                        <div class="review-actions ms-auto">
+                            <button class="btn btn-info"
+                                    data-id="@review.review_id"
+                                    data-comment="@review.comment"
+                                    title="Sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-danger"
+                                    data-id="@review.review_id"
+                                    title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+
+                <p class="review-comment">@review.comment</p>
+            </div>
+        }
+    </div>
+    if (Session["UserID"] != null)
+    {
+        <div class="card p-3 mt-3 shadow-sm border-0" style="background: #f8f9fa" ;>
+            <div class="d-flex align-items-center w-100">
+
+                <input type="hidden" id="productId" value="@Model.product_id" />
+
+                <input id="reviewComment"
+                       type="text"
+                       class="form-control me-2"
+                       placeholder="Viết đánh giá của bạn..." />
+
+                <button id="btnSendReview" class="btn btn-primary d-flex align-items-center justify-content-center">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+
+
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="no-reviews">
+        <p>Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+    </div>
+}
