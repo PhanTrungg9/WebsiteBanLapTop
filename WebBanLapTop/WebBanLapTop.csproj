@@ -204,28 +204,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
-    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Orders\DetailOrder.cshtml" />
-    <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\ProductImages\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\Discount.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\_ProductListPartial.cshtml" />
-    <Content Include="Areas\Admin\Views\QLDMSP\DanhMucSanPham.cshtml" />
-    <Content Include="Areas\Admin\Views\QLDMSP\Sua.cshtml" />
-    <Content Include="Areas\Admin\Views\QLDMSP\Them.cshtml" />
-    <Content Include="Areas\Admin\Views\QLND\DanhSachNguoiDung.cshtml" />
-    <Content Include="Areas\Admin\Views\QLTH\DanhSachThuongHieu.cshtml" />
-    <Content Include="Areas\Admin\Views\QLTH\Sua.cshtml" />
-    <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_LayoutEmpty.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Sidebar.cshtml" />
-    <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="bin\Antlr3.Runtime.dll" />
     <Content Include="bin\BouncyCastle.Cryptography.dll" />
     <Content Include="bin\EntityFramework.dll" />
