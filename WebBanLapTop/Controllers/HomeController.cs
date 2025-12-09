@@ -13,9 +13,10 @@ namespace WebBanLapTop.Controllers
         DatabaseDataContext db = new DatabaseDataContext();
         public ActionResult Index(string search)
         {  
-            var data = db.vv_ProductLists.Where(v => db.tb_products
-                            .Any(p => p.product_id == v.product_id && (p.is_delete == false || p.is_delete == null)))
-                            .ToList();
+            var data = db.vv_ProductLists.Where(v => v.category_active == true && v.brand_active == true &&
+                                            db.tb_products.Any(p => p.product_id == v.product_id &&
+                                            (p.is_delete == false || p.is_delete == null)))
+                                            .ToList();
             if (!string.IsNullOrEmpty(search))
             {
                 search = search.Trim().ToLower();

@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Lịch sử mua hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #orderHistoryTable th,
+    #orderHistoryTable td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #orderHistoryTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+    }
+
+        #orderHistoryTable th {
+            background: #2c3e50;
+            color: #fff;
+            padding: 10px;
+        }
+
+        #orderHistoryTable td {
+            padding: 10px;
+            border: 1px solid #e6e6e6;
+        }
+
+        #orderHistoryTable tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+    /* Tiêu đề + thanh tìm kiếm cùng hàng */
+    .oh-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+        .oh-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .oh-search {
+        width: 260px;
+    }
+</style>
+
+
+<div class="container mt-4">
+
+    <!-- TIÊU ĐỀ + SEARCH -->
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Lịch sử mua hàng</h2>
+
+        <div class="input-group" style="width: 260px;">
+            <input type="text" id="searchOrderId" class="form-control" placeholder="Tìm theo OrderID...">
+            <button id="btnSearchOrder" class="btn btn-primary">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- BẢNG LỊCH SỬ -->
+    <table id="orderHistoryTable" class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>STT</th>
+                <th>Mã đơn hàng</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script>
+        // debounce helper (tùy chọn, tránh gọi quá nhiều)
+        function debounce(fn, wait) {
+            let t;
+            return function () {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, arguments), wait);
+            };
+        }
+
+        // Load tất cả lịch sử
+        function loadOrderHistory() {
+            $.ajax({
+                url: '/QLHoso/GetOrderHistory',
+                type: 'GET',
+                success: function (res) {
+                    if (res.success) renderTable(res.data);
+                },
+                error: function () {
+                    $("#orderHistoryTable tbody").html('<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>');
+                }
+            });
+        }
+
+        // Render bảng
+        function renderTable(list) {
+            if (!list || list.length === 0) {
+                $("#orderHistoryTable tbody").html('<tr><td colspan="5" class="text-center text-muted">Không có đơn hàng</td></tr>');
+                return;
+            }
+
+            let rows = "";
+            let index = 1;
+
+            list.forEach(o => {
+                rows += `
+                        <tr>
+                            <td>${index++}</td>
+                            <td>${o.order_id}</td>
+                            <td>${formatDate(o.order_date_str)}</td>
+                            <td>${Number(o.total_amount).toLocaleString()} VND</td>
+                            <td>
+                                <a href="/QLHoso/Xemchitiet/${o.order_id}" class="btn btn-info btn-sm">Xem chi tiết</a>
+                            </td>
+                        </tr>
+                    `;
+            });
+
+            $("#orderHistoryTable tbody").html(rows);
+        }
+
+        // Format ngày yyyy-mm-dd -> dd/mm/yyyy
+        function formatDate(dateString) {
+            if (!dateString) return "—";
+            const parts = dateString.split("-");
+            if (parts.length !== 3) return dateString;
+            const [y, m, d] = parts;
+            return `${d}/${m}/${y}`;
+        }
+
+        // Tìm kiếm theo OrderID (chính)
+        function searchOrderById(id) {
+            id = (id || "").toString().trim();
+            if (id === "") {
+                loadOrderHistory();
+                return;
+            }
+
+            $.ajax({
+                url: '/QLHoso/GetOrderHistory',
+                type: 'GET',
+                success: function (res) {
+                    if (!res.success) {
+                        $("#orderHistoryTable tbody").html('<tr><td colspan="5" class="text-center text-danger">Lỗi dữ liệu</td></tr>');
+                        return;
+                    }
+                    // tìm chính xác theo order_id (hoặc đổi thành includes nếu muốn fuzzy)
+                    const filtered = res.data.filter(x => x.order_id.toString() === id);
+                    renderTable(filtered);
+                },
+                error: function () {
+                    $("#orderHistoryTable tbody").html('<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // load full list lúc vào trang
+            loadOrderHistory();
+
+            // nút Search
+            $("#btnSearchOrder").on("click", function () {
+                const id = $("#searchOrderId").val();
+                searchOrderById(id);
+            });
+
+            // nhấn Enter trong ô input
+            $("#searchOrderId").on("keypress", function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $("#btnSearchOrder").click();
+                }
+            });
+
+            // nếu muốn realtime khi gõ (không bắt buộc) — debounce 400ms
+            $("#searchOrderId").on("input", debounce(function () {
+                const val = $(this).val().trim();
+                if (val === "") {
+                    loadOrderHistory();
+                } else {
+                    // bỏ qua realtime nếu muốn chỉ search khi bấm nút -> comment dòng dưới
+                    searchOrderById(val);
+                }
+            }, 400));
+        });
+    </script>
+}
+}

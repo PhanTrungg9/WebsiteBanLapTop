@@ -49,6 +49,31 @@ namespace WebBanLapTop.Areas.Admin.Controllers
                  .ToList();
             return View(data);
         }
+        [HttpPost]
+        public ActionResult UpdateStatus(int id)
+        {
+            try
+            {
+                var order = db.tb_orders.FirstOrDefault(x => x.order_id == id);
+                if (order == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
+                }
+                order.status = "Hoàn tất";
+                db.SubmitChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Có lỗi xảy ra khi cập nhật đơn hàng!",
+                    error = ex.Message
+                });
+            }
+        }
         public JsonResult FilterByDate(string fromDate, string toDate)
         {
             try

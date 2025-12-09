@@ -929,7 +929,7 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
+                            //alert(response.message);
                             $('.cart-count').text(response.totalItems);
                         } else {
                             if (response.requireLogin) {
@@ -937,7 +937,7 @@
                                     window.location.href = '/Account/Login';
                                 }
                             } else {
-                                alert(response.message);
+                                //alert(response.message);
                             }
                         }
                     },
@@ -962,7 +962,7 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
+                            //alert(response.message);
                             $('.cart-count').text(response.totalItems);
                         } else {
                             if (response.requireLogin) {
@@ -970,7 +970,7 @@
                                     window.location.href = '/Account/Login';
                                 }
                             } else {
-                                alert(response.message);
+                                //alert(response.message);
                             }
                         }
                     },

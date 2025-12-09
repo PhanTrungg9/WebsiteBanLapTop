@@ -9,14 +9,14 @@
     <meta name="description" content="Colo Shop Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/bootstrap4/bootstrap.min.css">
-    @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">*@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/Content/User/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/plugins/OwlCarousel2-2.2.1/animate.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/main_styles.css">
     <link rel="stylesheet" type="text/css" href="~/Content/User/styles/responsive.css">
-    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -40,9 +40,6 @@
                         <div class="col-md-6 text-end">
                             <div class="top_nav_right">
                                 <ul class="top_nav_menu">
-
-                                    <!-- Currency / Language / My Account -->
-
                                     <li class="currency">
                                         <a href="#">
                                             VNĐ
@@ -86,7 +83,7 @@
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="account_selection">
-                                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
+                                                <li><a href="/QLHoso/Index"><i class="fa fa-user" aria-hidden="true"></i>Hồ sơ</a></li>
                                                 <li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fas fa-sign-in-alt"></i>Đăng xuât</a></li>
                                             </ul>
                                         }
@@ -221,107 +218,98 @@
         </div>
         <!-- Newsletter -->
 
-        @*<div class="newsletter">
+
+
+        <footer class="shoe-store-footer mt-2">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="newsletter_text d-flex flex-column justify-content-center align-items-lg-start align-items-md-center text-center">
-                            <h4>Newsletter</h4>
-                            <p>Subscribe to our newsletter and get 20% off your first purchase</p>
+                <div class="row g-4">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <h4 class="footer-section-title">COLO SHOP</h4>
+                        <p class="footer-description">
+                            Chuyên cung cấp các sản phẩm laptop chính hãng với chất lượng tốt nhất và dịch vụ hậu mãi tận tâm.
+                        </p>
+                        <div class="social-space d-flex" style="gap:5px">
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-facebook facebook-color"></i>
+                            </a>
+
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram instagram-gradient"></i>
+                            </a>
+
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter twitter-color"></i>
+                            </a>
+
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-youtube youtube-color"></i>
+                            </a>
+
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <form action="post">
-                            <div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
-                                <input id="newsletter_email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
-                                <button id="newsletter_submit" type="submit" class="newsletter_submit_btn trans_300" value="Submit">subscribe</button>
-                            </div>
-                        </form>
+
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <h4 class="footer-section-title">LIÊN KẾT NHANH</h4>
+                        <div class="footer-links">
+                            <a href="@Url.Action("Index", "Home")" class="footer-link">Trang chủ</a>
+                            <a href="@Url.Action("Index", "Introduces")" class="footer-link">Giới thiệu</a>
+                            <a href="@Url.Action("Index", "ProductDiscounts")" class="footer-link">Sản phẩm giảm giá</a>
+                            <a href="@Url.Action("Index", "Contact")" class="footer-link">Liên hệ</a>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>*@
 
-        <!-- Footer -->
-
-    <footer class="shoe-store-footer">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-12 col-sm-6 col-md-3">
-                    <h4 class="footer-section-title">COLO SHOP</h4>
-                    <p class="footer-description">
-                        Chuyên cung cấp các sản phẩm laptop chính hãng với chất lượng tốt nhất và dịch vụ hậu mãi tận tâm.
-                    </p>
-                    <div class="social-space">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <h4 class="footer-section-title">CHÍNH SÁCH</h4>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">Chính sách đổi trả</a>
+                            <a href="#" class="footer-link">Chính sách bảo mật</a>
+                            <a href="#" class="footer-link">Điều khoản dịch vụ</a>
+                            <a href="#" class="footer-link">Hướng dẫn mua hàng</a>
+                            <a href="#" class="footer-link">Phương thức thanh toán</a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-12 col-sm-6 col-md-3">
-                    <h4 class="footer-section-title">LIÊN KẾT NHANH</h4>
-                    <div class="footer-links">
-                        <a href="@Url.Action("Index", "Home")" class="footer-link">Trang chủ</a>
-                        <a href="@Url.Action("Products", "Home")" class="footer-link">Sản phẩm</a>
-                        <a href="@Url.Action("About", "Home")" class="footer-link">Giới thiệu</a>
-                        <a href="@Url.Action("News", "Home")" class="footer-link">Tin tức</a>
-                        <a href="@Url.Action("Contact", "Home")" class="footer-link">Liên hệ</a>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <h4 class="footer-section-title">LIÊN HỆ</h4>
+                        <div class="contact-info-space">
+                            <p class="contact-info-text">
+                                <i class="fas fa-map-marker-alt"></i> 55 Giải Phóng, Hai Bà Trưng, TP.Hà Nội
+                            </p>
+                            <p class="contact-info-text">
+                                <i class="fas fa-phone"></i> 0123 456 789
+                            </p>
+                            <p class="contact-info-text">
+                                <i class="fas fa-envelope"></i> info@@coloshop.vn
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-3">
-                    <h4 class="footer-section-title">CHÍNH SÁCH</h4>
-                    <div class="footer-links">
-                        <a href="@Url.Action("ReturnPolicy", "Policy")" class="footer-link">Chính sách đổi trả</a>
-                        <a href="@Url.Action("Privacy", "Policy")" class="footer-link">Chính sách bảo mật</a>
-                        <a href="@Url.Action("Terms", "Policy")" class="footer-link">Điều khoản dịch vụ</a>
-                        <a href="@Url.Action("BuyingGuide", "Policy")" class="footer-link">Hướng dẫn mua hàng</a>
-                        <a href="@Url.Action("Payment", "Policy")" class="footer-link">Phương thức thanh toán</a>
-                    </div>
-                </div>
+                <hr class="footer-divider" />
 
-                <div class="col-12 col-sm-6 col-md-3">
-                    <h4 class="footer-section-title">LIÊN HỆ</h4>
-                    <div class="contact-info-space">
-                        <p class="contact-info-text">
-                            <i class="fas fa-map-marker-alt"></i> 55 Giải Phóng, Hai Bà Trưng, TP.Hà Nội
-                        </p>
-                        <p class="contact-info-text">
-                            <i class="fas fa-phone"></i> 0123 456 789
-                        </p>
-                        <p class="contact-info-text">
-                            <i class="fas fa-envelope"></i> info@@coloshop.vn
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="footer-copyright">
+                            © @DateTime.Now.Year COLOSHOP. All rights reserved
                         </p>
                     </div>
                 </div>
             </div>
-
-            <hr class="footer-divider" />
-
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="footer-copyright">
-                        © @DateTime.Now.Year Sneaker Store. All rights reserved
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
     </div>
     <style>
-         .body {
-             font-family: Arial, sans-serif;
-             background-color: #f5f5f5;
-             padding: 20px;
-         }
+        .body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
 
         .container {
             max-width: 1140px;
             margin: 0 auto;
-         }
+        }
+
         .navbar_user {
             display: flex;
             align-items: center;
@@ -373,6 +361,29 @@
                 opacity: 1;
                 margin-right: 10px;
             }
+
+        .facebook-color {
+            color: #1877F2;
+        }
+
+        .twitter-color {
+            color: #1DA1F2;
+        }
+
+        .youtube-color {
+            color: #FF0000;
+        }
+
+        .instagram-gradient {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90% );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .social-icon i {
+            font-size: 28px;
+            margin-right: 8px;
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -406,7 +417,6 @@
     <script src="~/Content/User/js/custom.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <!-- Slick JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

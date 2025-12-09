@@ -186,6 +186,7 @@
     <Compile Include="Controllers\IntroducesController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ProductDiscountsController.cs" />
+    <Compile Include="Controllers\QLHosoController.cs" />
     <Compile Include="Controllers\ShoppingCartController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -3662,13 +3663,13 @@
     <Content Include="Areas\Admin\Views\QLTH\Them.cshtml" />
     <Content Include="Content\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
     <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\DetailOrder.cshtml" />
+    <Content Include="fonts\arial.ttf" />
     <Content Include="Models\Database.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>Database.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Admin\Views\Orders\DetailOrder.cshtml" />
-    <Content Include="fonts\arial.ttf" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>
@@ -3701,7 +3702,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\ShoppingCart\Index.cshtml" />
     <Content Include="Views\Menu\Slider.cshtml" />
     <Content Include="Uploads\images\banner5.jpg" />
     <Content Include="Views\Home\ProductList.cshtml" />
@@ -3709,6 +3709,17 @@
     <Content Include="Views\ProductDiscounts\Index.cshtml" />
     <Content Include="Views\Introduces\Index.cshtml" />
     <Content Include="Views\Product\ProductCategory.cshtml" />
+    <Content Include="Views\QLHoso\Index.cshtml" />
+    <Content Include="Views\QLHoso\Xemchitiet.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Product\Detail.cshtml" />
+    <Content Include="Views\ShoppingCart\Partial_CheckOut.cshtml" />
+    <Content Include="Views\ShoppingCart\CheckOut.cshtml" />
+    <Content Include="Views\ShoppingCart\CheckOutSuccess.cshtml" />
+    <Content Include="Views\ShoppingCart\Partial_Item_ThanhToan.cshtml" />
+    <Content Include="Views\ShoppingCart\VnPayReturn.cshtml" />
+    <Content Include="Views\ShoppingCart\Index.cshtml" />
+    <Content Include="Views\QLHoso\OrderHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

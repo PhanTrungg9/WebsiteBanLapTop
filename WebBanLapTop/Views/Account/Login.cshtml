@@ -65,6 +65,8 @@
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script>
     console.log("Script loaded!");
     console.log("Button exists:", $("#btn_login").length);
@@ -82,8 +84,17 @@
             cache: false,
             success: function (response) {
                 if (response.success) {
-                    alert(response.message);
-                    window.location.href = response.redirectUrl;
+                    Swal.fire({
+                        title: response.message,
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true,
+                        //position: 'top',
+                    }).then(() => {
+                        window.location.href = response.redirectUrl;
+                    });
+
                 } else {
                     alert(response.message);
                 }

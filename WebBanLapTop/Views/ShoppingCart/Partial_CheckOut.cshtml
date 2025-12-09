@@ -1,7 +1,8 @@
 ﻿@model WebBanLapTop.Models.tb_user
-@*@{
-    ViewBag.Title = "Thanh toán";
-}*@
+@{
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
 <body>
     <form id="form-action">
         <h3>Thông tin khách hàng</h3>
@@ -103,7 +104,7 @@
         }
 
         // Validate từng trường khi người dùng rời khỏi input (blur)
-        $('#CustomerName').blur(function() {
+        $('#CustomerName').blur(function () {
             var value = $(this).val().trim();
             $('#error-CustomerName').text('').hide();
             $(this).removeClass('is-invalid');
@@ -113,7 +114,7 @@
             }
         });
 
-        $('#Phone').blur(function() {
+        $('#Phone').blur(function () {
             var value = $(this).val().trim();
             $('#error-Phone').text('').hide();
             $(this).removeClass('is-invalid');
@@ -125,7 +126,7 @@
             }
         });
 
-        $('#Address').blur(function() {
+        $('#Address').blur(function () {
             var value = $(this).val().trim();
             $('#error-Address').text('').hide();
             $(this).removeClass('is-invalid');
@@ -135,7 +136,7 @@
             }
         });
 
-        $('#Email').blur(function() {
+        $('#Email').blur(function () {
             var value = $(this).val().trim();
             $('#error-Email').text('').hide();
             $(this).removeClass('is-invalid');
@@ -179,7 +180,7 @@
             if (email === '') {
                 showError('Email', 'Vui lòng nhập email');
                 isValid = false;
-            } 
+            }
             return isValid;
         }
 

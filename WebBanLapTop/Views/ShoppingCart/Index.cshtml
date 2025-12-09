@@ -3,9 +3,8 @@
 @model IPagedList<WebBanLapTop.Models.vw_ShoppingCart>
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
-<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
 <div class="container product_section_container">
     <div class="row">
         <div class="col product_section clearfix">
@@ -111,3 +110,30 @@
         </div>
     </div>
 </div>
+<style>
+    .breadcrumbs {
+        width: 100%;
+        height: 60px;
+        border-bottom: solid 1px #ebebeb;
+        margin-bottom: 58px;
+    }
+
+        .breadcrumbs ul li {
+            display: inline-block;
+            margin-right: 17px;
+        }
+
+            .breadcrumbs ul li.active a {
+                color: #b9b4c7;
+            }
+
+            .breadcrumbs ul li i {
+                margin-right: 17px;
+            }
+
+            .breadcrumbs ul li a {
+                color: #51545f;
+            }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
