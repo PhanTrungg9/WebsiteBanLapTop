@@ -3818,18 +3818,7 @@
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\ProductDiscounts\Index.cshtml" />
     <Content Include="Views\Introduces\Index.cshtml" />
-    <Content Include="Views\Product\ProductCategory.cshtml" />
-    <Content Include="Views\QLHoso\Index.cshtml" />
-    <Content Include="Views\QLHoso\Xemchitiet.cshtml" />
-    <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Product\Detail.cshtml" />
-    <Content Include="Views\ShoppingCart\Partial_CheckOut.cshtml" />
-    <Content Include="Views\ShoppingCart\CheckOut.cshtml" />
-    <Content Include="Views\ShoppingCart\CheckOutSuccess.cshtml" />
-    <Content Include="Views\ShoppingCart\Partial_Item_ThanhToan.cshtml" />
-    <Content Include="Views\ShoppingCart\VnPayReturn.cshtml" />
-    <Content Include="Views\ShoppingCart\Index.cshtml" />
-    <Content Include="Views\QLHoso\OrderHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
