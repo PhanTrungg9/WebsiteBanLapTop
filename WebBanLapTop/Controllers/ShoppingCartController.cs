@@ -338,7 +338,48 @@ namespace WebBanLapTop.Controllers
                 var cartItemsToDelete = db.tb_cart_items
                 .Where(x => x.cart_id == cartId)
                 .ToList();
+                db.SubmitChanges();
+                //send mail cho khachs hang
+                var strSanPham = "";
+                var thanhtien = decimal.Zero;
+                var TongTien = decimal.Zero;
+                foreach (var sp in items)
+                {
+                    strSanPham += "<tr>";
+                    strSanPham += "<td>" + sp.ProductName + "</td>";
+                    strSanPham += "<td>" + sp.Quantity + "</td>";
+                    strSanPham += "<td>" + WebBanLapTop.Common.Common.FormatNumber(sp.DiscountedPrice, 0) + "</td>";
+                    strSanPham += "</tr>";
+                    thanhtien += sp.TotalAmount ?? decimal.Zero;
+                }
+                TongTien = thanhtien;
+                string contentCustomer = System.IO.File.ReadAllText(Server.MapPath("~/Content/templates/send2.html"));
+                contentCustomer = contentCustomer.Replace("{{MaDon}}", order.order_id.ToString());
+                contentCustomer = contentCustomer.Replace("{{SanPham}}", strSanPham);
+                contentCustomer = contentCustomer.Replace("{{NgayDat}}", DateTime.Now.ToString("dd/MM/yyyy"));
+                contentCustomer = contentCustomer.Replace("{{TenKhachHang}}",name);
+                contentCustomer = contentCustomer.Replace("{{Phone}}", phone);
+                contentCustomer = contentCustomer.Replace("{{Email}}", name);
+                contentCustomer = contentCustomer.Replace("{{DiaChiNhanHang}}", address);
+                contentCustomer = contentCustomer.Replace("{{PhuongThucThanhToan}}", method);
+                //contentCustomer = contentCustomer.Replace("{{TrangThaiGiaoHang}}", status);
+                contentCustomer = contentCustomer.Replace("{{ThanhTien}}", WebBanLapTop.Common.Common.FormatNumber(thanhtien, 0));
+                contentCustomer = contentCustomer.Replace("{{TongTien}}", WebBanLapTop.Common.Common.FormatNumber(TongTien, 0));
+                WebBanLapTop.Common.Common.SendMail("ShopOnline", "Đơn hàng #" + order.order_id.ToString(), contentCustomer.ToString(),email);
 
+                string contentAdmin = System.IO.File.ReadAllText(Server.MapPath("~/Content/templates/send1.html"));
+                contentAdmin = contentAdmin.Replace("{{MaDon}}", order.order_id.ToString());
+                contentAdmin = contentAdmin.Replace("{{SanPham}}", strSanPham);
+                contentAdmin = contentAdmin.Replace("{{NgayDat}}", DateTime.Now.ToString("dd/MM/yyyy"));
+                contentAdmin = contentAdmin.Replace("{{TenKhachHang}}", name);
+                contentAdmin = contentAdmin.Replace("{{Phone}}", phone);
+                contentAdmin = contentAdmin.Replace("{{Email}}", email);
+                contentAdmin = contentAdmin.Replace("{{DiaChiNhanHang}}", address);
+                contentAdmin = contentAdmin.Replace("{{PhuongThucThanhToan}}", method);
+                //contentAdmin = contentAdmin.Replace("{{TrangThaiGiaoHang}}", status);
+                contentAdmin = contentAdmin.Replace("{{ThanhTien}}", WebBanLapTop.Common.Common.FormatNumber(thanhtien, 0));
+                contentAdmin = contentAdmin.Replace("{{TongTien}}", WebBanLapTop.Common.Common.FormatNumber(TongTien, 0));
+                WebBanLapTop.Common.Common.SendMail("ShopOnline", "Đơn hàng mới #" + order.order_id.ToString(), contentAdmin.ToString(), ConfigurationManager.AppSettings["EmailAdmin"]);
                 db.tb_cart_items.DeleteAllOnSubmit(cartItemsToDelete);
                 db.SubmitChanges();
                 code = new { Success = true, Code = 1, Url = "" };

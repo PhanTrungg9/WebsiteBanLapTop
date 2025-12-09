@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var images = ViewBag.ProductImages as List<WebBanLapTop.Models.vw_ProductImage> ?? new List<WebBanLapTop.Models.vw_ProductImage>();
-    var reviews = ViewBag.Reviews as List<WebBanLapTop.Models.vw_ProductReview> ?? new List<WebBanLapTop.Models.vw_ProductReview>();
     var relatedProducts = ViewBag.RelatedProducts as List<WebBanLapTop.Models.vw_CategoryProductList> ?? new List<WebBanLapTop.Models.vw_CategoryProductList>();
 }
 
@@ -155,31 +154,9 @@
     </div>
 
     <!-- Reviews Section -->
-    @*@if (reviews.Any())
-        {
-            <div class="reviews-section">
-                <h2 class="section-title">
-                    <i class="fas fa-comments"></i> Customer Reviews (@reviews.Count)
-                </h2>
-                <div class="reviews-list">
-                    @foreach (var review in reviews)
-                    {
-                        <div class="review-item">
-                            <div class="review-header">
-                                <div class="review-avatar">
-                                    <i class="fas fa-user-circle"></i>
-                                </div>
-                                <div class="review-meta">
-                                    <strong>@review.user_name</strong>
-                                    <span class="review-date">@review.created_at.Value.ToString("dd/MM/yyyy")</span>
-                                </div>
-                            </div>
-                            <p class="review-comment">@review.comment</p>
-                        </div>
-                    }
-                </div>
-            </div>
-        }*@
+    <div class="reviews-section">
+        @Html.Partial("Review")
+    </div>
 
     <!-- Related Products Section -->
     <div class="related-products-section">
@@ -881,7 +858,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-
             // Thumbnail Click
             $('.thumbnail').on('click', function () {
                 $('.thumbnail').removeClass('active');
@@ -911,9 +887,6 @@
                     input.val(currentVal - 1);
                 }
             });
-
-
-
             // Add to Cart - Main Product
             $('#btnAddToCart').on('click', function () {
                 var productId = $(this).data('id');
@@ -1003,6 +976,100 @@
                 }, 500);
             });
 
+            $('#btnSendReview').on('click', function () {
+                var productId = $('#productId').val();
+                var comment = $('#reviewComment').val().trim();
+                if (!comment) {
+                    alert('Vui lòng nhập nội dung đánh giá!');
+                    return;
+                }
+                $.ajax({
+                    url: '/Product/AddReview',
+                    type: 'POST',
+                    data: {
+                        productId: productId,
+                        comment: comment
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload(); 
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi gửi đánh giá!');
+                    }
+                });
+            });
+            $(document).on('click', '.btn-edit-review, .btn-info[data-comment]', function () {
+                var reviewId = $(this).data('id');
+                var currentComment = $(this).data('comment');
+
+                var newComment = prompt('Sửa đánh giá của bạn:', currentComment);
+
+                if (newComment === null) return; // User clicked Cancel
+
+                if (!newComment.trim()) {
+                    alert('Nội dung đánh giá không được để trống!');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Product/EditReview',
+                    type: 'POST',
+                    data: {
+                        reviewId: reviewId,
+                        comment: newComment.trim()
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            var reviewItem = $('.review-item[data-review-id="' + reviewId + '"]');
+                            reviewItem.find('.review-comment').text(response.data.comment);
+                            reviewItem.find('.review-date').text(response.data.created_at);
+                            reviewItem.find('.btn-info').data('comment', response.data.comment);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi cập nhật đánh giá!');
+                    }
+                    
+                });
+            });
+            $(document).on('click', '.btn-delete-review, .btn-danger[data-id]', function () {
+                if (!confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+                    return;
+                }
+                var reviewId = $(this).data('id');
+
+                $.ajax({
+                    url: '/Product/DeleteReview',
+                    type: 'POST',
+                    data: {
+                        reviewId: reviewId
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi xóa đánh giá!');
+                    }
+                });
+            });
         });
     </script>
 }
