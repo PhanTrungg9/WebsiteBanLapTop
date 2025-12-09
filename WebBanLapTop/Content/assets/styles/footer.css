@@ -42,15 +42,12 @@
     cursor: pointer;
 }
 
-    .footer-link:hover {
-        color: #ff4d4f !important;
-    }
 
 .footer-link {
     position: relative;
 }
 
-    .footer-link::after {
+/*    .footer-link::after {
         content: '';
         position: absolute;
         width: 0;
@@ -63,7 +60,7 @@
 
     .footer-link:hover::after {
         width: 40px;
-    }
+    }*/
 
 
 .contact-info-space {

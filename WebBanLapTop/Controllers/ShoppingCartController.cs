@@ -174,7 +174,7 @@ namespace WebBanLapTop.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var code = new { Success = false, msg = "", code = -1};
+            var code = new { Success = false, msg = "", code = -1 };
             DatabaseDataContext db = new DatabaseDataContext();
             var cart = db.tb_cart_items.FirstOrDefault(u => u.cartitem_id == id);
             if (cart != null)
@@ -185,6 +185,7 @@ namespace WebBanLapTop.Controllers
             }
             return Json(code);
         }
+
 
         public ActionResult DeleteAll()
         {

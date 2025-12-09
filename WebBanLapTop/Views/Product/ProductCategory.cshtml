@@ -804,6 +804,8 @@
         }
     }*@
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 @section scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -825,8 +827,11 @@
 
             // Add to Cart
             $('.btnadd').on('click', function () {
-                const btn = $(this);
-                const productId = $(this).data('id');
+                var btn = $(this);
+                var productId = $(this).data('id');
+
+                var originalHtml = btn.html();
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
 
                 $.ajax({
                     url: '/Home/Add',
@@ -835,20 +840,74 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: 'success',
+                                title: response.message || 'Đã thêm vào giỏ hàng'
+                            });
+
                             $('.cart-count').text(response.totalItems);
+
+                            $('.cart-count').addClass('animate-bounce');
+                            setTimeout(function () {
+                                $('.cart-count').removeClass('animate-bounce');
+                            }, 1000);
+
                         } else {
                             if (response.requireLogin) {
-                                if (confirm(response.message + ' Bạn có muốn chuyển đến trang đăng nhập?')) {
-                                    window.location.href = '/Account/Login';
-                                }
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Yêu cầu đăng nhập',
+                                    text: response.message || 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Đăng nhập ngay',
+                                    cancelButtonText: 'Để sau',
+                                    reverseButtons: true
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = '/Account/Login';
+                                    }
+                                });
                             } else {
-                                alert(response.message);
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    timerProgressBar: true
+                                });
+
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: response.message || 'Không thể thêm sản phẩm'
+                                });
                             }
                         }
+                        btn.prop('disabled', false).html(originalHtml);
                     },
-                    error: function () {
-                        alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.');
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.',
+                            footer: '<small>Vui lòng thử lại sau</small>',
+                            confirmButtonText: 'Đóng',
+                            confirmButtonColor: '#d33'
+                        });
+                        btn.prop('disabled', false).html(originalHtml);
                     }
                 });
             });
