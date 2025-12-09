@@ -98,14 +98,14 @@
                                         @item.TotalProduct
                                     </td>
                                     <td>@(item.total_amount.HasValue ? item.total_amount.Value.ToString("N0") : "0") ₫</td>                              
-                                    <td>
+                                    <td class="btn_status">
                                         @if (item.status == "Hoàn tất")
                                         {
                                             <span class="badge bg-success">Đã Thanh Toán</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning">Chưa Thanh Toán</span>
+                                            <span class="badge bg-warning" onclick="process(@item.order_id)">Chưa Thanh Toán</span>
                                         }
                                     </td>
                                     <th class="btn-detail" ><a href="/Admin/Orders/DetailOrder/@item.order_id">Xem chi tiết → </a></th>
@@ -138,40 +138,91 @@
 </section>
 
 <!-- Dialog hiển thị hình ảnh -->
-<div id="dialog" style="display: none;">
+<!--<div id="dialog" style="display: none;">
     <div style="text-align: center;">
         <img id="dialogImage" src="" alt="Product Image" style="max-width: 100%; height: auto;" />
     </div>
-</div>
+</div>-->
 <style>
     .btn-detail {
         cursor:pointer;
         font-size:14px;
         font-weight:700;
     }
+    .btn_status, .btn-detail {
+        cursor: pointer;
+    }
 </style>
 @section scripts{
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
     <script>
-        $(document).ready(function () {
-            // Khởi tạo dialog
-            $('#dialog').dialog({
-                autoOpen: false,
-                show: "fade",
-                hide: "fade",
-                modal: true,
-                height: 450,
-                width: 450,
-                resizable: true,
-                title: 'Hình ảnh sản phẩm'
-            });
-            $('body').on('click', '.product-image', function () {
-                var imgSrc = $(this).find('img').attr('src');
-                $('#dialogImage').attr('src', imgSrc);
-                $('#dialog').dialog('open');
-                return false;
-            });
-        });
+        //$(document).ready(function () {
+        //    // Khởi tạo dialog
+        //    $('#dialog').dialog({
+        //        autoOpen: false,
+        //        show: "fade",
+        //        hide: "fade",
+        //        modal: true,
+        //        height: 450,
+        //        width: 450,
+        //        resizable: true,
+        //        title: 'Hình ảnh sản phẩm'
+        //    });
+        //    $('body').on('click', '.product-image', function () {
+        //        var imgSrc = $(this).find('img').attr('src');
+        //        $('#dialogImage').attr('src', imgSrc);
+        //        $('#dialog').dialog('open');
+        //        return false;
+        //    });
+        //});
+        function process(orderId) {
+            Swal.fire({
+                title: "Duyệt đơn hàng?",
+                text: "Bạn có chắc muốn duyệt đơn này không ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Có, duyệt ngay!",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Orders/UpdateStatus',
+                        type: 'POST',
+                        data: { id: orderId },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#trow_' + orderId)
+                                    .find('td:nth-child(6)')
+                                    .html('<span class="badge bg-success">Đã Thanh Toán</span>');
+
+                                Swal.fire({
+                                    title: "Thành công!",
+                                    text: "Đơn hàng đã được duyệt.",
+                                    icon: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Lỗi!",
+                                    text: response.message || "Không thể duyệt đơn.",
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Lỗi!",
+                                text: "Không thể kết nối máy chủ.",
+                                icon: "error"
+                            });
+                        }
+                    })
+                }
+            })
+        }
         function timkiem_SP() {
             var searchValue = $('#searchInput').val().trim();
             var currentUrl = '@Url.Action("Index", "Orders", new { Area = "Admin" })';

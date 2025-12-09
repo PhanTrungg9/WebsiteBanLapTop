@@ -69,15 +69,21 @@
                                     <td>@item.name</td>
                                     <td>@item.description</td>
                                     <td>
-                                        <a href="/Admin/QLDMSP/Sua/@item.category_id" class="btn btn-sm btn-primary">Sửa</a>
+                                        <a href="/Admin/QLDMSP/Sua/@item.category_id" class="btn btn-primary"> <i class="fas fa-edit"></i> Sửa</a>
                                         @*<a href="#" data-id="@item.category_id" class="btn btn-sm btn-danger btnDelete">Xóa</a>*@
                                         <a href="#"
                                            data-id="@item.category_id"
                                            data-status="@item.is_active"
-                                           class="btn btn-sm @(item.is_active ? "btn-warning" : "btn-success") btnToggle">
+                                           class="btn @(item.is_active ? "btn-warning" : "btn-success") btnToggle">
+
+                                            @Html.Raw(item.is_active
+                                                ? "<i class='bi bi-eye-slash'></i>"
+                                                : "<i class='bi bi-eye'></i>"
+                                            )
 
                                             @(item.is_active ? "Ẩn" : "Hiện")
                                         </a>
+
                                     </td>
                                 </tr>
                                 index++;
@@ -136,18 +142,40 @@
         function goToPage(page) {
             window.location.href = "?page=" + page;
         }
-
         $(".btnToggle").click(function () {
             let id = $(this).data("id");
             let active = $(this).data("status");
             let actionText = active ? "ẩn" : "hiện";
-
-            if (confirm("Bạn có chắc chắn muốn " + actionText + " danh mục này không?")) {
-                $.post("/Admin/QLDMSP/Toggle", { id: id }, function (response) {
-                    alert(response);
-                    location.reload();
-                });
-            }
+            Swal.fire({
+                title: "Xác nhận",
+                text: "Bạn có chắc chắn muốn " + actionText + " danh mục này không ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Có",
+                cancelButtonText: "Hủy",
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post("/Admin/QLDMSP/Toggle", { id: id }, function (response) {
+                        Swal.fire({
+                            title: "Thành Công",
+                            text: response,
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }).fail(function () {
+                        Swal.fire({
+                            title: "Lỗi",
+                            text: "Không thể cập nhật trạng thái!",
+                            icon: "error"
+                        });
+                    });
+                }
+            });
         });
     </script>
 }

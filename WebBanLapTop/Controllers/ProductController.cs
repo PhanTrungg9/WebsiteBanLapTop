@@ -13,6 +13,11 @@ namespace WebBanLapTop.Controllers
         DatabaseDataContext db = new DatabaseDataContext();
 
         // GET: Product/Category
+
+        public ActionResult Review()
+        {
+            return PartialView();
+        }
         public ActionResult ProductCategory(int? categoryId, string priceRange, string brand, string sort, int page = 1)
         {
             int pageSize = 16;
@@ -277,15 +282,51 @@ namespace WebBanLapTop.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new
-                {
-                    success = false,
-                    message = "Có lỗi xảy ra. Vui lòng thử lại sau."
-                    // Trong production không nên trả về ex.Message vì lý do bảo mật
-                });
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
             }
         }
+        [HttpPost]
+        public JsonResult DeleteReview(int reviewId)
+        {
+            try
+            {
+                // Kiểm tra đăng nhập
+                if (Session["UserID"] == null)
+                {
+                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+                }
 
+                int userId = (int)Session["UserID"];
+
+                // Tìm review
+                var review = db.tb_reviews.FirstOrDefault(r => r.review_id == reviewId);
+
+                if (review == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
+                }
+
+                // Kiểm tra quyền sở hữu
+                if (review.user_id != userId)
+                {
+                    return Json(new { success = false, message = "Bạn không có quyền xóa đánh giá này!" });
+                }
+
+                // Xóa
+                db.tb_reviews.DeleteOnSubmit(review);
+                db.SubmitChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Xóa đánh giá thành công!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
     }
 }
         

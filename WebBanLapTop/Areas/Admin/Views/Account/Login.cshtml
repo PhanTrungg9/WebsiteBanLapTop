@@ -59,17 +59,42 @@
             contentType: false,
             cache: false,
             success: function (response) {
+
                 if (response.success) {
-                    alert(response.message);
-                    window.location.href = response.redirectUrl;
+
+                    // Swal tự tắt sau 1.5 giây
+                    Swal.fire({
+                        title: "Thành công",
+                        text: response.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = response.redirectUrl;
+                    });
+
                 } else {
-                    alert(response.message);
+                    // Swal lỗi không tự tắt
+                    Swal.fire({
+                        title: "Đăng nhập thất bại",
+                        text: response.message,
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
                 }
             },
             error: function (xhr, status, error) {
-                alert("Có lỗi xảy ra: " + error);
+
+                Swal.fire({
+                    title: "Lỗi hệ thống",
+                    text: "Có lỗi xảy ra: " + error,
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+
                 console.log(xhr.responseText);
             }
         });
     });
+
 </script>

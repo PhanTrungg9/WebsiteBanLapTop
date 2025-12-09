@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using WebBanLapTop.Models; 
+using WebBanLapTop.Models;
 
 namespace WebBanLapTop.Controllers
 {
@@ -31,6 +31,14 @@ namespace WebBanLapTop.Controllers
             return View(user);
         }
 
+        public ActionResult OrderHistory()
+        {
+            if (Session["UserID"] == null)
+                return RedirectToAction("Login", "Account");
+
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Update(int user_id, string full_name, string email, string phone, string password, string address)
         {
@@ -44,7 +52,7 @@ namespace WebBanLapTop.Controllers
             user.full_name = full_name;
             user.email = email;
             user.phone = phone;
-            user.password = password;
+
             user.address = address;
             db.SubmitChanges();
 
@@ -57,33 +65,37 @@ namespace WebBanLapTop.Controllers
                     full_name,
                     email,
                     phone,
-                    password,
+
                     address
                 }
             });
         }
-        public ActionResult GetOrderHistory() 
+
+
+        public ActionResult GetOrderHistory()
         {
             int userId = (int)Session["UserID"];
             var orders = db.tb_orders
-                .Where(o => o.user_id == userId)
+                .Where(o => o.user_id == userId && (o.status == "Hoàn tất"))
                 .OrderByDescending(o => o.order_id)
                 .AsEnumerable()
                 .Select((o) => new
                 {
                     o.order_id,
                     order_date_str = o.order_date.HasValue
-                          ?o.order_date.Value.ToString("yyyy-MM-dd")
+                          ? o.order_date.Value.ToString("yyyy-MM-dd")
                           : " ",
-                    o.status,
+                    total_amount = o.total_amount
                 })
                 .ToList();
             return Json(new { success = true, data = orders }, JsonRequestBehavior.AllowGet);
         }
+
+
         public ActionResult Xemchitiet(int id)
         {
             // Lấy tất cả chi tiết sản phẩm của order_id
-            var detailList = db.vw_OrderDetailList
+            var detailList = db.vw_OrderDetailLists
                                .Where(x => x.order_id == id)
                                .ToList();
 
@@ -101,11 +113,43 @@ namespace WebBanLapTop.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult ChangePassword(int userId, string oldPass, string newPass, string reNewPass)
+        {
+            try
+            {
+                using (var db = new DatabaseDataContext())
+                {
+                    var user = db.tb_users.FirstOrDefault(u => u.user_id == userId);
 
+                    if (user == null)
+                    {
+                        return Json(new { success = false, message = "Không tìm thấy tài khoản!" });
+                    }
 
+                    // Sai mật khẩu cũ
+                    if (user.password != oldPass)
+                    {
+                        return Json(new { success = false, message = "Mật khẩu cũ không đúng!" });
+                    }
 
+                    // Mật khẩu mới không trùng
+                    if (newPass != reNewPass)
+                    {
+                        return Json(new { success = false, message = "Mật khẩu mới không khớp!" });
+                    }
+
+                    // Cập nhật mật khẩu
+                    user.password = newPass;
+                    db.SubmitChanges();
+
+                    return Json(new { success = true, message = "Đổi mật khẩu thành công!" });
+                }
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Lỗi server!" });
+            }
+        }
     }
-
-
-
 }
