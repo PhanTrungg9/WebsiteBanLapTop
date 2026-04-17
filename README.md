@@ -36,12 +36,16 @@ Dự án website bán laptop được phát triển trong quá trình học tậ
 ## 🖼️ Hình ảnh minh họa
 * Trang chủ
 <img width="1214" height="646" alt="image" src="https://github.com/user-attachments/assets/3461ed33-5b76-4dc1-943c-cb829220a16a" />
+
 * Giới thiệu shop
 <img width="1214" height="640" alt="image" src="https://github.com/user-attachments/assets/2b741c1e-370e-4017-a4c7-16a76daedabd" />
-* Profile
-<img width="1215" height="557" alt="image" src="https://github.com/user-attachments/assets/b815480d-9407-4dc7-9b22-22558776644b" />
+
 * Giỏ hàng
+<img width="1215" height="557" alt="image" src="https://github.com/user-attachments/assets/b815480d-9407-4dc7-9b22-22558776644b" />
+
+* Chi tiết sản phẩm
 <img width="1215" height="669" alt="image" src="https://github.com/user-attachments/assets/0215d7f9-a392-4a6f-9f4d-0b381b20ada3" />
+
 * Trang thông kê của quản lý 
 <img width="1114" height="627" alt="image" src="https://github.com/user-attachments/assets/43fb91ad-3cd2-4b09-b078-fa173df1c7ef" />
 
